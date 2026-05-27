@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DeckCleaner | VC Deck Formatting QA</title>
+  <meta
+    name="description"
+    content="Upload a VC or startup deck, find formatting inconsistencies, and preview automatic fixes for fonts, spacing, alignment, charts, and capitalization."
+  />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="DeckCleaner home">
+        <span class="brand-mark">DC</span>
+        <span>
+          <strong>DeckCleaner</strong>
+          <small>Formatting QA for startup decks</small>
+        </span>
+      </a>
+      <nav class="topnav" aria-label="Product sections">
+        <a href="#scanner">Scanner</a>
+        <a href="#issues">Issues</a>
+        <a href="#fixes">Auto-fix</a>
+      </nav>
+      <button class="ghost-button" id="sampleButton" type="button">Run sample deck</button>
+    </header>
+
+    <main>
+      <section class="hero" id="scanner">
+        <div class="hero-copy">
+          <p class="eyebrow">Founder-ready deck hygiene</p>
+          <h1>Clean the messy parts of a VC deck before anyone sees them.</h1>
+          <p>
+            Upload a PDF, PPT, or PPTX. DeckCleaner flags inconsistent fonts,
+            misaligned logos, ugly charts, random capitalization, and spacing
+            drift, then previews a clean fix pass.
+          </p>
+          <div class="hero-actions">
+            <label class="primary-button" for="deckInput">Upload deck</label>
+            <button class="secondary-button" id="scanAgainButton" type="button">Rescan</button>
+          </div>
+        </div>
+
+        <form class="upload-panel" id="uploadPanel">
+          <input id="deckInput" name="deck" type="file" accept=".pdf,.ppt,.pptx,application/pdf,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation" />
+          <div class="dropzone" id="dropzone">
+            <div class="drop-visual" aria-hidden="true">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+            <h2>Drop a deck here</h2>
+            <p>PDF, PPT, or PPTX. Local heuristic scan, no server needed.</p>
+            <dl class="file-meta" id="fileMeta">
+              <div>
+                <dt>Deck</dt>
+                <dd id="fileName">No file selected</dd>
+              </div>
+              <div>
+                <dt>Status</dt>
+                <dd id="scanStatus">Waiting</dd>
+              </div>
+            </dl>
+          </div>
+        </form>
+      </section>
+
+      <section class="workspace" aria-live="polite">
+        <aside class="score-panel" aria-label="Deck score">
+          <div class="score-ring" id="scoreRing">
+            <span id="scoreValue">--</span>
+            <small>score</small>
+          </div>
+          <div class="score-copy">
+            <p class="eyebrow">Audit summary</p>
+            <h2 id="summaryTitle">Upload a deck to start.</h2>
+            <p id="summaryCopy">The scanner will build a formatting map and rank the issues that make the deck feel rough.</p>
+          </div>
+          <div class="metric-grid">
+            <div>
+              <span id="issueCount">0</span>
+              <small>issues</small>
+            </div>
+            <div>
+              <span id="fixCount">0</span>
+              <small>auto-fixable</small>
+            </div>
+            <div>
+              <span id="slideCount">0</span>
+              <small>slides</small>
+            </div>
+          </div>
+        </aside>
+
+        <section class="slide-stage" id="fixes">
+          <div class="stage-head">
+            <div>
+              <p class="eyebrow">Before and after</p>
+              <h2 id="stageTitle">Formatting pass preview</h2>
+            </div>
+            <div class="segmented-control" role="group" aria-label="Preview mode">
+              <button class="segment is-active" type="button" data-view="messy">Issues</button>
+              <button class="segment" type="button" data-view="fixed">Fixed</button>
+            </div>
+          </div>
+
+          <div class="deck-preview" id="deckPreview">
+            <article class="slide-card is-selected" data-slide="0">
+              <div class="slide-logo is-offset"></div>
+              <div class="slide-title-row">
+                <span></span>
+                <span></span>
+              </div>
+              <div class="slide-chart">
+                <i style="height: 58%"></i>
+                <i style="height: 74%"></i>
+                <i style="height: 39%"></i>
+                <i style="height: 86%"></i>
+              </div>
+              <div class="slide-caption"></div>
+            </article>
+            <article class="slide-card" data-slide="1">
+              <div class="slide-logo"></div>
+              <div class="slide-title-row short">
+                <span></span>
+                <span></span>
+              </div>
+              <div class="slide-lines">
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+              <div class="slide-caption"></div>
+            </article>
+            <article class="slide-card" data-slide="2">
+              <div class="slide-logo is-offset"></div>
+              <div class="slide-title-row">
+                <span></span>
+                <span></span>
+              </div>
+              <div class="slide-grid">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+              <div class="slide-caption"></div>
+            </article>
+          </div>
+
+          <div class="fix-toolbar">
+            <div class="fix-option">
+              <input id="brandGrid" type="checkbox" checked />
+              <label for="brandGrid">Snap logos and page numbers to one grid</label>
+            </div>
+            <div class="fix-option">
+              <input id="typeScale" type="checkbox" checked />
+              <label for="typeScale">Normalize fonts, title case, and type scale</label>
+            </div>
+            <div class="fix-option">
+              <input id="chartPolish" type="checkbox" checked />
+              <label for="chartPolish">Rebuild chart spacing and label contrast</label>
+            </div>
+            <button class="primary-button compact" id="autoFixButton" type="button">Apply auto-fix</button>
+          </div>
+        </section>
+      </section>
+
+      <section class="issue-workbench" id="issues">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Issue queue</p>
+            <h2>What makes the deck look inconsistent</h2>
+          </div>
+          <button class="secondary-button" id="exportButton" type="button">Download report</button>
+        </div>
+
+        <div class="issue-layout">
+          <div class="issue-list" id="issueList"></div>
+          <aside class="fix-plan">
+            <p class="eyebrow">Fix plan</p>
+            <h3 id="fixPlanTitle">No fixes planned yet</h3>
+            <p id="fixPlanCopy">Run a scan to see the exact cleanup recipe DeckCleaner would apply.</p>
+            <ol id="fixSteps"></ol>
+          </aside>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
