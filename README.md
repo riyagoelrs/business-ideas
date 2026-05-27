@@ -14,13 +14,15 @@ The app also previews an auto-fix pass and exports a lightweight HTML report wit
 
 DeckCleaner is a static web app. There is no account, backend, API key, or install step.
 
-1. Open `index.html` in a browser.
+Public link: https://raw.githack.com/riyagoelrs/business-ideas/main/deckcleaner-live.html
+
+1. Open `deckcleaner-live.html` in a browser.
 2. Upload a PDF, PPT, or PPTX.
 3. Review the score, issue queue, and suggested cleanup plan.
-4. Click `Apply auto-fix` to preview a normalized deck style.
-5. Click `Download report` to save a shareable HTML audit.
+4. Click `Apply auto-fix preview` to preview a normalized deck style.
+5. Click `Download report` to save a text audit.
 
-You can also open `index.html?sample=1` to load a sample messy seed deck scan.
+You can also open `deckcleaner-live.html?sample=1` to load a sample messy seed deck scan.
 
 ## Run Locally
 
