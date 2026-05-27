@@ -61,6 +61,15 @@ const issueTemplates = [
     severity: "low",
     autoFix: false,
     fix: "Recommend manual rewrite because the best fix depends on message priority."
+  },
+  {
+    id: "metadata-only",
+    title: "Text extraction was limited",
+    detail: "The browser could not extract readable deck text, so this scan used file metadata and layout heuristics.",
+    category: "Scanner",
+    severity: "low",
+    autoFix: false,
+    fix: "Export the deck as PDF or rerun from a less restricted browser if text-level casing checks matter."
   }
 ];
 
@@ -159,7 +168,7 @@ function findCaps(text) {
   return [...new Set(matches)].slice(0, 8);
 }
 
-function pickIssues(file, text, slides) {
+function pickIssues(file, text, slides, options = {}) {
   const ext = extensionFor(file);
   const fonts = findFonts(text);
   const caps = findCaps(text);
@@ -210,6 +219,10 @@ function pickIssues(file, text, slides) {
     add("orphan-bullets");
   }
 
+  if (options.readWarning) {
+    add("metadata-only");
+  }
+
   return issues.map((issue, index) => ({
     ...issue,
     slide: Math.min(slides, Math.max(1, Math.round(((index + 1) / (issues.length + 1)) * slides))),
@@ -226,9 +239,9 @@ function scoreFor(issues) {
   return Math.max(38, 100 - penalty);
 }
 
-function buildReport(file, text) {
+function buildReport(file, text, options = {}) {
   const slides = estimateSlideCount(file, text);
-  const issues = pickIssues(file, text, slides);
+  const issues = pickIssues(file, text, slides, options);
   const score = scoreFor(issues);
   const autoFixable = issues.filter((issue) => issue.autoFix).length;
   const minutes = 8 + issues.length * 3 + Math.round(slides / 2);
@@ -242,7 +255,8 @@ function buildReport(file, text) {
     score,
     autoFixable,
     minutes,
-    fixedScore: Math.min(96, score + autoFixable * 8)
+    fixedScore: Math.min(96, score + autoFixable * 8),
+    readWarning: Boolean(options.readWarning)
   };
 }
 
@@ -252,14 +266,19 @@ function setStatus(text) {
 
 async function readDeckText(file) {
   if (file.text) return file.text;
-  const buffer = await file.arrayBuffer();
-  const bytes = new Uint8Array(buffer.slice(0, Math.min(buffer.byteLength, 180000)));
-  let binaryText = "";
-  const chunkSize = 8192;
-  for (let index = 0; index < bytes.length; index += chunkSize) {
-    binaryText += String.fromCharCode(...bytes.slice(index, index + chunkSize));
+  const head = file.slice ? file.slice(0, Math.min(file.size || 0, 260000)) : file;
+
+  if (head.arrayBuffer) {
+    const buffer = await head.arrayBuffer();
+    return new TextDecoder("utf-8", { fatal: false }).decode(buffer);
   }
-  return binaryText;
+
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.addEventListener("load", () => resolve(String(reader.result || "")));
+    reader.addEventListener("error", () => reject(reader.error || new Error("File read failed")));
+    reader.readAsText(head);
+  });
 }
 
 async function scanFile(file) {
@@ -276,9 +295,9 @@ async function scanFile(file) {
     setStatus("Scan complete");
     renderReport();
   } catch (error) {
-    setStatus("Scan failed");
-    summaryTitle.textContent = "Could not read this deck.";
-    summaryCopy.textContent = "Try another PDF, PPT, or PPTX. The browser could not load the selected file.";
+    state.report = buildReport(file, "", { readWarning: true });
+    setStatus("Metadata scan complete");
+    renderReport();
   }
 }
 
@@ -295,6 +314,8 @@ function renderReport() {
   summaryTitle.textContent = state.fixed ? "Auto-fix pass applied." : `${report.issues.length} formatting issues found.`;
   summaryCopy.textContent = state.fixed
     ? `The preview applies ${report.autoFixable} automated fixes and moves the deck score from ${report.score} to ${report.fixedScore}.`
+    : report.readWarning
+      ? `${report.fileName} was scanned with metadata heuristics because readable text extraction was limited. Estimated slides: ${report.slides}.`
     : `${report.fileName} is a ${report.ext} deck with ${report.slides} estimated slides. Fix pass estimate: ${report.minutes} minutes.`;
   issueCount.textContent = report.issues.length;
   fixCount.textContent = report.autoFixable;
