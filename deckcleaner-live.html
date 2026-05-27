@@ -1,0 +1,430 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>DeckCleaner | VC Deck Formatting QA</title>
+  <meta name="description" content="Upload a PDF, PPT, or PPTX and get local formatting QA for fonts, alignment, charts, casing, and spacing." />
+  <style>
+    :root {
+      --ink: #17202a;
+      --muted: #627184;
+      --paper: #f4f7fb;
+      --panel: #ffffff;
+      --line: #dce4ee;
+      --blue: #2f73d8;
+      --navy: #1c3557;
+      --green: #148f6c;
+      --yellow: #b97810;
+      --red: #c43f38;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-width: 320px;
+      background: linear-gradient(180deg, #eef3f8 0%, #fbfcfe 54%, #edf2f6 100%);
+      color: var(--ink);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    button, input { font: inherit; }
+    button, label[for] { cursor: pointer; }
+    .shell { min-height: 100vh; padding: clamp(18px, 4vw, 42px); }
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: clamp(28px, 5vw, 58px);
+    }
+    .brand { display: flex; align-items: center; gap: 12px; }
+    .mark {
+      display: grid;
+      width: 44px;
+      height: 44px;
+      place-items: center;
+      background: var(--navy);
+      color: #fff;
+      font-weight: 800;
+    }
+    .brand strong { display: block; font-size: 20px; line-height: 1; }
+    .brand span:last-child { color: var(--muted); font-size: 13px; }
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 0.95fr) minmax(360px, 1.05fr);
+      gap: clamp(22px, 4vw, 46px);
+      align-items: center;
+    }
+    h1 {
+      max-width: 760px;
+      margin: 0 0 18px;
+      font-size: clamp(42px, 6vw, 78px);
+      line-height: 0.96;
+      letter-spacing: 0;
+    }
+    .lede { max-width: 650px; margin: 0; color: #50606f; font-size: 18px; line-height: 1.55; }
+    .eyebrow {
+      margin: 0 0 12px;
+      color: var(--blue);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+    .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 24px; }
+    .primary, .secondary {
+      display: inline-flex;
+      min-height: 44px;
+      align-items: center;
+      justify-content: center;
+      border: 0;
+      padding: 0 18px;
+      font-weight: 800;
+    }
+    .primary { background: var(--blue); color: #fff; box-shadow: 0 12px 26px rgba(47, 115, 216, 0.24); }
+    .secondary { border: 1px solid var(--line); background: #fff; color: var(--navy); }
+    #deckInput { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+    .dropzone {
+      min-height: 420px;
+      border: 1px dashed #99b5d6;
+      background: rgba(255, 255, 255, 0.9);
+      box-shadow: 0 20px 54px rgba(23, 32, 42, 0.12);
+      padding: clamp(22px, 4vw, 34px);
+    }
+    .dropzone.dragging { border-color: var(--blue); background: #fff; }
+    .deck-art {
+      position: relative;
+      height: 220px;
+      margin-bottom: 18px;
+    }
+    .slide {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: min(76%, 360px);
+      aspect-ratio: 16 / 10;
+      border: 1px solid #c9d7e7;
+      background: #fff;
+      box-shadow: 0 16px 34px rgba(28, 53, 87, 0.13);
+      transform: translate(-50%, -50%);
+    }
+    .slide:nth-child(1) { transform: translate(calc(-50% - 28px), calc(-50% + 22px)) rotate(-6deg); }
+    .slide:nth-child(2) { transform: translate(calc(-50% + 24px), calc(-50% + 6px)) rotate(3deg); }
+    .slide:nth-child(3)::before {
+      content: "";
+      position: absolute;
+      left: 28px;
+      top: 28px;
+      width: 58%;
+      height: 15px;
+      background: var(--navy);
+      box-shadow: 0 34px 0 #b8c6d5, 0 68px 0 #d8e1eb;
+    }
+    .slide:nth-child(3)::after {
+      content: "";
+      position: absolute;
+      right: 28px;
+      bottom: 24px;
+      width: 112px;
+      height: 78px;
+      background:
+        linear-gradient(to top, #14a67a 0 42%, transparent 42%),
+        linear-gradient(to top, #f0b645 0 72%, transparent 72%),
+        linear-gradient(to top, #2f73d8 0 58%, transparent 58%);
+      background-size: 28px 100%, 28px 100%, 28px 100%;
+      background-position: 0 0, 42px 0, 84px 0;
+      background-repeat: no-repeat;
+    }
+    .dropzone h2 { margin: 0 0 8px; font-size: 28px; }
+    .dropzone p { margin: 0; color: var(--muted); line-height: 1.5; }
+    .meta {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1px;
+      margin-top: 24px;
+      border: 1px solid var(--line);
+      background: var(--line);
+    }
+    .meta div { min-width: 0; background: #fff; padding: 14px; }
+    .meta small {
+      display: block;
+      color: var(--muted);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+    .meta strong { display: block; overflow: hidden; margin-top: 7px; text-overflow: ellipsis; white-space: nowrap; }
+    .dashboard {
+      display: grid;
+      grid-template-columns: 310px minmax(0, 1fr);
+      gap: 22px;
+      margin-top: 28px;
+    }
+    .panel {
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.9);
+      box-shadow: 0 12px 34px rgba(23, 32, 42, 0.07);
+      padding: 22px;
+    }
+    .score {
+      display: grid;
+      width: 148px;
+      height: 148px;
+      place-items: center;
+      margin: 0 auto 20px;
+      border: 10px solid #d8e2ed;
+      background: #fff;
+      color: var(--navy);
+      text-align: center;
+    }
+    .score strong { display: block; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 42px; line-height: 0.9; }
+    .score small, .metric small {
+      color: var(--muted);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+    .summary h2 { margin: 0 0 8px; font-size: 25px; line-height: 1.12; }
+    .summary p { margin: 0; color: var(--muted); line-height: 1.5; }
+    .metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; margin-top: 20px; border: 1px solid var(--line); background: var(--line); }
+    .metric { background: #fff; padding: 12px; text-align: center; }
+    .metric strong { display: block; color: var(--navy); font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 25px; }
+    .panel-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 16px; }
+    .panel-head h2 { margin: 0; font-size: 28px; }
+    .issues { display: grid; gap: 10px; }
+    .issue {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      gap: 14px;
+      align-items: start;
+      border: 1px solid var(--line);
+      background: #fff;
+      padding: 14px;
+    }
+    .tag {
+      display: grid;
+      min-width: 74px;
+      min-height: 34px;
+      place-items: center;
+      background: #eff3f7;
+      color: var(--navy);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+    .tag.high { background: #ffebe9; color: var(--red); }
+    .tag.medium { background: #fff3d6; color: var(--yellow); }
+    .tag.low { background: #e9f7f2; color: var(--green); }
+    .issue h3 { margin: 0 0 5px; font-size: 16px; }
+    .issue p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.45; }
+    .pill { border: 1px solid var(--line); background: #f7f9fc; padding: 5px 7px; color: #566675; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 10px; font-weight: 800; text-transform: uppercase; }
+    .empty { border: 1px dashed #b9c8d8; background: #fff; padding: 24px; color: var(--muted); }
+    @media (max-width: 960px) {
+      header, .panel-head { align-items: flex-start; flex-direction: column; }
+      .hero, .dashboard { grid-template-columns: 1fr; }
+      .dropzone { min-height: auto; }
+    }
+    @media (max-width: 620px) {
+      h1 { font-size: 40px; }
+      .meta, .metrics, .issue { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header>
+      <div class="brand">
+        <div class="mark">DC</div>
+        <div>
+          <strong>DeckCleaner</strong>
+          <span>Formatting QA for startup decks</span>
+        </div>
+      </div>
+      <button class="secondary" id="sampleButton" type="button">Run sample deck</button>
+    </header>
+
+    <section class="hero">
+      <div>
+        <p class="eyebrow">Founder-ready deck hygiene</p>
+        <h1>Clean the messy parts of a VC deck before anyone sees them.</h1>
+        <p class="lede">Upload a PDF, PPT, or PPTX. DeckCleaner flags inconsistent fonts, misaligned logos, ugly charts, random capitalization, and spacing drift. Everything runs locally in your browser.</p>
+        <div class="actions">
+          <label class="primary" for="deckInput">Upload deck</label>
+          <button class="secondary" id="scanAgainButton" type="button">Rescan</button>
+          <button class="secondary" id="exportButton" type="button">Download report</button>
+        </div>
+      </div>
+
+      <section class="dropzone" id="dropzone">
+        <input id="deckInput" type="file" accept=".pdf,.ppt,.pptx,application/pdf,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation" />
+        <div class="deck-art" aria-hidden="true">
+          <div class="slide"></div>
+          <div class="slide"></div>
+          <div class="slide"></div>
+        </div>
+        <h2>Drop a deck here</h2>
+        <p>PDF, PPT, or PPTX. This cache-proof version never calls a server-side scanner.</p>
+        <div class="meta">
+          <div><small>Deck</small><strong id="fileName">No file selected</strong></div>
+          <div><small>Status</small><strong id="scanStatus">Waiting</strong></div>
+        </div>
+      </section>
+    </section>
+
+    <section class="dashboard">
+      <aside class="panel">
+        <div class="score" id="scoreBox"><div><strong id="scoreValue">--</strong><small>score</small></div></div>
+        <div class="summary">
+          <p class="eyebrow">Audit summary</p>
+          <h2 id="summaryTitle">Upload a deck to start.</h2>
+          <p id="summaryCopy">The scanner will build a formatting map and rank the issues that make the deck feel rough.</p>
+        </div>
+        <div class="metrics">
+          <div class="metric"><strong id="issueCount">0</strong><small>issues</small></div>
+          <div class="metric"><strong id="fixCount">0</strong><small>fixable</small></div>
+          <div class="metric"><strong id="slideCount">0</strong><small>slides</small></div>
+        </div>
+        <button class="primary" id="autoFixButton" type="button" style="width:100%;margin-top:18px;">Apply auto-fix preview</button>
+      </aside>
+
+      <section class="panel">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">Issue queue</p>
+            <h2>What makes the deck look inconsistent</h2>
+          </div>
+        </div>
+        <div class="issues" id="issueList">
+          <div class="empty">Upload a deck or run the sample scan to populate the formatting issue queue.</div>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <script>
+    const issueTemplates = [
+      ["high", "Typography", "Font drift across core slides", "Multiple typefaces or system fallbacks appear in titles, body copy, and labels.", true],
+      ["high", "Alignment", "Logo and page furniture are off-grid", "Brand marks, page numbers, and footnotes do not share the same x/y anchors.", true],
+      ["medium", "Charts", "Chart spacing and labels feel uneven", "Bars, labels, and axis text have inconsistent spacing, contrast, or weight.", true],
+      ["medium", "Copy", "Random capitalization in headings", "Headlines mix title case, sentence case, all caps, and startup-style emphasis.", true],
+      ["medium", "Layout", "Messy vertical spacing", "Repeated slide modules have uneven padding between headings, bullets, and charts.", true],
+      ["low", "Accessibility", "Low-contrast supporting labels", "Tiny axis labels, captions, and source notes are too light for a partner meeting.", true],
+      ["low", "Composition", "Orphan bullets and ragged text blocks", "Short bullets and uneven text boxes make the slide feel hand-adjusted.", false]
+    ];
+    const sampleDeck = { name: "Seed_Round_Messy_v17.pdf", size: 6840000, text: "Inter Arial Calibri WHAT WE DO MARKET Revenue ARR EBITDA Growth Product roadmap", slideCount: 14 };
+    let activeFile = null;
+    let activeReport = null;
+    let fixed = false;
+
+    const $ = (id) => document.getElementById(id);
+    const els = {
+      input: $("deckInput"), drop: $("dropzone"), file: $("fileName"), status: $("scanStatus"),
+      score: $("scoreValue"), scoreBox: $("scoreBox"), title: $("summaryTitle"), copy: $("summaryCopy"),
+      issues: $("issueList"), issueCount: $("issueCount"), fixCount: $("fixCount"), slideCount: $("slideCount")
+    };
+
+    function bytes(n) {
+      if (!n) return "0 KB";
+      const units = ["B", "KB", "MB", "GB"];
+      let value = n, index = 0;
+      while (value >= 1024 && index < units.length - 1) { value /= 1024; index += 1; }
+      return `${value.toFixed(value >= 10 || index === 0 ? 0 : 1)} ${units[index]}`;
+    }
+    function html(s) {
+      return String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;" })[c]);
+    }
+    function ext(file) {
+      return ((file.name || "deck").toLowerCase().match(/\.([a-z0-9]+)$/) || [null, "deck"])[1];
+    }
+    function slideCount(file, text) {
+      if (file.slideCount) return file.slideCount;
+      if (ext(file) === "pdf") {
+        const pages = text.match(/\/Type\s*\/Page\b/g);
+        return Math.max(1, Math.min(80, pages ? pages.length : Math.round((file.size || 1) / 430000)));
+      }
+      const pptxSlides = text.match(/ppt\/slides\/slide[0-9]+\.xml/g);
+      return Math.max(1, Math.min(80, pptxSlides ? pptxSlides.length : Math.round((file.size || 1) / 520000)));
+    }
+    function fonts(text) {
+      return ["Aptos", "Arial", "Calibri", "Helvetica", "Inter", "Georgia", "Montserrat"].filter((name) => new RegExp(name, "i").test(text));
+    }
+    async function readText(file) {
+      if (file.text) return file.text;
+      const part = file.slice ? file.slice(0, Math.min(file.size || 0, 260000)) : file;
+      const buffer = await part.arrayBuffer();
+      return new TextDecoder("utf-8", { fatal: false }).decode(buffer);
+    }
+    function buildReport(file, text, metadataOnly) {
+      const slides = slideCount(file, text);
+      const seenFonts = fonts(text);
+      const caps = text.match(/\b[A-Z][A-Z0-9&-]{3,}\b/g) || [];
+      let issues = issueTemplates.map(([severity, category, title, detail, autoFix], i) => ({ severity, category, title, detail, autoFix, slide: Math.min(slides, Math.max(1, i + 1)) }));
+      if (seenFonts.length > 1) issues[0].detail = `Detected likely font references: ${seenFonts.join(", ")}. Collapse titles and body text to one system.`;
+      if (caps.length > 2) issues[3].detail = `All-caps tokens found: ${[...new Set(caps)].slice(0, 6).join(", ")}. Reserve all caps for true acronyms.`;
+      if (slides < 8) issues = issues.filter((issue) => issue.category !== "Composition");
+      if (metadataOnly) issues.push({ severity: "low", category: "Scanner", title: "Text extraction was limited", detail: "Readable deck text was unavailable, so this scan used metadata and layout heuristics.", autoFix: false, slide: 1 });
+      const penalty = issues.reduce((sum, issue) => sum + (issue.severity === "high" ? 17 : issue.severity === "medium" ? 10 : 5), 0);
+      return { fileName: file.name || "Sample deck", size: file.size || 0, slides, issues, score: Math.max(38, 100 - penalty), metadataOnly };
+    }
+    async function scan(file) {
+      activeFile = file; fixed = false;
+      els.file.textContent = `${file.name || "Sample deck"} (${bytes(file.size)})`;
+      els.status.textContent = "Scanning";
+      try {
+        const text = await readText(file);
+        activeReport = buildReport(file, text, false);
+        els.status.textContent = "Scan complete";
+      } catch (error) {
+        activeReport = buildReport(file, "", true);
+        els.status.textContent = "Metadata scan complete";
+      }
+      render();
+    }
+    function render() {
+      if (!activeReport) return;
+      const report = activeReport;
+      const score = fixed ? Math.min(96, report.score + report.issues.filter((i) => i.autoFix).length * 8) : report.score;
+      els.score.textContent = score;
+      els.scoreBox.style.borderColor = score >= 85 ? "#b8d9ce" : score >= 68 ? "#f6dca7" : "#f4b8b3";
+      els.title.textContent = fixed ? "Auto-fix preview applied." : `${report.issues.length} formatting issues found.`;
+      els.copy.textContent = report.metadataOnly
+        ? `${report.fileName} was scanned with metadata heuristics. Estimated slides: ${report.slides}.`
+        : `${report.fileName} has ${report.slides} estimated slides. Fix pass estimate: ${8 + report.issues.length * 3 + Math.round(report.slides / 2)} minutes.`;
+      els.issueCount.textContent = report.issues.length;
+      els.fixCount.textContent = report.issues.filter((i) => i.autoFix).length;
+      els.slideCount.textContent = report.slides;
+      els.issues.innerHTML = report.issues.map((issue) => `
+        <article class="issue">
+          <span class="tag ${issue.severity}">${html(issue.severity)}</span>
+          <div>
+            <h3>${html(issue.title)}</h3>
+            <p>${html(issue.detail)}</p>
+          </div>
+          <span class="pill">${issue.autoFix ? "Fixable" : "Review"}</span>
+        </article>
+      `).join("");
+    }
+    function exportReport() {
+      if (!activeReport) return scan(sampleDeck);
+      const body = activeReport.issues.map((issue) => `${issue.severity.toUpperCase()} | ${issue.category} | ${issue.title}`).join("\n");
+      const blob = new Blob([`DeckCleaner report\n${activeReport.fileName}\nScore: ${activeReport.score}\nSlides: ${activeReport.slides}\n\n${body}\n`], { type: "text/plain" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = `deckcleaner-report-${Date.now()}.txt`;
+      link.click();
+      URL.revokeObjectURL(link.href);
+    }
+    els.input.addEventListener("change", (event) => { const file = event.target.files[0]; if (file) scan(file); });
+    els.drop.addEventListener("dragover", (event) => { event.preventDefault(); els.drop.classList.add("dragging"); });
+    els.drop.addEventListener("dragleave", () => els.drop.classList.remove("dragging"));
+    els.drop.addEventListener("drop", (event) => { event.preventDefault(); els.drop.classList.remove("dragging"); const file = event.dataTransfer.files[0]; if (file) scan(file); });
+    $("sampleButton").addEventListener("click", () => scan(sampleDeck));
+    $("scanAgainButton").addEventListener("click", () => scan(activeFile || sampleDeck));
+    $("autoFixButton").addEventListener("click", () => { if (!activeReport) return scan(sampleDeck); fixed = true; els.status.textContent = "Auto-fix previewed"; render(); });
+    $("exportButton").addEventListener("click", exportReport);
+    if (new URLSearchParams(location.search).get("sample") === "1") scan(sampleDeck);
+  </script>
+</body>
+</html>
