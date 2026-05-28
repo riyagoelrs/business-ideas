@@ -14,12 +14,38 @@ SPELLING_FIXES = {
     "occured": "occurred",
     "seperate": "separate",
     "definately": "definitely",
+    "mangement": "management",
+    "compnay": "company",
 }
+
+# Standardise verbose financial phrases to banking-style abbreviations
+FINANCE_FIXES = [
+    (r"\$\s?(\d+(?:\.\d+)?)\s+million\b", r"$\1M"),
+    (r"\$\s?(\d+(?:\.\d+)?)\s+billion\b", r"$\1B"),
+    (r"\$\s?(\d+(?:\.\d+)?)\s?mm\b", r"$\1M"),
+    (r"\$\s?(\d+(?:\.\d+)?)\s?bn\b", r"$\1B"),
+    (r"(\d+(?:\.\d+)?)\s+percent\b", r"\1%"),
+    (r"(\d+(?:\.\d+)?)\s+times\b", r"\1x"),
+    (r"\bFY\s+(\d{2,4})\b", r"FY\1"),
+]
+
+
+def fix_text_nodes(raw):
+    """Apply fixes to the plain text inside <a:t>...</a:t> nodes only."""
+    def fix_node(match):
+        text = match.group(1)
+        for wrong, right in SPELLING_FIXES.items():
+            text = text.replace(wrong, right)
+        for pattern, replacement in FINANCE_FIXES:
+            text = re.sub(pattern, replacement, text, flags=re.IGNORECASE)
+        # Collapse double spaces
+        text = re.sub(r"  +", " ", text)
+        return f"<a:t>{text}</a:t>"
+    return re.sub(r"<a:t>(.*?)</a:t>", fix_node, raw, flags=re.DOTALL)
 
 
 def fix_xml(raw, style_system):
-    for wrong, right in SPELLING_FIXES.items():
-        raw = raw.replace(wrong, right)
+    raw = fix_text_nodes(raw)
     raw = re.sub(r'<a:latin typeface="[^"]*"', f'<a:latin typeface="{style_system}"', raw)
     raw = re.sub(r'<a:ea typeface="[^"]*"', f'<a:ea typeface="{style_system}"', raw)
     raw = re.sub(r'<a:cs typeface="[^"]*"', f'<a:cs typeface="{style_system}"', raw)

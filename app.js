@@ -200,7 +200,7 @@ const sampleDeck = {
   name: "Seed_Round_Messy_v17.pdf",
   type: "application/pdf",
   size: 6840000,
-  text: "Inter Arial Calibri WHAT WE DO MARKET traction ARR EBITDA Gross Margin go-to-market go to market footnote SOURCE source Revnue growth",
+  text: "Inter Arial Calibri WHAT WE DO MARKET traction ARR EBITDA Gross Margin go-to-market go to market footnote SOURCE source Revnue growth $12M $12 million 18% 3.1x Q1 2024 Jan 1, 2024",
   slideCount: 14
 };
 
@@ -312,7 +312,7 @@ function financialFormatSignals(text) {
   const signals = new Set();
   if (/\$\s?\d+(?:\.\d+)?\s?(?:m|mm|million)\b/i.test(text)) signals.add("currency-millions");
   if (/\$\s?\d+(?:\.\d+)?\s?(?:b|bn|billion)\b/i.test(text)) signals.add("currency-billions");
-  if (/\b\d+(?:\.\d+)?\s?%\b/.test(text)) signals.add("percent");
+  if (/\b\d+(?:\.\d+)?\s?%/.test(text)) signals.add("percent");
   if (/\b\d+(?:\.\d+)?x\b/i.test(text)) signals.add("multiple");
   if (/\b\d{1,3}(?:,\d{3})+\b/.test(text)) signals.add("comma-number");
   if (/\b\d+(?:\.\d+)?\s?(?:ARR|MRR|GMV|EBITDA|Revenue|Rev)\b/i.test(text)) signals.add("metric-number");

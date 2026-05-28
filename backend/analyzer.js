@@ -255,7 +255,7 @@ function financialFormatSignals(text) {
   const signals = new Set();
   if (/\$\s?\d+(?:\.\d+)?\s?(?:m|mm|million)\b/i.test(text)) signals.add("currency-millions");
   if (/\$\s?\d+(?:\.\d+)?\s?(?:b|bn|billion)\b/i.test(text)) signals.add("currency-billions");
-  if (/\b\d+(?:\.\d+)?\s?%\b/.test(text)) signals.add("percent");
+  if (/\b\d+(?:\.\d+)?\s?%/.test(text)) signals.add("percent");
   if (/\b\d+(?:\.\d+)?x\b/i.test(text)) signals.add("multiple");
   if (/\b\d{1,3}(?:,\d{3})+\b/.test(text)) signals.add("comma-number");
   if (/\b\d+(?:\.\d+)?\s?(?:ARR|MRR|GMV|EBITDA|Revenue|Rev)\b/i.test(text)) signals.add("metric-number");
