@@ -67,6 +67,19 @@ const issueCatalog = [
     manualAction: "Confirm company, customer, investor, and product names against the source of truth."
   },
   {
+    id: "text-hierarchy",
+    title: "Text size hierarchy is drifting",
+    category: "Typography",
+    severity: "medium",
+    autoFix: true,
+    consistency: true,
+    penalty: 8,
+    slides: [2, 4, 8],
+    detail: "The deck appears to use too many nearby text sizes, which makes titles, labels, and body copy feel hand-tuned.",
+    aiAction: "Collapse text into a banking-style hierarchy: title, subtitle, body, label, source note.",
+    manualAction: "Confirm any intentionally oversized KPI callouts before flattening the type scale."
+  },
+  {
     id: "footnotes",
     title: "Footnotes and source lines are uneven",
     category: "Footnotes",
@@ -78,6 +91,32 @@ const issueCatalog = [
     detail: "Source notes and disclaimers have inconsistent type size, contrast, punctuation, or placement.",
     aiAction: "Normalize footnote style, align source notes to the footer grid, and standardize punctuation.",
     manualAction: "Confirm legal disclaimers and source citations are complete before sending externally."
+  },
+  {
+    id: "date-footnotes",
+    title: "Dates in sources and footnotes are inconsistent",
+    category: "Footnotes",
+    severity: "medium",
+    autoFix: true,
+    consistency: true,
+    penalty: 7,
+    slides: [3, 6, 11],
+    detail: "Date formats in source notes, as-of dates, and market data callouts are not using one convention.",
+    aiAction: "Normalize source dates to one format and apply the same punctuation pattern to every footnote.",
+    manualAction: "Verify as-of dates against the underlying data source before sending the deck."
+  },
+  {
+    id: "number-formatting",
+    title: "Financial figures are not banking-standard",
+    category: "Financial formatting",
+    severity: "medium",
+    autoFix: true,
+    consistency: true,
+    penalty: 8,
+    slides: [5, 7, 9],
+    detail: "Currency, multiples, percentages, or large numbers appear in mixed formats.",
+    aiAction: "Standardize financial figures to one convention, e.g. $12.4M, 18.2%, 3.1x, and FY2026E.",
+    manualAction: "Confirm whether the deck should use actuals, estimates, calendar years, or fiscal years."
   },
   {
     id: "chart-polish",
@@ -130,6 +169,19 @@ const issueCatalog = [
     detail: "Several slide callouts describe data without saying why it matters to the investor.",
     aiAction: "Draft sharper callout options for each affected slide.",
     manualAction: "Rewrite callouts so each one answers: why now, why this team, why this market, or why this metric matters."
+  },
+  {
+    id: "content-glance",
+    title: "High-level content pass is recommended",
+    category: "Content",
+    severity: "low",
+    autoFix: false,
+    consistency: false,
+    penalty: 5,
+    slides: [2, 5, 8],
+    detail: "The deck would benefit from a quick AI-level glance for vague claims, missing proof points, and generic slide titles.",
+    aiAction: "Draft sharper titles and callouts that make each slide's investor takeaway explicit.",
+    manualAction: "Check whether each slide has a single takeaway and whether the evidence supports that takeaway."
   },
   {
     id: "narrative-gaps",
@@ -185,6 +237,56 @@ function findCaps(text) {
   return [...new Set(text.match(/\b[A-Z][A-Z0-9&-]{3,}\b/g) || [])].slice(0, 10);
 }
 
+function typoMatches(text) {
+  return text.match(/\b(Revnue|teh|adress|recieve|occured|seperate|definately|mangement|compnay)\b/gi) || [];
+}
+
+function dateFormats(text) {
+  const formats = new Set();
+  if (/\b(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)[a-z]*\.?\s+\d{1,2},?\s+\d{4}\b/i.test(text)) formats.add("month-day-year");
+  if (/\b\d{1,2}\/\d{1,2}\/\d{2,4}\b/.test(text)) formats.add("slash-date");
+  if (/\b\d{4}-\d{2}-\d{2}\b/.test(text)) formats.add("iso-date");
+  if (/\bQ[1-4]\s+['’]?\d{2,4}\b/i.test(text)) formats.add("quarter-year");
+  if (/\bFY\s?\d{2,4}\b/i.test(text)) formats.add("fiscal-year");
+  return formats;
+}
+
+function financialFormatSignals(text) {
+  const signals = new Set();
+  if (/\$\s?\d+(?:\.\d+)?\s?(?:m|mm|million)\b/i.test(text)) signals.add("currency-millions");
+  if (/\$\s?\d+(?:\.\d+)?\s?(?:b|bn|billion)\b/i.test(text)) signals.add("currency-billions");
+  if (/\b\d+(?:\.\d+)?\s?%\b/.test(text)) signals.add("percent");
+  if (/\b\d+(?:\.\d+)?x\b/i.test(text)) signals.add("multiple");
+  if (/\b\d{1,3}(?:,\d{3})+\b/.test(text)) signals.add("comma-number");
+  if (/\b\d+(?:\.\d+)?\s?(?:ARR|MRR|GMV|EBITDA|Revenue|Rev)\b/i.test(text)) signals.add("metric-number");
+  return signals;
+}
+
+function terminologyDrift(text) {
+  const lower = text.toLowerCase();
+  const includesTerm = (term) => new RegExp(`\\b${term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`, "i").test(lower);
+  const groups = [
+    ["go-to-market", "go to market", "gtm"],
+    ["revenue", "rev", "sales"],
+    ["customer acquisition cost", "cac"],
+    ["gross margin", "gm"],
+    ["year-over-year", "yoy", "year over year"]
+  ];
+  return groups.filter((group) => group.filter(includesTerm).length > 1);
+}
+
+function nonAcronymCaps(caps) {
+  const allowed = new Set(["ARR", "MRR", "GMV", "CAC", "LTV", "EBITDA", "TAM", "SAM", "SOM", "CEO", "CFO", "COO", "API", "AI", "ML", "SaaS".toUpperCase()]);
+  return caps.filter((item) => !allowed.has(item));
+}
+
+function textHierarchyDrift(fontSizes = []) {
+  const normalized = [...new Set(fontSizes.map((size) => Math.round(size / 100)))].sort((a, b) => a - b);
+  if (normalized.length <= 5) return false;
+  const closeSizes = normalized.filter((size, index) => index > 0 && size - normalized[index - 1] <= 2);
+  return closeSizes.length >= 3 || normalized.length >= 8;
+}
+
 function scoreFor(issues) {
   const penalty = issues
     .filter((issue) => issue.status !== "fixed")
@@ -204,20 +306,33 @@ function buildIssues(file, extraction, previousIssues = [], options = {}) {
   const slides = estimateSlideCount(file, text, extraction.slideCount);
   const fonts = findFonts(text, extraction.fonts);
   const caps = findCaps(text);
-  const selectedIds = new Set([
-    "font-drift",
-    "logo-grid",
-    "page-numbers",
-    "capitalization",
-    "spelling",
-    "footnotes",
-    "spacing"
-  ]);
+  const noisyCaps = nonAcronymCaps(caps);
+  const dates = dateFormats(text);
+  const financeSignals = financialFormatSignals(text);
+  const typos = typoMatches(text);
+  const termDrift = terminologyDrift(text);
+  const textLower = text.toLowerCase();
+  const selectedIds = new Set();
+  const isPitchDeck = /seed|series|investor|pitch|fundraise|deck/i.test(file.name) || slides > 6;
+  const hasSourceLanguage = /\b(source|sources|footnote|as of|as-of|note:|notes:)\b/i.test(text);
 
-  if (extensionFor(file.name) === "pdf" || text.length > 3000 || file.size > 2000000) selectedIds.add("chart-polish");
-  if (slides > 10 || file.size > 5000000) selectedIds.add("contrast");
-  if (/seed|series|investor|pitch|fundraise/i.test(file.name) || slides > 8) selectedIds.add("content-callouts");
-  if (slides > 12 || /v[0-9]+|final|updated/i.test(file.name)) selectedIds.add("narrative-gaps");
+  if (fonts.length > 1 || extraction.warning) selectedIds.add("font-drift");
+  if (textHierarchyDrift(extraction.fontSizes || []) || fonts.length > 2 || (isPitchDeck && extraction.warning)) selectedIds.add("text-hierarchy");
+  if ((isPitchDeck && slides > 4) || (extraction.warning && slides > 1)) selectedIds.add("logo-grid");
+  if (slides > 4) selectedIds.add("page-numbers");
+  if (noisyCaps.length > 1 || /FINAL|UPDATED|DRAFT/.test(file.name)) selectedIds.add("capitalization");
+  if (typos.length || termDrift.length) selectedIds.add("spelling");
+  if (hasSourceLanguage) selectedIds.add("footnotes");
+  if (hasSourceLanguage && dates.size > 1) selectedIds.add("date-footnotes");
+  if (financeSignals.size > 2) selectedIds.add("number-formatting");
+  if ((financeSignals.size > 1 && slides > 3) || text.length > 5000 || extensionFor(file.name) === "pdf") selectedIds.add("chart-polish");
+  if ((isPitchDeck && slides > 5) || (extraction.warning && slides > 2)) selectedIds.add("spacing");
+  if (hasSourceLanguage || (isPitchDeck && slides > 10)) selectedIds.add("contrast");
+  if (isPitchDeck && /\b(TBD|TODO|lorem|placeholder|insert|fix me)\b/i.test(text)) selectedIds.add("content-callouts");
+  if (isPitchDeck && !/(problem|solution|market|traction|team|ask|use of funds|why now)/i.test(textLower)) selectedIds.add("content-glance");
+  if (slides > 12 && !/(ask|use of funds|team)/i.test(textLower)) selectedIds.add("narrative-gaps");
+
+  if (!selectedIds.size) return [];
 
   const previousById = new Map(previousIssues.map((issue) => [issue.id, issue]));
   return issueCatalog
@@ -236,11 +351,23 @@ function buildIssues(file, extraction, previousIssues = [], options = {}) {
           ? `Detected likely font references: ${fonts.join(", ")}. Collapse these into ${options.styleSystem || "Inter"}.`
           : "The deck appears to rely on generic or embedded fallback fonts. Locking the type system will reduce drift.";
       }
-      if (issue.id === "capitalization" && caps.length > 1) {
-        hydrated.detail = `All-caps tokens found: ${caps.join(", ")}. Preserve true acronyms and normalize the rest.`;
+      if (issue.id === "text-hierarchy" && extraction.fontSizes?.length) {
+        hydrated.detail = `Detected ${new Set(extraction.fontSizes).size} distinct text sizes. Collapse them into a small title/body/label/source-note hierarchy.`;
       }
-      if (issue.id === "spelling" && /Revnue|teh|adress|recieve|occured|seperate|definately/i.test(text)) {
-        hydrated.detail = "Potential spelling errors or repeated terminology drift were detected in extracted deck text.";
+      if (issue.id === "capitalization" && noisyCaps.length > 1) {
+        hydrated.detail = `All-caps tokens found: ${noisyCaps.join(", ")}. Preserve true acronyms and normalize the rest.`;
+      }
+      if (issue.id === "spelling") {
+        const parts = [];
+        if (typos.length) parts.push(`possible typos: ${[...new Set(typos)].join(", ")}`);
+        if (termDrift.length) parts.push(`terminology drift: ${termDrift.map((group) => group.join(" / ")).join("; ")}`);
+        if (parts.length) hydrated.detail = `Detected ${parts.join(". ")}.`;
+      }
+      if (issue.id === "date-footnotes") {
+        hydrated.detail = `Detected mixed date conventions in source or footnote text: ${[...dates].join(", ")}.`;
+      }
+      if (issue.id === "number-formatting") {
+        hydrated.detail = `Detected mixed financial formatting signals: ${[...financeSignals].join(", ")}. Standardize to one banking convention.`;
       }
       if (extraction.warning && index === 0) {
         hydrated.detail += " Text extraction was limited, so this finding also uses metadata and layout heuristics.";

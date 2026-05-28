@@ -1148,6 +1148,19 @@ const issueCatalog = [
     manualAction: "Confirm company, customer, investor, and product names against the source of truth."
   },
   {
+    id: "text-hierarchy",
+    title: "Text size hierarchy is drifting",
+    category: "Typography",
+    severity: "medium",
+    autoFix: true,
+    consistency: true,
+    penalty: 8,
+    slides: [2, 4, 8],
+    detail: "The deck appears to use too many nearby text sizes, which makes titles, labels, and body copy feel hand-tuned.",
+    aiAction: "Collapse text into a banking-style hierarchy: title, subtitle, body, label, source note.",
+    manualAction: "Confirm any intentionally oversized KPI callouts before flattening the type scale."
+  },
+  {
     id: "footnotes",
     title: "Footnotes and source lines are uneven",
     category: "Footnotes",
@@ -1159,6 +1172,32 @@ const issueCatalog = [
     detail: "Source notes and disclaimers have inconsistent type size, contrast, punctuation, or placement.",
     aiAction: "Normalize footnote style, align source notes to the footer grid, and standardize punctuation.",
     manualAction: "Confirm legal disclaimers and source citations are complete before sending externally."
+  },
+  {
+    id: "date-footnotes",
+    title: "Dates in sources and footnotes are inconsistent",
+    category: "Footnotes",
+    severity: "medium",
+    autoFix: true,
+    consistency: true,
+    penalty: 7,
+    slides: [3, 6, 11],
+    detail: "Date formats in source notes, as-of dates, and market data callouts are not using one convention.",
+    aiAction: "Normalize source dates to one format and apply the same punctuation pattern to every footnote.",
+    manualAction: "Verify as-of dates against the underlying data source before sending the deck."
+  },
+  {
+    id: "number-formatting",
+    title: "Financial figures are not banking-standard",
+    category: "Financial formatting",
+    severity: "medium",
+    autoFix: true,
+    consistency: true,
+    penalty: 8,
+    slides: [5, 7, 9],
+    detail: "Currency, multiples, percentages, or large numbers appear in mixed formats.",
+    aiAction: "Standardize financial figures to one convention, e.g. $12.4M, 18.2%, 3.1x, and FY2026E.",
+    manualAction: "Confirm whether the deck should use actuals, estimates, calendar years, or fiscal years."
   },
   {
     id: "chart-polish",
@@ -1213,6 +1252,19 @@ const issueCatalog = [
     manualAction: "Rewrite callouts so each one answers: why now, why this team, why this market, or why this metric matters."
   },
   {
+    id: "content-glance",
+    title: "High-level content pass is recommended",
+    category: "Content",
+    severity: "low",
+    autoFix: false,
+    consistency: false,
+    penalty: 5,
+    slides: [2, 5, 8],
+    detail: "The deck would benefit from a quick AI-level glance for vague claims, missing proof points, and generic slide titles.",
+    aiAction: "Draft sharper titles and callouts that make each slide's investor takeaway explicit.",
+    manualAction: "Check whether each slide has a single takeaway and whether the evidence supports that takeaway."
+  },
+  {
     id: "narrative-gaps",
     title: "Narrative flow needs human review",
     category: "Story",
@@ -1246,7 +1298,8 @@ const state = {
   gridSystem: "24",
   sessionId: null,
   artifacts: null,
-  backendActive: false
+  backendActive: false,
+  previousUploadScore: null
 };
 
 const dom = {
@@ -1324,6 +1377,49 @@ function findCaps(text) {
   return [...new Set(text.match(/\b[A-Z][A-Z0-9&-]{3,}\b/g) || [])].slice(0, 8);
 }
 
+function typoMatches(text) {
+  return text.match(/\b(Revnue|teh|adress|recieve|occured|seperate|definately|mangement|compnay)\b/gi) || [];
+}
+
+function dateFormats(text) {
+  const formats = new Set();
+  if (/\b(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)[a-z]*\.?\s+\d{1,2},?\s+\d{4}\b/i.test(text)) formats.add("month-day-year");
+  if (/\b\d{1,2}\/\d{1,2}\/\d{2,4}\b/.test(text)) formats.add("slash-date");
+  if (/\b\d{4}-\d{2}-\d{2}\b/.test(text)) formats.add("iso-date");
+  if (/\bQ[1-4]\s+['’]?\d{2,4}\b/i.test(text)) formats.add("quarter-year");
+  if (/\bFY\s?\d{2,4}\b/i.test(text)) formats.add("fiscal-year");
+  return formats;
+}
+
+function financialFormatSignals(text) {
+  const signals = new Set();
+  if (/\$\s?\d+(?:\.\d+)?\s?(?:m|mm|million)\b/i.test(text)) signals.add("currency-millions");
+  if (/\$\s?\d+(?:\.\d+)?\s?(?:b|bn|billion)\b/i.test(text)) signals.add("currency-billions");
+  if (/\b\d+(?:\.\d+)?\s?%\b/.test(text)) signals.add("percent");
+  if (/\b\d+(?:\.\d+)?x\b/i.test(text)) signals.add("multiple");
+  if (/\b\d{1,3}(?:,\d{3})+\b/.test(text)) signals.add("comma-number");
+  if (/\b\d+(?:\.\d+)?\s?(?:ARR|MRR|GMV|EBITDA|Revenue|Rev)\b/i.test(text)) signals.add("metric-number");
+  return signals;
+}
+
+function terminologyDrift(text) {
+  const lower = text.toLowerCase();
+  const includesTerm = (term) => new RegExp(`\\b${term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`, "i").test(lower);
+  const groups = [
+    ["go-to-market", "go to market", "gtm"],
+    ["revenue", "rev", "sales"],
+    ["customer acquisition cost", "cac"],
+    ["gross margin", "gm"],
+    ["year-over-year", "yoy", "year over year"]
+  ];
+  return groups.filter((group) => group.filter(includesTerm).length > 1);
+}
+
+function nonAcronymCaps(caps) {
+  const allowed = new Set(["ARR", "MRR", "GMV", "CAC", "LTV", "EBITDA", "TAM", "SAM", "SOM", "CEO", "CFO", "COO", "API", "AI", "ML", "SAAS"]);
+  return caps.filter((item) => !allowed.has(item));
+}
+
 async function readDeckText(file) {
   if (file.text) return file.text;
   const head = file.slice ? file.slice(0, Math.min(file.size || 0, 360000)) : file;
@@ -1385,32 +1481,45 @@ async function applyFixesWithBackend(payload) {
   applyBackendPayload(response);
 }
 
-function buildIssues(file, text, readWarning = false) {
+function buildIssues(file, text, readWarning = false, isRescan = false) {
   const slides = estimateSlideCount(file, text);
   const fonts = findFonts(text);
   const caps = findCaps(text);
   const fileName = file.name || "";
-  const selectedIds = new Set([
-    "font-drift",
-    "logo-grid",
-    "page-numbers",
-    "capitalization",
-    "spelling",
-    "footnotes",
-    "spacing"
-  ]);
+  const noisyCaps = nonAcronymCaps(caps);
+  const typos = typoMatches(text);
+  const dates = dateFormats(text);
+  const financeSignals = financialFormatSignals(text);
+  const termDrift = terminologyDrift(text);
+  const textLower = text.toLowerCase();
+  const selectedIds = new Set();
+  const isPitchDeck = /seed|series|investor|pitch|fundraise|deck/i.test(fileName) || slides > 6;
+  const hasSourceLanguage = /\b(source|sources|footnote|as of|as-of|note:|notes:)\b/i.test(text);
 
-  if (extensionFor(file) === "pdf" || text.length > 3000 || file.size > 2000000) selectedIds.add("chart-polish");
-  if (slides > 10 || file.size > 5000000) selectedIds.add("contrast");
-  if (/seed|series|investor|pitch|fundraise/i.test(fileName) || slides > 8) selectedIds.add("content-callouts");
-  if (slides > 12 || /v[0-9]+|final|updated/i.test(fileName)) selectedIds.add("narrative-gaps");
+  if (fonts.length > 1 || readWarning) selectedIds.add("font-drift");
+  if (fonts.length > 2 || (readWarning && isPitchDeck)) selectedIds.add("text-hierarchy");
+  if ((isPitchDeck && slides > 4) || (readWarning && slides > 1)) selectedIds.add("logo-grid");
+  if (slides > 4) selectedIds.add("page-numbers");
+  if (noisyCaps.length > 1 || /FINAL|UPDATED|DRAFT/.test(fileName)) selectedIds.add("capitalization");
+  if (typos.length || termDrift.length) selectedIds.add("spelling");
+  if (hasSourceLanguage) selectedIds.add("footnotes");
+  if (hasSourceLanguage && dates.size > 1) selectedIds.add("date-footnotes");
+  if (financeSignals.size > 2) selectedIds.add("number-formatting");
+  if ((financeSignals.size > 1 && slides > 3) || text.length > 5000 || extensionFor(file) === "pdf") selectedIds.add("chart-polish");
+  if ((isPitchDeck && slides > 5) || (readWarning && slides > 2)) selectedIds.add("spacing");
+  if (hasSourceLanguage || (isPitchDeck && slides > 10)) selectedIds.add("contrast");
+  if (isPitchDeck && /\b(TBD|TODO|lorem|placeholder|insert|fix me)\b/i.test(text)) selectedIds.add("content-callouts");
+  if (isPitchDeck && !/(problem|solution|market|traction|team|ask|use of funds|why now)/i.test(textLower)) selectedIds.add("content-glance");
+  if (slides > 12 && !/(ask|use of funds|team)/i.test(textLower)) selectedIds.add("narrative-gaps");
+
+  if (!selectedIds.size) return [];
 
   return issueCatalog
     .filter((issue) => selectedIds.has(issue.id))
     .map((issue, index) => {
       const hydrated = {
         ...issue,
-        status: state.report?.issues.find((oldIssue) => oldIssue.id === issue.id)?.status || "open",
+        status: (isRescan && state.report?.issues.find((oldIssue) => oldIssue.id === issue.id)?.status) || "open",
         slides: issue.slides.map((slide) => Math.min(slides, slide)).filter((slide, slideIndex, all) => all.indexOf(slide) === slideIndex)
       };
       if (issue.id === "font-drift") {
@@ -1418,11 +1527,20 @@ function buildIssues(file, text, readWarning = false) {
           ? `Detected likely font references: ${fonts.join(", ")}. Collapse these into ${state.styleSystem}.`
           : "The deck appears to rely on generic or embedded fallback fonts. Locking the type system will reduce drift.";
       }
-      if (issue.id === "capitalization" && caps.length > 1) {
-        hydrated.detail = `All-caps tokens found: ${caps.join(", ")}. Preserve true acronyms and normalize the rest.`;
+      if (issue.id === "capitalization" && noisyCaps.length > 1) {
+        hydrated.detail = `All-caps tokens found: ${noisyCaps.join(", ")}. Preserve true acronyms and normalize the rest.`;
       }
-      if (issue.id === "spelling" && /Revnue|teh|adress|recieve|occured/i.test(text)) {
-        hydrated.detail = "Potential spelling errors or repeated terminology drift were detected in extracted deck text.";
+      if (issue.id === "spelling") {
+        const parts = [];
+        if (typos.length) parts.push(`possible typos: ${[...new Set(typos)].join(", ")}`);
+        if (termDrift.length) parts.push(`terminology drift: ${termDrift.map((group) => group.join(" / ")).join("; ")}`);
+        if (parts.length) hydrated.detail = `Detected ${parts.join(". ")}.`;
+      }
+      if (issue.id === "date-footnotes") {
+        hydrated.detail = `Detected mixed date conventions in source or footnote text: ${[...dates].join(", ")}.`;
+      }
+      if (issue.id === "number-formatting") {
+        hydrated.detail = `Detected mixed financial formatting signals: ${[...financeSignals].join(", ")}. Standardize to one banking convention.`;
       }
       if (readWarning && index === 0) {
         hydrated.detail += " Text extraction was limited, so this finding also uses metadata and layout heuristics.";
@@ -1445,8 +1563,8 @@ function projectedScoreFor(issues) {
   return Math.max(34, 100 - manualPenalty);
 }
 
-function buildReport(file, text, readWarning = false) {
-  const issues = buildIssues(file, text, readWarning);
+function buildReport(file, text, readWarning = false, isRescan = false) {
+  const issues = buildIssues(file, text, readWarning, isRescan);
   const slides = estimateSlideCount(file, text);
   return {
     fileName: file.name || "Sample deck",
@@ -1459,6 +1577,8 @@ function buildReport(file, text, readWarning = false) {
 }
 
 async function scanFile(file, options = {}) {
+  state.previousUploadScore = state.report ? scoreFor(state.report.issues) : null;
+  if (!options.rescan) state.changeLog = [];
   state.file = file;
   dom.fileName.textContent = `${file.name || "Sample deck"} (${formatBytes(file.size)})`;
   dom.scanStatus.textContent = options.rescan ? "Rescanning" : "Scanning";
@@ -1479,11 +1599,11 @@ async function scanFile(file, options = {}) {
 
   try {
     state.text = await readDeckText(file);
-    state.report = buildReport(file, state.text, false);
+    state.report = buildReport(file, state.text, false, options.rescan || false);
     dom.scanStatus.textContent = options.rescan ? "Rescan complete" : "Scan complete";
   } catch (error) {
     state.text = "";
-    state.report = buildReport(file, "", true);
+    state.report = buildReport(file, "", true, options.rescan || false);
     dom.scanStatus.textContent = "Metadata scan complete";
   }
 
@@ -1630,9 +1750,12 @@ function renderScore() {
   dom.summaryTitle.textContent = stats.open
     ? `${stats.open} issues left to clean.`
     : "Deck is clean.";
+  const scoreMovement = state.previousUploadScore !== null && state.previousUploadScore !== score
+    ? `Adjusted score: ${state.previousUploadScore} -> ${score}. `
+    : "";
   dom.summaryCopy.textContent = stats.open
-    ? `${state.report.fileName} has ${state.report.slides} estimated slides. Apply AI fixes, review manual suggestions, then rescan to confirm the score.`
-    : `${state.report.fileName} is ready for export review. The live preview reflects all applied fixes.`;
+    ? `${scoreMovement}${state.report.fileName} has ${state.report.slides} estimated slides. Apply AI fixes, review manual suggestions, then rescan to confirm the score.`
+    : `${scoreMovement}${state.report.fileName} is ready for export review. The live preview reflects all applied fixes.`;
 }
 
 function slideIssues(slideNumber) {
