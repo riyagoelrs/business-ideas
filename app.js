@@ -639,10 +639,16 @@ async function markManualReviewed() {
 
 function filteredIssues() {
   const issues = state.report?.issues || [];
-  if (state.filter === "auto") return issues.filter((issue) => issue.autoFix);
-  if (state.filter === "manual") return issues.filter((issue) => !issue.autoFix);
-  if (state.filter === "consistency") return issues.filter((issue) => issue.consistency);
-  return issues;
+  let subset;
+  if (state.filter === "auto") subset = issues.filter((issue) => issue.autoFix);
+  else if (state.filter === "manual") subset = issues.filter((issue) => !issue.autoFix);
+  else if (state.filter === "consistency") subset = issues.filter((issue) => issue.consistency);
+  else subset = issues;
+  // Always surface open issues before fixed ones
+  return [
+    ...subset.filter((i) => i.status !== "fixed"),
+    ...subset.filter((i) => i.status === "fixed")
+  ];
 }
 
 function renderScore() {
@@ -715,14 +721,8 @@ function renderDeckCanvas() {
   }).join("");
 }
 
-function renderIssues() {
-  if (!state.report) {
-    dom.issueList.innerHTML = '<div class="empty-state">Upload a deck or run the sample scan to see a prioritized issue list.</div>';
-    return;
-  }
-
-  const issues = filteredIssues();
-  dom.issueList.innerHTML = issues.map((issue) => `
+function issueCardHtml(issue) {
+  return `
     <article class="issue-card ${issue.status === "fixed" ? "is-fixed" : ""} ${issue.id === state.selectedIssueId ? "is-selected" : ""}" data-issue-id="${escapeHtml(issue.id)}">
       <div class="severity ${issue.severity}">${escapeHtml(issue.severity)}</div>
       <div>
@@ -743,7 +743,34 @@ function renderIssues() {
         <button class="secondary-button mini" type="button" data-action="inspect" data-issue-id="${escapeHtml(issue.id)}">Inspect</button>
       </div>
     </article>
-  `).join("");
+  `;
+}
+
+function renderIssues() {
+  if (!state.report) {
+    dom.issueList.innerHTML = '<div class="empty-state">Upload a deck or run the sample scan to see a prioritized issue list.</div>';
+    return;
+  }
+
+  const issues = filteredIssues();
+  const open = issues.filter((i) => i.status !== "fixed");
+  const fixed = issues.filter((i) => i.status === "fixed");
+
+  if (!issues.length) {
+    dom.issueList.innerHTML = '<div class="empty-state">No issues match this filter.</div>';
+    return;
+  }
+
+  let html = open.map(issueCardHtml).join("");
+
+  if (fixed.length) {
+    const divider = open.length
+      ? `<div class="fixed-divider"><span>${fixed.length} fixed ${fixed.length === 1 ? "issue" : "issues"}</span></div>`
+      : `<div class="fixed-divider"><span>All ${fixed.length} issues fixed</span></div>`;
+    html += divider + fixed.map(issueCardHtml).join("");
+  }
+
+  dom.issueList.innerHTML = html;
 }
 
 function renderInspector() {
