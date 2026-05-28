@@ -1,13 +1,192 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>DeckCleaner</title>
-  <meta http-equiv="refresh" content="0; url=deckcleaner-live.html">
-  <link rel="canonical" href="deckcleaner-live.html">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DeckCleaner | Deck Editor</title>
+  <meta
+    name="description"
+    content="Upload a VC or startup deck, scan formatting and copy consistency, apply auto-fixes, and manage manual edits from one deck editor."
+  />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <p><a href="deckcleaner-live.html">Open DeckCleaner</a></p>
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="DeckCleaner home">
+        <span class="brand-mark">DC</span>
+        <span>
+          <strong>DeckCleaner</strong>
+          <small>Deck QA and cleanup editor</small>
+        </span>
+      </a>
+      <nav class="topnav" aria-label="Product sections">
+        <a href="#scanner">Scanner</a>
+        <a href="#editor">Editor</a>
+        <a href="#suggestions">Manual fixes</a>
+      </nav>
+      <button class="ghost-button" id="sampleButton" type="button">Run sample deck</button>
+    </header>
+
+    <main>
+      <section class="scanner" id="scanner">
+        <div class="scanner-copy">
+          <p class="eyebrow">Front-to-back deck cleanup</p>
+          <h1>Scan the deck, fix the score, and keep every slide consistent.</h1>
+          <p>
+            Upload a PDF, PPT, or PPTX. DeckCleaner builds a prioritized issue queue,
+            separates AI-fixable cleanup from manual judgment calls, and lets you apply
+            fixes to a live deck preview before rescanning.
+          </p>
+          <div class="action-row">
+            <label class="primary-button" for="deckInput">Upload deck</label>
+            <button class="secondary-button" id="scanAgainButton" type="button">Rescan current deck</button>
+            <button class="secondary-button" id="exportButton" type="button">Export edit brief</button>
+          </div>
+        </div>
+
+        <section class="upload-card">
+          <input id="deckInput" name="deck" type="file" accept=".pdf,.ppt,.pptx,application/pdf,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation" />
+          <div class="dropzone" id="dropzone">
+            <div class="drop-visual" aria-hidden="true">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+            <div>
+              <h2>Drop a deck here</h2>
+              <p>Files stay local in your browser. If text extraction is limited, the app still runs metadata and layout heuristics.</p>
+            </div>
+            <dl class="file-meta">
+              <div>
+                <dt>Deck</dt>
+                <dd id="fileName">No file selected</dd>
+              </div>
+              <div>
+                <dt>Status</dt>
+                <dd id="scanStatus">Waiting</dd>
+              </div>
+            </dl>
+          </div>
+        </section>
+      </section>
+
+      <section class="score-strip" aria-live="polite">
+        <div class="score-card">
+          <div class="score-ring" id="scoreRing">
+            <span id="scoreValue">--</span>
+            <small>current score</small>
+          </div>
+          <div>
+            <p class="eyebrow">Deck health</p>
+            <h2 id="summaryTitle">Upload a deck to start.</h2>
+            <p id="summaryCopy">You will see what is wrong, what can be fixed automatically, and what needs manual judgment.</p>
+          </div>
+        </div>
+        <div class="metric-grid">
+          <div>
+            <span id="openCount">0</span>
+            <small>open issues</small>
+          </div>
+          <div>
+            <span id="autoCount">0</span>
+            <small>AI-fixable</small>
+          </div>
+          <div>
+            <span id="manualCount">0</span>
+            <small>manual fixes</small>
+          </div>
+          <div>
+            <span id="fixedCount">0</span>
+            <small>fixed</small>
+          </div>
+        </div>
+        <div class="score-delta">
+          <small>Projected after AI fixes</small>
+          <strong id="projectedScore">--</strong>
+          <div class="progress-track"><span id="scoreProgress"></span></div>
+        </div>
+      </section>
+
+      <section class="editor" id="editor">
+        <aside class="slide-panel">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow">Deck preview</p>
+              <h2>Slides update as fixes apply</h2>
+            </div>
+          </div>
+          <div class="deck-canvas" id="deckCanvas"></div>
+          <div class="style-controls">
+            <label>
+              Style system
+              <select id="styleSystem">
+                <option value="Inter">Inter / modern SaaS</option>
+                <option value="Helvetica">Helvetica / classic VC</option>
+                <option value="Aptos">Aptos / Microsoft native</option>
+              </select>
+            </label>
+            <label>
+              Grid
+              <select id="gridSystem">
+                <option value="24">24 px margin grid</option>
+                <option value="32">32 px editorial grid</option>
+                <option value="40">40 px board-room grid</option>
+              </select>
+            </label>
+          </div>
+        </aside>
+
+        <section class="workbench">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow">Fix queue</p>
+              <h2 id="queueTitle">Issues to clean up</h2>
+            </div>
+            <div class="toolbar">
+              <button class="primary-button compact" id="applyAllButton" type="button">Apply all AI fixes</button>
+              <button class="secondary-button compact" id="markManualButton" type="button">Mark manual reviewed</button>
+            </div>
+          </div>
+
+          <div class="tabs" role="tablist" aria-label="Issue filters">
+            <button class="tab is-active" type="button" data-filter="all">All issues</button>
+            <button class="tab" type="button" data-filter="auto">AI-fixable</button>
+            <button class="tab" type="button" data-filter="manual">Manual suggestions</button>
+            <button class="tab" type="button" data-filter="consistency">Consistency QA</button>
+          </div>
+
+          <div class="issue-list" id="issueList"></div>
+        </section>
+      </section>
+
+      <section class="suggestions" id="suggestions">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">Editor inspector</p>
+            <h2>Selected issue and next action</h2>
+          </div>
+        </div>
+        <div class="inspector-grid">
+          <article class="inspector-card" id="issueInspector">
+            <p class="empty-state">Select an issue to see the slide-level fix, score impact, and manual guidance.</p>
+          </article>
+          <article class="inspector-card">
+            <p class="eyebrow">Change log</p>
+            <h3>Applied fixes</h3>
+            <ol class="change-log" id="changeLog"></ol>
+          </article>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
 </body>
 </html>

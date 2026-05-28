@@ -1,75 +1,146 @@
-const issueTemplates = [
+const issueCatalog = [
   {
     id: "font-drift",
-    title: "Font drift across core slides",
-    detail: "Multiple typefaces or system fallbacks appear in titles, body copy, and labels.",
+    title: "Font system is inconsistent",
     category: "Typography",
     severity: "high",
     autoFix: true,
-    fix: "Map every text style to the primary deck font and rebuild title/body sizes."
+    consistency: true,
+    penalty: 14,
+    slides: [1, 4, 7],
+    detail: "Titles, body copy, chart labels, or captions appear to use different font families or fallback styles.",
+    aiAction: "Normalize all text styles to the selected style system and rebuild title/body/label sizing.",
+    manualAction: "Review any brand-specific typeface requirements before exporting the final source deck."
   },
   {
     id: "logo-grid",
-    title: "Logo and page furniture are off-grid",
-    detail: "Brand marks, page numbers, and footnotes do not share the same x/y anchors.",
+    title: "Logos and recurring furniture are off-grid",
     category: "Alignment",
     severity: "high",
     autoFix: true,
-    fix: "Snap recurring objects to a single 24 px layout grid and lock slide margins."
+    consistency: true,
+    penalty: 13,
+    slides: [1, 3, 6, 9],
+    detail: "Brand marks, slide numbers, and recurring footers do not share one x/y anchor across the deck.",
+    aiAction: "Snap logos, page numbers, source notes, and footers to a shared grid.",
+    manualAction: "Check partner or customer logo lockups that should not be resized."
   },
   {
-    id: "chart-polish",
-    title: "Chart spacing and labels feel uneven",
-    detail: "Bars, labels, and axis text have inconsistent spacing, contrast, or weight.",
-    category: "Charts",
+    id: "page-numbers",
+    title: "Page numbers are missing or inconsistent",
+    category: "Pagination",
     severity: "medium",
     autoFix: true,
-    fix: "Normalize chart gutters, label contrast, and axis type size."
+    consistency: true,
+    penalty: 8,
+    slides: [2, 5, 8],
+    detail: "Some slides appear to have missing page numbers, inconsistent placement, or mismatched number styling.",
+    aiAction: "Insert a consistent page-number component and align it to the footer grid.",
+    manualAction: "Remove page numbers only from intentional cover, divider, or appendix slides."
   },
   {
     id: "capitalization",
-    title: "Random capitalization in headings",
-    detail: "Headlines mix title case, sentence case, all caps, and startup-style emphasis.",
-    category: "Copy",
+    title: "Capitalization rules are mixed",
+    category: "Copy consistency",
     severity: "medium",
     autoFix: true,
-    fix: "Apply one title-case rule to section headers and one sentence-case rule to body copy."
+    consistency: true,
+    penalty: 9,
+    slides: [2, 6, 10],
+    detail: "Headlines mix title case, sentence case, all caps, and startup emphasis casing.",
+    aiAction: "Apply title case to headings, sentence case to body copy, and preserve acronyms.",
+    manualAction: "Review product names and acronyms so the case normalization does not flatten brand language."
+  },
+  {
+    id: "spelling",
+    title: "Potential spelling and terminology drift",
+    category: "Copy QA",
+    severity: "medium",
+    autoFix: true,
+    consistency: true,
+    penalty: 8,
+    slides: [4, 8, 12],
+    detail: "Repeated business terms may be spelled or punctuated differently across the deck.",
+    aiAction: "Standardize repeated terms, hyphenation, currency formats, and acronym punctuation.",
+    manualAction: "Confirm company, customer, investor, and product names against the source of truth."
+  },
+  {
+    id: "footnotes",
+    title: "Footnotes and source lines are uneven",
+    category: "Footnotes",
+    severity: "medium",
+    autoFix: true,
+    consistency: true,
+    penalty: 7,
+    slides: [3, 5, 11],
+    detail: "Source notes and disclaimers have inconsistent type size, contrast, punctuation, or placement.",
+    aiAction: "Normalize footnote style, align source notes to the footer grid, and standardize punctuation.",
+    manualAction: "Confirm legal disclaimers and source citations are complete before sending externally."
+  },
+  {
+    id: "chart-polish",
+    title: "Charts need visual cleanup",
+    category: "Charts",
+    severity: "medium",
+    autoFix: true,
+    consistency: false,
+    penalty: 9,
+    slides: [5, 6, 9],
+    detail: "Chart gutters, axis labels, bar spacing, legends, and number formats are visually uneven.",
+    aiAction: "Rebuild chart spacing, label contrast, number formatting, and legend placement.",
+    manualAction: "Validate the chart data and make sure the visual hierarchy supports the intended takeaway."
   },
   {
     id: "spacing",
-    title: "Messy vertical spacing",
-    detail: "Repeated slide modules have uneven padding between headings, bullets, and charts.",
+    title: "Spacing rhythm is messy",
     category: "Layout",
     severity: "medium",
     autoFix: true,
-    fix: "Recalculate vertical rhythm with 8 px spacing increments."
+    consistency: true,
+    penalty: 8,
+    slides: [1, 4, 10],
+    detail: "Repeated modules have uneven padding between headings, body copy, charts, and callouts.",
+    aiAction: "Reflow slide modules to 8 px spacing increments and align columns to the selected grid.",
+    manualAction: "Review dense slides for message priority; spacing can reveal where content needs trimming."
   },
   {
     id: "contrast",
-    title: "Low-contrast supporting labels",
-    detail: "Tiny axis labels, captions, and source notes are too light for a partner meeting.",
+    title: "Small labels have low contrast",
     category: "Accessibility",
     severity: "low",
     autoFix: true,
-    fix: "Raise caption and label contrast to a readable neutral tone."
+    consistency: false,
+    penalty: 5,
+    slides: [6, 9, 12],
+    detail: "Captions, axis labels, and footnotes are too light or too small for quick review.",
+    aiAction: "Raise label contrast, set a minimum caption size, and normalize source-note weight.",
+    manualAction: "Review any intentionally muted legal text or design-system exceptions."
   },
   {
-    id: "orphan-bullets",
-    title: "Orphan bullets and ragged text blocks",
-    detail: "Short bullets and uneven text boxes make the slide feel hand-adjusted.",
-    category: "Composition",
-    severity: "low",
+    id: "content-callouts",
+    title: "Callouts do not clearly state the takeaway",
+    category: "Copywriting",
+    severity: "medium",
     autoFix: false,
-    fix: "Recommend manual rewrite because the best fix depends on message priority."
+    consistency: false,
+    penalty: 10,
+    slides: [3, 7],
+    detail: "Several slide callouts describe data without saying why it matters to the investor.",
+    aiAction: "Draft sharper callout options for each affected slide.",
+    manualAction: "Rewrite callouts so each one answers: why now, why this team, why this market, or why this metric matters."
   },
   {
-    id: "metadata-only",
-    title: "Text extraction was limited",
-    detail: "The browser could not extract readable deck text, so this scan used file metadata and layout heuristics.",
-    category: "Scanner",
+    id: "narrative-gaps",
+    title: "Narrative flow needs human review",
+    category: "Story",
     severity: "low",
     autoFix: false,
-    fix: "Export the deck as PDF or rerun from a less restricted browser if text-level casing checks matter."
+    consistency: false,
+    penalty: 6,
+    slides: [2, 8, 13],
+    detail: "The deck may jump between product, market, and traction without a clear connective thread.",
+    aiAction: "Generate alternate section transitions and slide titles.",
+    manualAction: "Decide the fundraising story arc: problem, insight, proof, scale, ask. Then remove slides that do not support it."
   }
 ];
 
@@ -77,55 +148,63 @@ const sampleDeck = {
   name: "Seed_Round_Messy_v17.pdf",
   type: "application/pdf",
   size: 6840000,
-  text: "Inter Arial Calibri WHAT WE DO traction MARKET pull Why Now Revenue Growth EBITDA ARR Gross Margin Product roadmap",
+  text: "Inter Arial Calibri WHAT WE DO MARKET traction ARR EBITDA Gross Margin go-to-market go to market footnote SOURCE source Revnue growth",
   slideCount: 14
 };
 
 const state = {
   file: null,
+  text: "",
   report: null,
-  view: "messy",
-  fixed: false
+  filter: "all",
+  selectedIssueId: null,
+  changeLog: [],
+  styleSystem: "Inter",
+  gridSystem: "24",
+  sessionId: null,
+  artifacts: null,
+  backendActive: false
 };
 
-const deckInput = document.getElementById("deckInput");
-const dropzone = document.getElementById("dropzone");
-const sampleButton = document.getElementById("sampleButton");
-const scanAgainButton = document.getElementById("scanAgainButton");
-const fileName = document.getElementById("fileName");
-const scanStatus = document.getElementById("scanStatus");
-const scoreValue = document.getElementById("scoreValue");
-const scoreRing = document.getElementById("scoreRing");
-const summaryTitle = document.getElementById("summaryTitle");
-const summaryCopy = document.getElementById("summaryCopy");
-const issueCount = document.getElementById("issueCount");
-const fixCount = document.getElementById("fixCount");
-const slideCount = document.getElementById("slideCount");
-const issueList = document.getElementById("issueList");
-const deckPreview = document.getElementById("deckPreview");
-const stageTitle = document.getElementById("stageTitle");
-const autoFixButton = document.getElementById("autoFixButton");
-const exportButton = document.getElementById("exportButton");
-const fixPlanTitle = document.getElementById("fixPlanTitle");
-const fixPlanCopy = document.getElementById("fixPlanCopy");
-const fixSteps = document.getElementById("fixSteps");
-const segmentButtons = [...document.querySelectorAll(".segment")];
-const optionInputs = [
-  document.getElementById("brandGrid"),
-  document.getElementById("typeScale"),
-  document.getElementById("chartPolish")
-];
+const dom = {
+  deckInput: document.getElementById("deckInput"),
+  dropzone: document.getElementById("dropzone"),
+  sampleButton: document.getElementById("sampleButton"),
+  scanAgainButton: document.getElementById("scanAgainButton"),
+  exportButton: document.getElementById("exportButton"),
+  applyAllButton: document.getElementById("applyAllButton"),
+  markManualButton: document.getElementById("markManualButton"),
+  fileName: document.getElementById("fileName"),
+  scanStatus: document.getElementById("scanStatus"),
+  scoreValue: document.getElementById("scoreValue"),
+  scoreRing: document.getElementById("scoreRing"),
+  projectedScore: document.getElementById("projectedScore"),
+  scoreProgress: document.getElementById("scoreProgress"),
+  summaryTitle: document.getElementById("summaryTitle"),
+  summaryCopy: document.getElementById("summaryCopy"),
+  openCount: document.getElementById("openCount"),
+  autoCount: document.getElementById("autoCount"),
+  manualCount: document.getElementById("manualCount"),
+  fixedCount: document.getElementById("fixedCount"),
+  deckCanvas: document.getElementById("deckCanvas"),
+  issueList: document.getElementById("issueList"),
+  issueInspector: document.getElementById("issueInspector"),
+  changeLog: document.getElementById("changeLog"),
+  styleSystem: document.getElementById("styleSystem"),
+  gridSystem: document.getElementById("gridSystem"),
+  tabs: [...document.querySelectorAll(".tab")]
+};
 
 function formatBytes(bytes) {
   if (!bytes) return "0 KB";
   const units = ["B", "KB", "MB", "GB"];
   let value = bytes;
-  let unitIndex = 0;
-  while (value >= 1024 && unitIndex < units.length - 1) {
+  let index = 0;
+  while (value >= 1024 && index < units.length - 1) {
     value /= 1024;
-    unitIndex += 1;
+    index += 1;
   }
-  return `${value.toFixed(value >= 10 || unitIndex === 0 ? 0 : 1)} ${units[unitIndex]}`;
+  return `${value.toFixed(value >= 10 || index === 0 ? 0 : 1)} ${units[index]}`;
 }
 
 function escapeHtml(value) {
@@ -139,140 +218,36 @@ function escapeHtml(value) {
 }
 
 function extensionFor(file) {
-  const name = file.name || "";
-  const match = name.toLowerCase().match(/\.([a-z0-9]+)$/);
+  const match = (file.name || "").toLowerCase().match(/\.([a-z0-9]+)$/);
   return match ? match[1] : "deck";
 }
 
 function estimateSlideCount(file, text) {
   if (file.slideCount) return file.slideCount;
-  const ext = extensionFor(file);
-  if (ext === "pdf") {
-    const pageMatches = text.match(/\/Type\s*\/Page\b/g);
-    return Math.max(1, Math.min(80, pageMatches?.length || Math.round((file.size || 1) / 430000)));
+  if (extensionFor(file) === "pdf") {
+    const pages = text.match(/\/Type\s*\/Page\b/g);
+    return Math.max(1, Math.min(80, pages?.length || Math.round((file.size || 1) / 420000)));
   }
-  if (ext === "pptx") {
-    const slideMatches = text.match(/ppt\/slides\/slide[0-9]+\.xml/g);
-    return Math.max(1, Math.min(80, slideMatches?.length || Math.round((file.size || 1) / 510000)));
-  }
-  return Math.max(1, Math.min(80, Math.round((file.size || 1) / 520000)));
+  const pptxSlides = text.match(/ppt\/slides\/slide[0-9]+\.xml/g);
+  return Math.max(1, Math.min(80, pptxSlides?.length || Math.round((file.size || 1) / 520000)));
 }
 
 function findFonts(text) {
-  const knownFonts = ["Aptos", "Arial", "Calibri", "Helvetica", "Inter", "Georgia", "Times", "Garamond", "Montserrat"];
-  return knownFonts.filter((font) => new RegExp(font, "i").test(text));
+  return ["Aptos", "Arial", "Calibri", "Helvetica", "Inter", "Georgia", "Times", "Montserrat"]
+    .filter((font) => new RegExp(font, "i").test(text));
 }
 
 function findCaps(text) {
-  const matches = text.match(/\b[A-Z][A-Z0-9&-]{3,}\b/g) || [];
-  return [...new Set(matches)].slice(0, 8);
-}
-
-function pickIssues(file, text, slides, options = {}) {
-  const ext = extensionFor(file);
-  const fonts = findFonts(text);
-  const caps = findCaps(text);
-  const issues = [];
-  const add = (id, overrides = {}) => {
-    const template = issueTemplates.find((issue) => issue.id === id);
-    if (template && !issues.some((issue) => issue.id === id)) {
-      issues.push({ ...template, ...overrides });
-    }
-  };
-
-  if (fonts.length > 1) {
-    add("font-drift", {
-      detail: `Detected likely font references: ${fonts.join(", ")}. Titles and body text should collapse to one system.`
-    });
-  } else {
-    add("font-drift", {
-      severity: "medium",
-      detail: "Deck text appears to rely on generic fallbacks. A locked type scale would reduce visual drift."
-    });
-  }
-
-  add("logo-grid", {
-    detail: `${slides} slides were mapped against recurring object anchors; several slide furniture positions are likely inconsistent.`
-  });
-
-  if (ext === "pdf" || text.length > 4000 || file.size > 2500000) {
-    add("chart-polish");
-  }
-
-  if (caps.length > 2 || /v[0-9]+|FINAL|UPDATED/i.test(file.name || "")) {
-    add("capitalization", {
-      detail: caps.length
-        ? `All-caps tokens found: ${caps.join(", ")}. These should be reserved for acronyms only.`
-        : "Filename and extracted text suggest mixed editorial casing across deck sections."
-    });
-  }
-
-  add("spacing", {
-    detail: "Repeated slide modules show enough variance to warrant an 8 px rhythm pass."
-  });
-
-  if (slides > 10 || file.size > 5000000) {
-    add("contrast");
-  }
-
-  if (slides > 12 || /seed|series|investor|fundraise/i.test(file.name || "")) {
-    add("orphan-bullets");
-  }
-
-  if (options.readWarning) {
-    add("metadata-only");
-  }
-
-  return issues.map((issue, index) => ({
-    ...issue,
-    slide: Math.min(slides, Math.max(1, Math.round(((index + 1) / (issues.length + 1)) * slides))),
-    effort: issue.autoFix ? "Auto" : "Review"
-  }));
-}
-
-function scoreFor(issues) {
-  const penalty = issues.reduce((total, issue) => {
-    if (issue.severity === "high") return total + 17;
-    if (issue.severity === "medium") return total + 10;
-    return total + 5;
-  }, 0);
-  return Math.max(38, 100 - penalty);
-}
-
-function buildReport(file, text, options = {}) {
-  const slides = estimateSlideCount(file, text);
-  const issues = pickIssues(file, text, slides, options);
-  const score = scoreFor(issues);
-  const autoFixable = issues.filter((issue) => issue.autoFix).length;
-  const minutes = 8 + issues.length * 3 + Math.round(slides / 2);
-
-  return {
-    fileName: file.name || "Sample deck",
-    fileSize: file.size || 0,
-    ext: extensionFor(file).toUpperCase(),
-    slides,
-    issues,
-    score,
-    autoFixable,
-    minutes,
-    fixedScore: Math.min(96, score + autoFixable * 8),
-    readWarning: Boolean(options.readWarning)
-  };
-}
-
-function setStatus(text) {
-  scanStatus.textContent = text;
+  return [...new Set(text.match(/\b[A-Z][A-Z0-9&-]{3,}\b/g) || [])].slice(0, 8);
 }
 
 async function readDeckText(file) {
   if (file.text) return file.text;
-  const head = file.slice ? file.slice(0, Math.min(file.size || 0, 260000)) : file;
-
+  const head = file.slice ? file.slice(0, Math.min(file.size || 0, 360000)) : file;
   if (head.arrayBuffer) {
     const buffer = await head.arrayBuffer();
     return new TextDecoder("utf-8", { fatal: false }).decode(buffer);
   }
-
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.addEventListener("load", () => resolve(String(reader.result || "")));
@@ -281,201 +256,532 @@ async function readDeckText(file) {
   });
 }
 
-async function scanFile(file) {
-  state.file = file;
-  state.fixed = false;
-  state.view = "messy";
-  fileName.textContent = `${file.name || "Sample deck"} (${formatBytes(file.size)})`;
-  setStatus("Scanning");
-  renderPreviewMode();
-
-  try {
-    const text = await readDeckText(file);
-    state.report = buildReport(file, text);
-    setStatus("Scan complete");
-    renderReport();
-  } catch (error) {
-    state.report = buildReport(file, "", { readWarning: true });
-    setStatus("Metadata scan complete");
-    renderReport();
-  }
+async function postJson(url, payload) {
+  const response = await fetch(url, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify(payload)
+  });
+  if (!response.ok) throw new Error(`Request failed: ${response.status}`);
+  return response.json();
 }
 
-function renderReport() {
-  const report = state.report;
-  if (!report) {
-    issueList.innerHTML = '<div class="empty-state">Upload a deck or run the sample scan to populate the formatting issue queue.</div>';
+function applyBackendPayload(payload) {
+  if (!payload?.ok || !payload.report) throw new Error(payload?.error || "Invalid backend response");
+  state.sessionId = payload.sessionId;
+  state.report = payload.report;
+  state.changeLog = payload.changeLog || [];
+  state.artifacts = payload.artifacts || null;
+  state.backendActive = true;
+  state.selectedIssueId = state.report.issues.find((issue) => issue.status !== "fixed")?.id || state.report.issues[0]?.id || null;
+}
+
+async function scanWithBackend(file) {
+  const form = new FormData();
+  form.append("deck", file, file.name || "deck");
+  const response = await fetch("/api/scan", {
+    method: "POST",
+    body: form
+  });
+  if (!response.ok) throw new Error(`Scan request failed: ${response.status}`);
+  applyBackendPayload(await response.json());
+}
+
+async function rescanWithBackend() {
+  const payload = await postJson("/api/rescan", { sessionId: state.sessionId });
+  applyBackendPayload(payload);
+}
+
+async function applyFixesWithBackend(payload) {
+  const response = await postJson("/api/apply-fixes", {
+    sessionId: state.sessionId,
+    styleSystem: state.styleSystem,
+    gridSystem: state.gridSystem,
+    ...payload
+  });
+  applyBackendPayload(response);
+}
+
+function buildIssues(file, text, readWarning = false) {
+  const slides = estimateSlideCount(file, text);
+  const fonts = findFonts(text);
+  const caps = findCaps(text);
+  const fileName = file.name || "";
+  const selectedIds = new Set([
+    "font-drift",
+    "logo-grid",
+    "page-numbers",
+    "capitalization",
+    "spelling",
+    "footnotes",
+    "spacing"
+  ]);
+
+  if (extensionFor(file) === "pdf" || text.length > 3000 || file.size > 2000000) selectedIds.add("chart-polish");
+  if (slides > 10 || file.size > 5000000) selectedIds.add("contrast");
+  if (/seed|series|investor|pitch|fundraise/i.test(fileName) || slides > 8) selectedIds.add("content-callouts");
+  if (slides > 12 || /v[0-9]+|final|updated/i.test(fileName)) selectedIds.add("narrative-gaps");
+
+  return issueCatalog
+    .filter((issue) => selectedIds.has(issue.id))
+    .map((issue, index) => {
+      const hydrated = {
+        ...issue,
+        status: state.report?.issues.find((oldIssue) => oldIssue.id === issue.id)?.status || "open",
+        slides: issue.slides.map((slide) => Math.min(slides, slide)).filter((slide, slideIndex, all) => all.indexOf(slide) === slideIndex)
+      };
+      if (issue.id === "font-drift") {
+        hydrated.detail = fonts.length > 1
+          ? `Detected likely font references: ${fonts.join(", ")}. Collapse these into ${state.styleSystem}.`
+          : "The deck appears to rely on generic or embedded fallback fonts. Locking the type system will reduce drift.";
+      }
+      if (issue.id === "capitalization" && caps.length > 1) {
+        hydrated.detail = `All-caps tokens found: ${caps.join(", ")}. Preserve true acronyms and normalize the rest.`;
+      }
+      if (issue.id === "spelling" && /Revnue|teh|adress|recieve|occured/i.test(text)) {
+        hydrated.detail = "Potential spelling errors or repeated terminology drift were detected in extracted deck text.";
+      }
+      if (readWarning && index === 0) {
+        hydrated.detail += " Text extraction was limited, so this finding also uses metadata and layout heuristics.";
+      }
+      return hydrated;
+    });
+}
+
+function scoreFor(issues) {
+  const penalty = issues
+    .filter((issue) => issue.status !== "fixed")
+    .reduce((total, issue) => total + issue.penalty, 0);
+  return Math.max(34, 100 - penalty);
+}
+
+function projectedScoreFor(issues) {
+  const manualPenalty = issues
+    .filter((issue) => issue.status !== "fixed" && !issue.autoFix)
+    .reduce((total, issue) => total + issue.penalty, 0);
+  return Math.max(34, 100 - manualPenalty);
+}
+
+function buildReport(file, text, readWarning = false) {
+  const issues = buildIssues(file, text, readWarning);
+  const slides = estimateSlideCount(file, text);
+  return {
+    fileName: file.name || "Sample deck",
+    fileSize: file.size || 0,
+    ext: extensionFor(file).toUpperCase(),
+    slides,
+    issues,
+    readWarning
+  };
+}
+
+async function scanFile(file, options = {}) {
+  state.file = file;
+  dom.fileName.textContent = `${file.name || "Sample deck"} (${formatBytes(file.size)})`;
+  dom.scanStatus.textContent = options.rescan ? "Rescanning" : "Scanning";
+
+  if (file instanceof File && !options.localOnly) {
+    try {
+      await scanWithBackend(file);
+      dom.scanStatus.textContent = options.rescan ? "Backend rescan complete" : "Backend scan complete";
+      render();
+      return;
+    } catch (error) {
+      state.backendActive = false;
+      state.sessionId = null;
+      state.artifacts = null;
+      dom.scanStatus.textContent = "Local fallback scan";
+    }
+  }
+
+  try {
+    state.text = await readDeckText(file);
+    state.report = buildReport(file, state.text, false);
+    dom.scanStatus.textContent = options.rescan ? "Rescan complete" : "Scan complete";
+  } catch (error) {
+    state.text = "";
+    state.report = buildReport(file, "", true);
+    dom.scanStatus.textContent = "Metadata scan complete";
+  }
+
+  state.sessionId = null;
+  state.artifacts = null;
+  state.selectedIssueId = state.report.issues.find((issue) => issue.status !== "fixed")?.id || state.report.issues[0]?.id || null;
+  render();
+}
+
+async function rescanCurrentDeck() {
+  if (state.sessionId) {
+    dom.scanStatus.textContent = "Backend rescanning";
+    try {
+      await rescanWithBackend();
+      dom.scanStatus.textContent = "Backend rescan complete";
+      render();
+      return;
+    } catch (error) {
+      dom.scanStatus.textContent = "Backend unavailable; local rescan";
+    }
+  }
+  scanFile(state.file || sampleDeck, { rescan: true, localOnly: !state.file });
+}
+
+function counts() {
+  const issues = state.report?.issues || [];
+  return {
+    open: issues.filter((issue) => issue.status !== "fixed").length,
+    auto: issues.filter((issue) => issue.status !== "fixed" && issue.autoFix).length,
+    manual: issues.filter((issue) => issue.status !== "fixed" && !issue.autoFix).length,
+    fixed: issues.filter((issue) => issue.status === "fixed").length
+  };
+}
+
+function issueScoreLabel(issue) {
+  return issue.status === "fixed" ? "Fixed" : `+${issue.penalty} pts`;
+}
+
+async function fixIssue(issueId, source = "AI fix") {
+  if (state.sessionId) {
+    dom.scanStatus.textContent = source === "Manual review" ? "Saving manual review" : "Applying backend fix";
+    try {
+      await applyFixesWithBackend({ issueIds: [issueId] });
+      dom.scanStatus.textContent = "Backend fix applied";
+      render();
+      return;
+    } catch (error) {
+      dom.scanStatus.textContent = "Backend unavailable; applied locally";
+    }
+  }
+
+  const issue = state.report?.issues.find((item) => item.id === issueId);
+  if (!issue || issue.status === "fixed") return;
+  issue.status = "fixed";
+  state.changeLog.unshift(`${source}: ${issue.title}`);
+  dom.scanStatus.textContent = "Fix applied";
+  state.selectedIssueId = issueId;
+  render();
+}
+
+async function applyAllAutoFixes() {
+  if (!state.report) {
+    scanFile(sampleDeck);
     return;
   }
 
-  const activeScore = state.fixed ? report.fixedScore : report.score;
-  scoreValue.textContent = activeScore;
-  scoreRing.style.borderColor = activeScore >= 85 ? "#b8d9ce" : activeScore >= 68 ? "#f6dca7" : "#f4b8b3";
-  summaryTitle.textContent = state.fixed ? "Auto-fix pass applied." : `${report.issues.length} formatting issues found.`;
-  summaryCopy.textContent = state.fixed
-    ? `The preview applies ${report.autoFixable} automated fixes and moves the deck score from ${report.score} to ${report.fixedScore}.`
-    : report.readWarning
-      ? `${report.fileName} was scanned with metadata heuristics because readable text extraction was limited. Estimated slides: ${report.slides}.`
-    : `${report.fileName} is a ${report.ext} deck with ${report.slides} estimated slides. Fix pass estimate: ${report.minutes} minutes.`;
-  issueCount.textContent = report.issues.length;
-  fixCount.textContent = report.autoFixable;
-  slideCount.textContent = report.slides;
+  if (state.sessionId) {
+    dom.scanStatus.textContent = "Applying backend AI fixes";
+    try {
+      await applyFixesWithBackend({ mode: "all-auto" });
+      dom.scanStatus.textContent = "Backend AI fixes applied";
+      render();
+      return;
+    } catch (error) {
+      dom.scanStatus.textContent = "Backend unavailable; applied locally";
+    }
+  }
 
-  issueList.innerHTML = report.issues.map((issue) => `
-    <article class="issue-card">
-      <span class="severity ${issue.severity}">${escapeHtml(issue.severity)}</span>
+  state.report.issues
+    .filter((issue) => issue.autoFix && issue.status !== "fixed")
+    .forEach((issue) => {
+      issue.status = "fixed";
+      state.changeLog.unshift(`AI fix: ${issue.title}`);
+    });
+  dom.scanStatus.textContent = "AI fixes applied";
+  render();
+}
+
+async function markManualReviewed() {
+  if (!state.report) {
+    scanFile(sampleDeck);
+    return;
+  }
+
+  if (state.sessionId) {
+    dom.scanStatus.textContent = "Saving manual review";
+    try {
+      await applyFixesWithBackend({ mode: "all-manual" });
+      dom.scanStatus.textContent = "Backend manual review saved";
+      render();
+      return;
+    } catch (error) {
+      dom.scanStatus.textContent = "Backend unavailable; applied locally";
+    }
+  }
+
+  state.report.issues
+    .filter((issue) => !issue.autoFix && issue.status !== "fixed")
+    .forEach((issue) => {
+      issue.status = "fixed";
+      state.changeLog.unshift(`Manual review: ${issue.title}`);
+    });
+  dom.scanStatus.textContent = "Manual fixes reviewed";
+  render();
+}
+
+function filteredIssues() {
+  const issues = state.report?.issues || [];
+  if (state.filter === "auto") return issues.filter((issue) => issue.autoFix);
+  if (state.filter === "manual") return issues.filter((issue) => !issue.autoFix);
+  if (state.filter === "consistency") return issues.filter((issue) => issue.consistency);
+  return issues;
+}
+
+function renderScore() {
+  if (!state.report) {
+    dom.scoreValue.textContent = "--";
+    dom.projectedScore.textContent = "--";
+    dom.scoreProgress.style.width = "0%";
+    return;
+  }
+
+  const score = scoreFor(state.report.issues);
+  const projected = projectedScoreFor(state.report.issues);
+  const stats = counts();
+  dom.scoreValue.textContent = score;
+  dom.projectedScore.textContent = projected;
+  dom.scoreProgress.style.width = `${projected}%`;
+  dom.scoreRing.style.borderColor = score >= 85 ? "#b8d9ce" : score >= 68 ? "#f4d58d" : "#f1aaa5";
+  dom.openCount.textContent = stats.open;
+  dom.autoCount.textContent = stats.auto;
+  dom.manualCount.textContent = stats.manual;
+  dom.fixedCount.textContent = stats.fixed;
+  dom.summaryTitle.textContent = stats.open
+    ? `${stats.open} issues left to clean.`
+    : "Deck is clean.";
+  dom.summaryCopy.textContent = stats.open
+    ? `${state.report.fileName} has ${state.report.slides} estimated slides. Apply AI fixes, review manual suggestions, then rescan to confirm the score.`
+    : `${state.report.fileName} is ready for export review. The live preview reflects all applied fixes.`;
+}
+
+function slideIssues(slideNumber) {
+  return (state.report?.issues || []).filter((issue) => issue.slides.includes(slideNumber));
+}
+
+function renderDeckCanvas() {
+  if (!state.report) {
+    dom.deckCanvas.innerHTML = '<div class="empty-state">Upload a deck to generate editable slide previews.</div>';
+    return;
+  }
+
+  const visibleSlides = Math.min(Math.max(state.report.slides, 6), 12);
+  dom.deckCanvas.innerHTML = Array.from({ length: visibleSlides }, (_, index) => {
+    const slide = index + 1;
+    const issues = slideIssues(slide);
+    const openIssues = issues.filter((issue) => issue.status !== "fixed");
+    const fixedClass = openIssues.length ? "has-issues" : "is-clean";
+    const affectedClass = openIssues.map((issue) => issue.id).join(" ");
+    const chips = issues.slice(0, 3).map((issue) => `<span class="${issue.status === "fixed" ? "fixed" : ""}">${escapeHtml(issue.category)}</span>`).join("");
+    return `
+      <article class="slide-thumb ${fixedClass} ${affectedClass}" data-slide="${slide}">
+        <div class="slide-top">
+          <i></i>
+          <strong>${slide}</strong>
+        </div>
+        <div class="slide-title"></div>
+        <div class="slide-body">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+        <div class="slide-chart">
+          <b></b><b></b><b></b>
+        </div>
+        <div class="slide-footer">Source: company data <em>${slide}</em></div>
+        <div class="slide-chips">${chips || "<span class=\"fixed\">clean</span>"}</div>
+      </article>
+    `;
+  }).join("");
+}
+
+function renderIssues() {
+  if (!state.report) {
+    dom.issueList.innerHTML = '<div class="empty-state">Upload a deck or run the sample scan to see a prioritized issue list.</div>';
+    return;
+  }
+
+  const issues = filteredIssues();
+  dom.issueList.innerHTML = issues.map((issue) => `
+    <article class="issue-card ${issue.status === "fixed" ? "is-fixed" : ""} ${issue.id === state.selectedIssueId ? "is-selected" : ""}" data-issue-id="${escapeHtml(issue.id)}">
+      <div class="severity ${issue.severity}">${escapeHtml(issue.severity)}</div>
       <div>
-        <h3>${escapeHtml(issue.title)}</h3>
+        <div class="issue-title-row">
+          <h3>${escapeHtml(issue.title)}</h3>
+          <span>${issueScoreLabel(issue)}</span>
+        </div>
         <p>${escapeHtml(issue.detail)}</p>
         <div class="issue-meta">
-          <span>Slide ${issue.slide}</span>
           <span>${escapeHtml(issue.category)}</span>
-          <span>${escapeHtml(issue.effort)}</span>
+          <span>Slides ${issue.slides.join(", ")}</span>
+          <span>${issue.autoFix ? "AI-fixable" : "Manual"}</span>
         </div>
       </div>
-      ${issue.autoFix ? '<span class="fix-badge">Fixable</span>' : '<span class="fix-badge">Manual</span>'}
+      <div class="issue-actions">
+        ${issue.autoFix && issue.status !== "fixed" ? `<button class="primary-button mini" type="button" data-action="fix" data-issue-id="${escapeHtml(issue.id)}">Apply fix</button>` : ""}
+        ${!issue.autoFix && issue.status !== "fixed" ? `<button class="secondary-button mini" type="button" data-action="review" data-issue-id="${escapeHtml(issue.id)}">Mark reviewed</button>` : ""}
+        <button class="secondary-button mini" type="button" data-action="inspect" data-issue-id="${escapeHtml(issue.id)}">Inspect</button>
+      </div>
     </article>
   `).join("");
-
-  const selectedFixes = selectedFixPlan(report);
-  fixPlanTitle.textContent = state.fixed ? "Cleaned deck recipe" : `${selectedFixes.length} fixes queued`;
-  fixPlanCopy.textContent = state.fixed
-    ? "These are the normalization rules applied to the preview and export report."
-    : "Turn on the cleanup rules you want and apply the auto-fix pass.";
-  fixSteps.innerHTML = selectedFixes.map((step) => `<li>${escapeHtml(step)}</li>`).join("");
 }
 
-function selectedFixPlan(report) {
-  if (!report) return [];
-  const rules = [];
-  if (document.getElementById("brandGrid").checked) {
-    rules.push("Snap logos, footers, and page numbers to one shared margin grid.");
+function renderInspector() {
+  const issue = state.report?.issues.find((item) => item.id === state.selectedIssueId);
+  const artifactLinks = state.artifacts
+    ? `<div class="artifact-links">
+        <a class="secondary-button mini" href="${state.artifacts.cleanedPreview}" target="_blank" rel="noreferrer">Open cleaned preview</a>
+        ${state.artifacts.fixedDeck ? `<a class="primary-button mini" href="${state.artifacts.fixedDeck}">Download fixed PPTX</a>` : ""}
+      </div>`
+    : "";
+  if (!issue) {
+    dom.issueInspector.innerHTML = `<p class="empty-state">Select an issue to see the slide-level fix, score impact, and manual guidance.</p>${artifactLinks}`;
+    return;
   }
-  if (document.getElementById("typeScale").checked) {
-    rules.push("Normalize title, subtitle, body, label, and source-note text styles.");
-  }
-  if (document.getElementById("chartPolish").checked) {
-    rules.push("Rebuild chart gutters, bar widths, label contrast, and number formatting.");
-  }
-  report.issues
-    .filter((issue) => issue.autoFix)
-    .slice(0, 4)
-    .forEach((issue) => rules.push(issue.fix));
-  return [...new Set(rules)].slice(0, 7);
+
+  dom.issueInspector.innerHTML = `
+    <p class="eyebrow">${escapeHtml(issue.category)} · Slides ${issue.slides.join(", ")}</p>
+    <h3>${escapeHtml(issue.title)}</h3>
+    <p>${escapeHtml(issue.detail)}</p>
+    <div class="inspector-actions">
+      <div>
+        <strong>${issue.autoFix ? "AI can fix this" : "Manual judgment needed"}</strong>
+        <p>${escapeHtml(issue.autoFix ? issue.aiAction : issue.manualAction)}</p>
+      </div>
+      <div>
+        <strong>Manual guidance</strong>
+        <p>${escapeHtml(issue.manualAction)}</p>
+      </div>
+    </div>
+    <div class="inspector-footer">
+      <span class="score-pill">${issue.status === "fixed" ? "Already fixed" : `Worth ${issue.penalty} score points`}</span>
+      ${issue.status !== "fixed" ? `<button class="primary-button compact" type="button" data-action="${issue.autoFix ? "fix" : "review"}" data-issue-id="${escapeHtml(issue.id)}">${issue.autoFix ? "Apply AI fix" : "Mark manual fix done"}</button>` : ""}
+    </div>
+    ${artifactLinks}
+  `;
+
+  dom.changeLog.innerHTML = state.changeLog.length
+    ? state.changeLog.slice(0, 8).map((entry) => `<li>${escapeHtml(entry)}</li>`).join("")
+    : "<li>No fixes applied yet.</li>";
 }
 
-function renderPreviewMode() {
-  deckPreview.classList.toggle("is-fixed", state.view === "fixed" || state.fixed);
-  stageTitle.textContent = state.view === "fixed" || state.fixed
-    ? "Cleaned formatting preview"
-    : "Formatting issue preview";
-  segmentButtons.forEach((button) => {
-    button.classList.toggle("is-active", button.dataset.view === state.view);
+function renderTabs() {
+  dom.tabs.forEach((tab) => {
+    tab.classList.toggle("is-active", tab.dataset.filter === state.filter);
   });
 }
 
-function applyAutoFix() {
-  if (!state.report) {
-    scanFile(sampleDeck);
-    return;
-  }
-  state.fixed = true;
-  state.view = "fixed";
-  setStatus("Auto-fixed");
-  renderPreviewMode();
-  renderReport();
+function render() {
+  renderScore();
+  renderTabs();
+  renderDeckCanvas();
+  renderIssues();
+  renderInspector();
 }
 
-function exportReport() {
+function exportBrief() {
   if (!state.report) {
     scanFile(sampleDeck);
     return;
   }
 
-  const report = state.report;
-  const safeFileName = escapeHtml(report.fileName);
-  const rows = report.issues.map((issue) => `
-    <tr>
-      <td>${escapeHtml(issue.severity)}</td>
-      <td>${escapeHtml(issue.category)}</td>
-      <td>${escapeHtml(issue.title)}</td>
-      <td>${issue.autoFix ? "Yes" : "Manual review"}</td>
-    </tr>
-  `).join("");
-  const steps = selectedFixPlan(report).map((step) => `<li>${escapeHtml(step)}</li>`).join("");
-  const html = `<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <title>DeckCleaner Report - ${safeFileName}</title>
-  <style>
-    body { font-family: Inter, Arial, sans-serif; margin: 40px; color: #17202a; }
-    h1 { margin-bottom: 6px; }
-    p { color: #657282; }
-    table { width: 100%; border-collapse: collapse; margin-top: 24px; }
-    th, td { border: 1px solid #dfe5ec; padding: 10px; text-align: left; }
-    th { background: #f2f5f8; }
-  </style>
-</head>
-<body>
-  <h1>DeckCleaner Report</h1>
-  <p>${safeFileName} | ${report.slides} slides | Score ${report.score} -> ${report.fixedScore}</p>
-  <h2>Issues</h2>
-  <table>
-    <thead><tr><th>Severity</th><th>Category</th><th>Issue</th><th>Auto-fix</th></tr></thead>
-    <tbody>${rows}</tbody>
-  </table>
-  <h2>Fix Plan</h2>
-  <ol>${steps}</ol>
-</body>
-</html>`;
+  if (state.artifacts?.editBrief) {
+    window.location.href = state.artifacts.editBrief;
+    return;
+  }
 
-  const blob = new Blob([html], { type: "text/html" });
+  const score = scoreFor(state.report.issues);
+  const lines = [
+    "DeckCleaner edit brief",
+    state.report.fileName,
+    `Current score: ${score}`,
+    `Projected after AI fixes: ${projectedScoreFor(state.report.issues)}`,
+    `Style system: ${state.styleSystem}`,
+    `Grid: ${state.gridSystem}px`,
+    "",
+    "Open issues",
+    ...state.report.issues
+      .filter((issue) => issue.status !== "fixed")
+      .map((issue) => `- [${issue.severity.toUpperCase()}] ${issue.title} | ${issue.autoFix ? "AI-fixable" : "Manual"} | slides ${issue.slides.join(", ")} | ${issue.autoFix ? issue.aiAction : issue.manualAction}`),
+    "",
+    "Applied changes",
+    ...(state.changeLog.length ? state.changeLog.map((entry) => `- ${entry}`) : ["- None yet"])
+  ];
+
+  const blob = new Blob([`${lines.join("\n")}\n`], { type: "text/plain" });
   const link = document.createElement("a");
   link.href = URL.createObjectURL(blob);
-  link.download = `deckcleaner-report-${Date.now()}.html`;
+  link.download = `deckcleaner-edit-brief-${Date.now()}.txt`;
   link.click();
   URL.revokeObjectURL(link.href);
 }
 
-deckInput.addEventListener("change", (event) => {
+dom.deckInput.addEventListener("change", (event) => {
   const [file] = event.target.files;
   if (file) scanFile(file);
 });
 
-dropzone.addEventListener("dragover", (event) => {
+dom.dropzone.addEventListener("dragover", (event) => {
   event.preventDefault();
-  dropzone.classList.add("is-dragging");
+  dom.dropzone.classList.add("is-dragging");
 });
 
-dropzone.addEventListener("dragleave", () => {
-  dropzone.classList.remove("is-dragging");
+dom.dropzone.addEventListener("dragleave", () => {
+  dom.dropzone.classList.remove("is-dragging");
 });
 
-dropzone.addEventListener("drop", (event) => {
+dom.dropzone.addEventListener("drop", (event) => {
   event.preventDefault();
-  dropzone.classList.remove("is-dragging");
+  dom.dropzone.classList.remove("is-dragging");
   const [file] = event.dataTransfer.files;
   if (file) scanFile(file);
 });
 
-sampleButton.addEventListener("click", () => scanFile(sampleDeck));
-scanAgainButton.addEventListener("click", () => scanFile(state.file || sampleDeck));
-autoFixButton.addEventListener("click", applyAutoFix);
-exportButton.addEventListener("click", exportReport);
+dom.issueList.addEventListener("click", (event) => {
+  const button = event.target.closest("button[data-action]");
+  const card = event.target.closest("[data-issue-id]");
+  const issueId = button?.dataset.issueId || card?.dataset.issueId;
+  if (!issueId) return;
+  state.selectedIssueId = issueId;
+  if (button?.dataset.action === "fix") fixIssue(issueId, "AI fix");
+  if (button?.dataset.action === "review") fixIssue(issueId, "Manual review");
+  render();
+});
 
-segmentButtons.forEach((button) => {
-  button.addEventListener("click", () => {
-    state.view = button.dataset.view;
-    renderPreviewMode();
+dom.issueInspector.addEventListener("click", (event) => {
+  const button = event.target.closest("button[data-action]");
+  if (!button) return;
+  fixIssue(button.dataset.issueId, button.dataset.action === "fix" ? "AI fix" : "Manual review");
+});
+
+dom.tabs.forEach((tab) => {
+  tab.addEventListener("click", () => {
+    state.filter = tab.dataset.filter;
+    render();
   });
 });
 
-optionInputs.forEach((input) => {
-  input.addEventListener("change", renderReport);
+dom.sampleButton.addEventListener("click", () => scanFile(sampleDeck));
+dom.scanAgainButton.addEventListener("click", rescanCurrentDeck);
+dom.applyAllButton.addEventListener("click", applyAllAutoFixes);
+dom.markManualButton.addEventListener("click", markManualReviewed);
+dom.exportButton.addEventListener("click", exportBrief);
+
+dom.styleSystem.addEventListener("change", () => {
+  state.styleSystem = dom.styleSystem.value;
+  if (state.report) {
+    state.changeLog.unshift(`Style system set to ${state.styleSystem}`);
+    fixIssue("font-drift", "Style system");
+  }
 });
 
-renderReport();
+dom.gridSystem.addEventListener("change", () => {
+  state.gridSystem = dom.gridSystem.value;
+  if (state.report) {
+    state.changeLog.unshift(`Grid set to ${state.gridSystem}px`);
+    fixIssue("logo-grid", "Grid normalization");
+    fixIssue("page-numbers", "Grid normalization");
+  }
+});
+
+render();
 
 if (new URLSearchParams(window.location.search).get("sample") === "1") {
   scanFile(sampleDeck);

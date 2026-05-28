@@ -1,0 +1,11 @@
+.DS_Store
+.Rhistory
+.vscode/
+node_modules/
+outputs/
+cloud_imports/
+private_faq/
+instagram_yoga_teacher/
+screenshots/
+revenue_leak_engine/.env
+.deckcleaner-data/
