@@ -16,7 +16,14 @@ def xml_text(value):
 
 def main(path):
     deck = Path(path)
-    result = {"text": "", "slideCount": 0, "fonts": [], "warning": False, "method": "pptx-zip"}
+    result = {
+        "text": "",
+        "slideCount": 0,
+        "fonts": [],
+        "fontSizes": [],
+        "warning": False,
+        "method": "pptx-zip",
+    }
     try:
         with zipfile.ZipFile(deck) as archive:
             names = archive.namelist()
@@ -27,17 +34,24 @@ def main(path):
             result["slideCount"] = len(slide_names)
             text_parts = []
             fonts = set()
+            font_sizes = set()
             for name in slide_names:
                 raw = archive.read(name).decode("utf-8", "ignore")
                 text_parts.append(xml_text(raw))
                 for font in re.findall(r'typeface="([^"]+)"', raw):
                     if font and not font.startswith("+"):
                         fonts.add(font)
+                for size in re.findall(r'\bsz="([0-9]+)"', raw):
+                    try:
+                        font_sizes.add(int(size))
+                    except ValueError:
+                        pass
             for name in names:
                 if name.startswith("ppt/notesSlides/") and name.endswith(".xml"):
                     text_parts.append(xml_text(archive.read(name).decode("utf-8", "ignore")))
             result["text"] = " ".join(part for part in text_parts if part)
             result["fonts"] = sorted(fonts)[:20]
+            result["fontSizes"] = sorted(font_sizes)[:40]
     except Exception as exc:
         result["warning"] = True
         result["method"] = "pptx-zip-fallback"
