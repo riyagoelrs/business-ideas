@@ -1,11 +1,11 @@
 {
-  "name": "deckcleaner",
+  "name": "foundlater",
   "version": "0.2.0",
   "private": true,
-  "description": "DeckCleaner deck QA editor with a dependency-light upload/scan/fix backend.",
+  "description": "Text-native save and search prototype for links, creators, products, and newsletters.",
   "scripts": {
     "start": "node backend/server.js",
-    "check": "node --check backend/server.js && node --check backend/analyzer.js && node --check app.js && python3 -m py_compile backend/pptx_extract.py backend/fix_pptx.py"
+    "check": "node --check backend/server.js && node --check app.js"
   },
   "engines": {
     "node": ">=18"

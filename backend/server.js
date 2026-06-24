@@ -99,6 +99,69 @@ function parseJson(req) {
   return readRequest(req).then((body) => JSON.parse(body.toString("utf8") || "{}"));
 }
 
+async function parseRequestFields(req) {
+  const body = await readRequest(req);
+  const contentType = req.headers["content-type"] || "";
+  const text = body.toString("utf8");
+  if (contentType.includes("application/json")) return JSON.parse(text || "{}");
+  if (contentType.includes("application/x-www-form-urlencoded")) {
+    return Object.fromEntries(new URLSearchParams(text));
+  }
+  return { Body: text };
+}
+
+function parseSmsSave(text) {
+  const body = String(text || "").trim();
+  const urlMatch = body.match(/https?:\/\/[^\s]+|(?:www\.)?[a-z0-9-]+\.[a-z]{2,}(?:\/[^\s]*)?/i);
+  let url = urlMatch ? urlMatch[0].replace(/[),.]+$/, "") : "";
+  if (url && !/^https?:\/\//i.test(url)) url = `https://${url}`;
+  const note = url ? body.replace(urlMatch[0], "").replace(/\s+/g, " ").trim() : body;
+  const lowered = body.toLowerCase();
+
+  let platform = "Web";
+  if (lowered.includes("instagram.com") || lowered.includes("instagram")) platform = "Instagram";
+  if (lowered.includes("tiktok.com") || lowered.includes("tiktok")) platform = "TikTok";
+  if (lowered.includes("substack.com") || lowered.includes("substack")) platform = "Substack";
+  if (lowered.includes("etsy.com") || lowered.includes("etsy")) platform = "Etsy";
+
+  let collection = "Someday";
+  if (/\b(apartment|move|moving|furniture|console|sofa|lamp|rug|decor)\b/i.test(body)) collection = "Apartment Move";
+  if (/\b(summer|bathing|swimsuit|bikini|dress|vacation|outfit)\b/i.test(body)) collection = "Summer Closet";
+  if (/\b(gift|birthday|mom|dad|holiday|present)\b/i.test(body)) collection = "Gift Ideas";
+  if (/\b(creator|commission|photographer|designer|maker|artist|custom|hire)\b/i.test(body)) collection = "Creators to Hire";
+
+  const relative = lowered.match(/\bin\s+(\d+)\s+(day|week|month|year)s?\b/);
+  const reminder = relative ? `Review in ${relative[1]} ${relative[2]}${Number(relative[1]) === 1 ? "" : "s"}` : "";
+  const tags = [];
+  if (/\b(furniture|console|sofa|chair|table|dresser|nightstand|wood|walnut|oak|custom)\b/i.test(body)) tags.push("furniture");
+  if (/\b(creator|maker|artist|designer|studio|commission)\b/i.test(body)) tags.push("creator");
+  if (/\b(brand|shop|company|store|label)\b/i.test(body)) tags.push("brand");
+
+  return { body, url, note, platform, collection, reminder, tags };
+}
+
+async function handleSms(req, res) {
+  const fields = await parseRequestFields(req);
+  const parsed = parseSmsSave(fields.Body || fields.body || fields.message || "");
+  const reply = [
+    `Saved to ${parsed.collection}.`,
+    parsed.platform ? `Source: ${parsed.platform}.` : "",
+    parsed.tags.length ? `Tags: ${parsed.tags.join(", ")}.` : "",
+    parsed.reminder ? `${parsed.reminder}.` : ""
+  ].filter(Boolean).join(" ");
+
+  if ((req.headers["accept"] || "").includes("application/json")) {
+    return sendJson(res, 200, { ok: true, reply, save: parsed });
+  }
+
+  const xml = `<?xml version="1.0" encoding="UTF-8"?><Response><Message>${escapeHtml(reply)}</Message></Response>`;
+  res.writeHead(200, {
+    "content-type": "text/xml; charset=utf-8",
+    "content-length": Buffer.byteLength(xml)
+  });
+  res.end(xml);
+}
+
 function extractPdfText(buffer) {
   const decoded = decodeBuffer(buffer);
   const literalStrings = [...decoded.matchAll(/\(([^()]{2,200})\)/g)]
@@ -374,8 +437,9 @@ async function route(req, res) {
   try {
     const url = new URL(req.url, `http://${req.headers.host}`);
     if (req.method === "GET" && url.pathname === "/api/health") {
-      return sendJson(res, 200, { ok: true, service: "DeckCleaner API" });
+      return sendJson(res, 200, { ok: true, service: "FoundLater API" });
     }
+    if (req.method === "POST" && url.pathname === "/api/sms") return handleSms(req, res);
     if (req.method === "POST" && url.pathname === "/api/scan") return handleScan(req, res);
     if (req.method === "POST" && url.pathname === "/api/apply-fixes") return handleApplyFixes(req, res);
     if (req.method === "POST" && url.pathname === "/api/rescan") return handleRescan(req, res);
@@ -389,5 +453,5 @@ async function route(req, res) {
 }
 
 http.createServer(route).listen(port, () => {
-  console.log(`DeckCleaner running at http://127.0.0.1:${port}`);
+  console.log(`FoundLater running at http://127.0.0.1:${port}`);
 });

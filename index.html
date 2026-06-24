@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>DeckCleaner | Deck Editor</title>
+  <title>FoundLater | Text-native save and search</title>
   <meta
     name="description"
-    content="Upload a VC or startup deck, scan formatting and copy consistency, apply auto-fixes, and manage manual edits from one deck editor."
+    content="Text links, creators, products, newsletters, and notes into one searchable buy-later memory system."
   />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -19,173 +19,144 @@
 <body>
   <div class="app-shell">
     <header class="topbar">
-      <a class="brand" href="#" aria-label="DeckCleaner home">
-        <span class="brand-mark">DC</span>
+      <a class="brand" href="#" aria-label="FoundLater home">
+        <span class="brand-mark">FL</span>
         <span>
-          <strong>DeckCleaner</strong>
-          <small>Deck QA and cleanup editor</small>
+          <strong>FoundLater</strong>
+          <small>Text it now. Find it when it matters.</small>
         </span>
       </a>
-      <nav class="topnav" aria-label="Product sections">
-        <a href="#scanner">Scanner</a>
-        <a href="#editor">Editor</a>
-        <a href="#suggestions">Manual fixes</a>
+      <nav class="topnav" aria-label="Workspace sections">
+        <a href="#inbox">Inbox</a>
+        <a href="#search">Search</a>
+        <a href="#collections">Collections</a>
       </nav>
-      <button class="ghost-button" id="sampleButton" type="button">Run sample deck</button>
+      <div class="number-pill" aria-label="Personal save number">
+        <span>Save number</span>
+        <strong>(415) 555-0198</strong>
+      </div>
     </header>
 
     <main>
-      <section class="scanner" id="scanner">
-        <div class="scanner-copy">
-          <p class="eyebrow">Front-to-back deck cleanup</p>
-          <h1>Scan the deck, fix the score, and keep every slide consistent.</h1>
-          <p>
-            Upload a PDF, PPT, or PPTX. DeckCleaner builds a prioritized issue queue,
-            separates AI-fixable cleanup from manual judgment calls, and lets you apply
-            fixes to a live deck preview before rescanning.
-          </p>
-          <div class="action-row">
-            <label class="primary-button" for="deckInput">Upload deck</label>
-            <button class="secondary-button" id="scanAgainButton" type="button">Rescan current deck</button>
-            <button class="secondary-button" id="exportButton" type="button">Export edit brief</button>
-          </div>
-        </div>
-
-        <section class="upload-card">
-          <input id="deckInput" name="deck" type="file" accept=".pdf,.ppt,.pptx,application/pdf,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation" />
-          <div class="dropzone" id="dropzone">
-            <div class="drop-visual" aria-hidden="true">
-              <span></span>
-              <span></span>
-              <span></span>
-            </div>
-            <div>
-              <h2>Drop a deck here</h2>
-              <p>Files stay local in your browser. If text extraction is limited, the app still runs metadata and layout heuristics.</p>
-            </div>
-            <dl class="file-meta">
+      <section class="workspace">
+        <aside class="phone-panel" aria-label="Text capture">
+          <div class="phone-shell">
+            <div class="phone-head">
+              <span class="status-dot"></span>
               <div>
-                <dt>Deck</dt>
-                <dd id="fileName">No file selected</dd>
+                <strong>FoundLater</strong>
+                <small>SMS memory inbox</small>
               </div>
-              <div>
-                <dt>Status</dt>
-                <dd id="scanStatus">Waiting</dd>
-              </div>
-            </dl>
-          </div>
-        </section>
-      </section>
-
-      <section class="score-strip" aria-live="polite">
-        <div class="score-card">
-          <div class="score-ring" id="scoreRing">
-            <span id="scoreValue">--</span>
-            <small>current score</small>
-          </div>
-          <div>
-            <p class="eyebrow">Deck health</p>
-            <h2 id="summaryTitle">Upload a deck to start.</h2>
-            <p id="summaryCopy">You will see what is wrong, what can be fixed automatically, and what needs manual judgment.</p>
-          </div>
-        </div>
-        <div class="metric-grid">
-          <div>
-            <span id="openCount">0</span>
-            <small>open issues</small>
-          </div>
-          <div>
-            <span id="autoCount">0</span>
-            <small>AI-fixable</small>
-          </div>
-          <div>
-            <span id="manualCount">0</span>
-            <small>manual fixes</small>
-          </div>
-          <div>
-            <span id="fixedCount">0</span>
-            <small>fixed</small>
-          </div>
-        </div>
-        <div class="score-delta">
-          <small>Projected after AI fixes</small>
-          <strong id="projectedScore">--</strong>
-          <div class="progress-track"><span id="scoreProgress"></span></div>
-        </div>
-      </section>
-
-      <section class="editor" id="editor">
-        <aside class="slide-panel">
-          <div class="panel-head">
-            <div>
-              <p class="eyebrow">Deck preview</p>
-              <h2>Slides update as fixes apply</h2>
             </div>
-          </div>
-          <div class="deck-canvas" id="deckCanvas"></div>
-          <div class="style-controls">
-            <label>
-              Style system
-              <select id="styleSystem">
-                <option value="Inter">Inter / modern SaaS</option>
-                <option value="Helvetica">Helvetica / classic VC</option>
-                <option value="Aptos">Aptos / Microsoft native</option>
-              </select>
-            </label>
-            <label>
-              Grid
-              <select id="gridSystem">
-                <option value="24">24 px margin grid</option>
-                <option value="32">32 px editorial grid</option>
-                <option value="40">40 px board-room grid</option>
-              </select>
-            </label>
+
+            <div class="message-stream" id="messageStream" aria-live="polite"></div>
+
+            <form class="compose" id="saveForm">
+              <textarea
+                id="saveText"
+                name="saveText"
+                rows="4"
+                placeholder="Paste a link and note: instagram.com/reel/... apartment furniture custom console in 5 months"
+                required
+              ></textarea>
+              <div class="compose-actions">
+                <select id="quickCollection" aria-label="Quick collection">
+                  <option value="">Auto collection</option>
+                  <option>Apartment Move</option>
+                  <option>Summer Closet</option>
+                  <option>Gift Ideas</option>
+                  <option>Brands to Try</option>
+                  <option>Creators to Hire</option>
+                </select>
+                <button class="primary-button" type="submit">Send</button>
+              </div>
+            </form>
           </div>
         </aside>
 
-        <section class="workbench">
-          <div class="panel-head">
+        <section class="main-panel">
+          <div class="page-title">
             <div>
-              <p class="eyebrow">Fix queue</p>
-              <h2 id="queueTitle">Issues to clean up</h2>
+              <p class="eyebrow">Buy-later memory</p>
+              <h1>Everything you find across platforms, searchable when you are ready.</h1>
             </div>
-            <div class="toolbar">
-              <button class="primary-button compact" id="applyAllButton" type="button">Apply all AI fixes</button>
-              <button class="secondary-button compact" id="markManualButton" type="button">Mark manual reviewed</button>
-            </div>
+            <button class="secondary-button" id="seedButton" type="button">Load examples</button>
           </div>
 
-          <div class="tabs" role="tablist" aria-label="Issue filters">
-            <button class="tab is-active" type="button" data-filter="all">All issues</button>
-            <button class="tab" type="button" data-filter="auto">AI-fixable</button>
-            <button class="tab" type="button" data-filter="manual">Manual suggestions</button>
-            <button class="tab" type="button" data-filter="consistency">Consistency QA</button>
-          </div>
+          <section class="command-strip" id="search">
+            <label class="search-box">
+              <span>Ask for anything you saved</span>
+              <input
+                id="searchInput"
+                type="search"
+                placeholder="find the furniture maker I saved for my apartment move"
+                autocomplete="off"
+              />
+            </label>
+            <div class="search-actions">
+              <button class="primary-button" id="searchButton" type="button">Search</button>
+              <button class="secondary-button" id="clearButton" type="button">Clear</button>
+            </div>
+          </section>
 
-          <div class="issue-list" id="issueList"></div>
+          <section class="metrics" aria-label="Saved memory stats">
+            <div>
+              <span id="savedCount">0</span>
+              <small>saved</small>
+            </div>
+            <div>
+              <span id="platformCount">0</span>
+              <small>platforms</small>
+            </div>
+            <div>
+              <span id="reminderCount">0</span>
+              <small>timed</small>
+            </div>
+            <div>
+              <span id="readyCount">0</span>
+              <small>ready soon</small>
+            </div>
+          </section>
+
+          <section class="content-grid">
+            <section class="panel" id="inbox">
+              <div class="panel-head">
+                <div>
+                  <p class="eyebrow">Inbox</p>
+                  <h2>Saved links and creators</h2>
+                </div>
+                <select id="platformFilter" aria-label="Filter by platform">
+                  <option value="all">All platforms</option>
+                </select>
+              </div>
+              <div class="save-list" id="saveList"></div>
+            </section>
+
+            <aside class="panel" id="collections">
+              <div class="panel-head">
+                <div>
+                  <p class="eyebrow">Collections</p>
+                  <h2>Future moments</h2>
+                </div>
+              </div>
+              <div class="collection-list" id="collectionList"></div>
+
+              <div class="detail-panel" id="detailPanel">
+                <p class="empty-state">Select a save to see the original text, inferred tags, reminders, and source link.</p>
+              </div>
+            </aside>
+          </section>
         </section>
-      </section>
-
-      <section class="suggestions" id="suggestions">
-        <div class="panel-head">
-          <div>
-            <p class="eyebrow">Editor inspector</p>
-            <h2>Selected issue and next action</h2>
-          </div>
-        </div>
-        <div class="inspector-grid">
-          <article class="inspector-card" id="issueInspector">
-            <p class="empty-state">Select an issue to see the slide-level fix, score impact, and manual guidance.</p>
-          </article>
-          <article class="inspector-card">
-            <p class="eyebrow">Change log</p>
-            <h3>Applied fixes</h3>
-            <ol class="change-log" id="changeLog"></ol>
-          </article>
-        </div>
       </section>
     </main>
   </div>
+
+  <template id="messageTemplate">
+    <article class="message">
+      <p></p>
+      <small></small>
+    </article>
+  </template>
 
   <script src="app.js"></script>
 </body>
