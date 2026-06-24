@@ -125,11 +125,7 @@ function parseSmsSave(text) {
   if (lowered.includes("substack.com") || lowered.includes("substack")) platform = "Substack";
   if (lowered.includes("etsy.com") || lowered.includes("etsy")) platform = "Etsy";
 
-  let collection = "Someday";
-  if (/\b(apartment|move|moving|furniture|console|sofa|lamp|rug|decor)\b/i.test(body)) collection = "Apartment Move";
-  if (/\b(summer|bathing|swimsuit|bikini|dress|vacation|outfit)\b/i.test(body)) collection = "Summer Closet";
-  if (/\b(gift|birthday|mom|dad|holiday|present)\b/i.test(body)) collection = "Gift Ideas";
-  if (/\b(creator|commission|photographer|designer|maker|artist|custom|hire)\b/i.test(body)) collection = "Creators to Hire";
+  const collection = inferSmsCollection(body);
 
   const relative = lowered.match(/\bin\s+(\d+)\s+(day|week|month|year)s?\b/);
   const reminder = relative ? `Review in ${relative[1]} ${relative[2]}${Number(relative[1]) === 1 ? "" : "s"}` : "";
@@ -140,6 +136,39 @@ function parseSmsSave(text) {
 
   const title = inferSmsTitle(note || body, url, platform);
   return { body, url, note, platform, collection, reminder, tags, title };
+}
+
+function inferSmsCollection(body) {
+  const collections = [
+    {
+      name: "Apartment Move",
+      words: ["apartment", "move", "moving", "furniture", "console", "dresser", "entryway", "bedroom", "sofa", "lamp", "rug", "decor", "home"]
+    },
+    {
+      name: "Summer Closet",
+      words: ["summer", "bathing", "swimsuit", "bikini", "dress", "vacation", "outfit", "linen", "sandals"]
+    },
+    {
+      name: "Gift Ideas",
+      words: ["gift", "birthday", "mom", "dad", "holiday", "present", "anniversary"]
+    },
+    {
+      name: "Creators to Hire",
+      words: ["creator", "commission", "photographer", "designer", "maker", "artist", "custom", "hire"]
+    },
+    {
+      name: "Brands to Try",
+      words: ["brand", "shop", "company", "store", "skincare", "restaurant", "salon"]
+    }
+  ];
+  const tokens = new Set(wordsForSms(body));
+  const scored = collections
+    .map((collection) => ({
+      name: collection.name,
+      score: collection.words.reduce((sum, word) => sum + (tokens.has(word) ? 1 : 0), 0)
+    }))
+    .sort((a, b) => b.score - a.score);
+  return scored[0]?.score ? scored[0].name : "Someday";
 }
 
 function inferSmsTitle(note, url, platform) {
