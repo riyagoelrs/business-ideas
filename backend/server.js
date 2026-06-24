@@ -16,6 +16,7 @@ const {
 
 const rootDir = path.resolve(__dirname, "..");
 const dataDir = path.join(rootDir, ".deckcleaner-data");
+const smsStorePath = path.join(dataDir, "foundlater-sms-saves.json");
 const sessions = new Map();
 const port = Number(process.env.PORT || 8787);
 const maxUploadBytes = Number(process.env.DECKCLEANER_MAX_UPLOAD_BYTES || 50 * 1024 * 1024);
@@ -137,24 +138,135 @@ function parseSmsSave(text) {
   if (/\b(creator|maker|artist|designer|studio|commission)\b/i.test(body)) tags.push("creator");
   if (/\b(brand|shop|company|store|label)\b/i.test(body)) tags.push("brand");
 
-  return { body, url, note, platform, collection, reminder, tags };
+  const title = inferSmsTitle(note || body, url, platform);
+  return { body, url, note, platform, collection, reminder, tags, title };
+}
+
+function inferSmsTitle(note, url, platform) {
+  const handle = note.match(/@[a-z0-9._-]+/i)?.[0];
+  if (handle) return handle;
+  const cleaned = note.replace(/#\w+/g, "").split(/[,.]/)[0].trim();
+  if (cleaned.length > 9) return cleaned.split(/\s+/).slice(0, 7).join(" ");
+  if (url) {
+    try {
+      return new URL(url).hostname.replace(/^www\./, "");
+    } catch {
+      return platform;
+    }
+  }
+  return platform;
+}
+
+function normalizeSmsUser(value) {
+  return String(value || "local-test").replace(/[^\d+a-zA-Z_-]/g, "");
+}
+
+async function readSmsSaves() {
+  try {
+    const data = await fsp.readFile(smsStorePath, "utf8");
+    const saves = JSON.parse(data);
+    return Array.isArray(saves) ? saves : [];
+  } catch (error) {
+    if (error.code === "ENOENT") return [];
+    throw error;
+  }
+}
+
+async function writeSmsSaves(saves) {
+  await fsp.mkdir(dataDir, { recursive: true });
+  await fsp.writeFile(smsStorePath, JSON.stringify(saves, null, 2));
+}
+
+function isSmsSearch(body) {
+  return /^(find|search|show|what|where|list|get|pull up|look up)\b/i.test(body.trim());
+}
+
+function smsSearchQuery(body) {
+  return body
+    .replace(/^(find|search|show|get|pull up|look up)\s+/i, "")
+    .replace(/^(what|where)\s+(?:was|is|are|were)?\s*/i, "")
+    .replace(/^list\s+/i, "")
+    .trim();
+}
+
+function wordsForSms(value) {
+  return (String(value).toLowerCase().match(/[a-z0-9@#]+/g) || []).filter((word) => word.length > 1);
+}
+
+function scoreSmsSave(save, query) {
+  const terms = wordsForSms(query);
+  const haystack = [
+    save.title,
+    save.note,
+    save.body,
+    save.url,
+    save.platform,
+    save.collection,
+    save.reminder,
+    ...(save.tags || [])
+  ].join(" ").toLowerCase();
+  return terms.reduce((score, term) => score + (haystack.includes(term) ? 1 : 0), 0);
+}
+
+function formatSmsResults(matches) {
+  if (!matches.length) return "I couldn't find that yet. Try another word, creator, product, or collection.";
+  return matches.slice(0, 3).map((save, index) => {
+    const link = save.url ? ` ${save.url}` : "";
+    return `${index + 1}. ${save.title} (${save.collection})${link}`;
+  }).join("\n");
+}
+
+function twiml(reply) {
+  return `<?xml version="1.0" encoding="UTF-8"?><Response><Message>${escapeHtml(reply)}</Message></Response>`;
 }
 
 async function handleSms(req, res) {
   const fields = await parseRequestFields(req);
-  const parsed = parseSmsSave(fields.Body || fields.body || fields.message || "");
-  const reply = [
-    `Saved to ${parsed.collection}.`,
-    parsed.platform ? `Source: ${parsed.platform}.` : "",
-    parsed.tags.length ? `Tags: ${parsed.tags.join(", ")}.` : "",
-    parsed.reminder ? `${parsed.reminder}.` : ""
-  ].filter(Boolean).join(" ");
+  const body = String(fields.Body || fields.body || fields.message || "").trim();
+  const userId = normalizeSmsUser(fields.From || fields.from || fields.phone);
+  const wantsJson = (req.headers["accept"] || "").includes("application/json");
+  const saves = await readSmsSaves();
+  let reply = "";
+  let payload = {};
 
-  if ((req.headers["accept"] || "").includes("application/json")) {
-    return sendJson(res, 200, { ok: true, reply, save: parsed });
+  if (!body || /^help$/i.test(body)) {
+    reply = "Text me any link or note to save it. Later text: find apartment furniture, show bathing suits, or list apartment move.";
+    payload = { mode: "help" };
+  } else if (isSmsSearch(body)) {
+    const query = smsSearchQuery(body);
+    const matches = saves
+      .filter((save) => save.userId === userId)
+      .map((save) => ({ save, score: scoreSmsSave(save, query) }))
+      .filter(({ score }) => !query || score > 0)
+      .sort((a, b) => b.score - a.score || new Date(b.save.createdAt) - new Date(a.save.createdAt))
+      .map(({ save }) => save);
+    reply = formatSmsResults(matches);
+    payload = { mode: "search", query, matches };
+  } else {
+    const parsed = parseSmsSave(body);
+    const save = {
+      id: crypto.randomUUID(),
+      userId,
+      createdAt: new Date().toISOString(),
+      ...parsed
+    };
+    saves.unshift(save);
+    await writeSmsSaves(saves);
+    reply = [
+      `Saved: ${save.title}.`,
+      `Collection: ${save.collection}.`,
+      save.tags.length ? `Tags: ${save.tags.join(", ")}.` : "",
+      save.reminder ? `${save.reminder}.` : "",
+      "Text find + words when you want it back."
+    ].filter(Boolean).join(" ");
+    payload = { mode: "save", save };
   }
 
-  const xml = `<?xml version="1.0" encoding="UTF-8"?><Response><Message>${escapeHtml(reply)}</Message></Response>`;
+  if (wantsJson) {
+    return sendJson(res, 200, { ok: true, reply, ...payload });
+  }
+
+  const xml = twiml(reply);
   res.writeHead(200, {
     "content-type": "text/xml; charset=utf-8",
     "content-length": Buffer.byteLength(xml)
