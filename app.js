@@ -299,7 +299,7 @@ async function sendSmsMessage(text) {
     });
     if (!response.ok) throw new Error(`SMS endpoint returned ${response.status}`);
     const result = await response.json();
-    state.messages.push(botMessage(result.reply));
+    let reply = result.reply;
 
     if (result.mode === "save" && result.save) {
       const save = normalizeServerSave(result.save);
@@ -314,12 +314,49 @@ async function sendSmsMessage(text) {
       dom.searchInput.value = state.query;
       state.selectedId = saves[0].id;
     }
+
+    if (result.mode === "search" && !result.matches?.length) {
+      const query = result.query || searchQueryFromSmsText(text);
+      const localMatches = localSearchMatches(query);
+      if (localMatches.length) {
+        reply = formatLocalSmsResults(localMatches);
+        state.query = query;
+        dom.searchInput.value = query;
+        state.selectedId = localMatches[0].id;
+      }
+    }
+
+    state.messages.push(botMessage(reply));
     persist();
     render();
   } catch (error) {
     state.messages.push(botMessage("Local SMS server is not reachable, so I saved this in browser-only mode."));
     saveText(text, dom.quickCollection.value);
   }
+}
+
+function searchQueryFromSmsText(text) {
+  return text
+    .replace(/^(find|search|show|get|pull up|look up)\s+/i, "")
+    .replace(/^(what|where)\s+(?:was|is|are|were)?\s*/i, "")
+    .replace(/^list\s+/i, "")
+    .trim();
+}
+
+function localSearchMatches(query) {
+  return state.saves
+    .map((save) => ({ save, score: scoreSave(save, query) }))
+    .filter(({ score }) => !query || score > 0)
+    .sort((a, b) => b.score - a.score || new Date(b.save.createdAt) - new Date(a.save.createdAt))
+    .map(({ save }) => save)
+    .slice(0, 3);
+}
+
+function formatLocalSmsResults(matches) {
+  return matches.map((save, index) => {
+    const link = save.url ? ` ${save.url}` : "";
+    return `${index + 1}. ${save.title} (${save.collection})${link}`;
+  }).join("\n");
 }
 
 function normalizeServerSave(save) {
