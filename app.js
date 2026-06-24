@@ -65,6 +65,7 @@ const state = {
 
 const dom = {
   saveForm: document.getElementById("saveForm"),
+  phoneNumber: document.getElementById("phoneNumber"),
   saveText: document.getElementById("saveText"),
   quickCollection: document.getElementById("quickCollection"),
   messageStream: document.getElementById("messageStream"),
@@ -81,6 +82,14 @@ const dom = {
   reminderCount: document.getElementById("reminderCount"),
   readyCount: document.getElementById("readyCount"),
   messageTemplate: document.getElementById("messageTemplate")
+};
+
+const smsColors = {
+  Instagram: "#d94876",
+  TikTok: "#111827",
+  Substack: "#f06a2f",
+  Etsy: "#d5641c",
+  Web: "#2f73d8"
 };
 
 function uid() {
@@ -268,6 +277,76 @@ function saveText(text, collection = "") {
   state.messages.push(userMessage(text.trim()));
   state.messages.push(botMessage(`Saved to ${save.collection}. Tags: ${save.tags.length ? save.tags.join(", ") : "none"}.`));
   render();
+}
+
+async function sendSmsMessage(text) {
+  const phone = dom.phoneNumber.value.trim() || "+15550001000";
+  state.messages.push(userMessage(text.trim()));
+  renderMessages();
+
+  const fields = new URLSearchParams();
+  fields.set("From", phone);
+  fields.set("Body", text.trim());
+
+  try {
+    const response = await fetch("/api/sms", {
+      method: "POST",
+      headers: {
+        "accept": "application/json",
+        "content-type": "application/x-www-form-urlencoded"
+      },
+      body: fields
+    });
+    if (!response.ok) throw new Error(`SMS endpoint returned ${response.status}`);
+    const result = await response.json();
+    state.messages.push(botMessage(result.reply));
+
+    if (result.mode === "save" && result.save) {
+      const save = normalizeServerSave(result.save);
+      upsertSave(save);
+      state.selectedId = save.id;
+    }
+
+    if (result.mode === "search" && result.matches?.length) {
+      const saves = result.matches.map(normalizeServerSave);
+      for (const save of saves) upsertSave(save);
+      state.query = result.query || "";
+      dom.searchInput.value = state.query;
+      state.selectedId = saves[0].id;
+    }
+    persist();
+    render();
+  } catch (error) {
+    state.messages.push(botMessage("Local SMS server is not reachable, so I saved this in browser-only mode."));
+    saveText(text, dom.quickCollection.value);
+  }
+}
+
+function normalizeServerSave(save) {
+  return {
+    id: save.id,
+    title: save.title || "Saved item",
+    url: save.url || "",
+    note: save.note || save.body || "",
+    originalText: save.body || save.note || "",
+    platform: String(save.platform || "Web").toLowerCase(),
+    platformLabel: save.platform || "Web",
+    platformColor: smsColors[save.platform] || "#2f73d8",
+    collection: save.collection || "Someday",
+    tags: save.tags || [],
+    reminder: save.reminder ? { label: save.reminder, date: "" } : null,
+    createdAt: save.createdAt || new Date().toISOString(),
+    updatedAt: save.createdAt || new Date().toISOString()
+  };
+}
+
+function upsertSave(save) {
+  const index = state.saves.findIndex((item) => item.id === save.id);
+  if (index === -1) {
+    state.saves.unshift(save);
+  } else {
+    state.saves[index] = save;
+  }
 }
 
 function scoreSave(save, query) {
@@ -528,11 +607,11 @@ function relativeDate(iso) {
   return `${days}d`;
 }
 
-dom.saveForm.addEventListener("submit", (event) => {
+dom.saveForm.addEventListener("submit", async (event) => {
   event.preventDefault();
   const text = dom.saveText.value.trim();
   if (!text) return;
-  saveText(text, dom.quickCollection.value);
+  await sendSmsMessage(text);
   dom.saveText.value = "";
   dom.quickCollection.value = "";
 });
