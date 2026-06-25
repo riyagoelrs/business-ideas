@@ -1,4 +1,5 @@
 const STORAGE_KEY = "foundlater.saves.v1";
+const PHONE_KEY = "foundlater.phone.v1";
 
 const platformRules = [
   { key: "instagram", label: "Instagram", domains: ["instagram.com", "instagr.am"], color: "#d94876" },
@@ -60,7 +61,8 @@ const state = {
   selectedId: null,
   query: "",
   platformFilter: "all",
-  collectionFilter: "all"
+  collectionFilter: "all",
+  phoneSyncTimer: null
 };
 
 const dom = {
@@ -97,6 +99,7 @@ function uid() {
 }
 
 function loadState() {
+  dom.phoneNumber.value = localStorage.getItem(PHONE_KEY) || dom.phoneNumber.value || "+15550001000";
   try {
     const stored = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
     state.saves = Array.isArray(stored) ? stored : [];
@@ -116,6 +119,7 @@ function loadState() {
 
 function persist() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state.saves));
+  localStorage.setItem(PHONE_KEY, currentPhone());
 }
 
 function botMessage(text) {
@@ -279,26 +283,33 @@ function saveText(text, collection = "") {
   render();
 }
 
+function currentPhone() {
+  return dom.phoneNumber.value.trim() || "+15550001000";
+}
+
+async function smsRequest(body) {
+  const fields = new URLSearchParams();
+  fields.set("From", currentPhone());
+  fields.set("Body", body.trim());
+
+  const response = await fetch("/api/sms", {
+    method: "POST",
+    headers: {
+      "accept": "application/json",
+      "content-type": "application/x-www-form-urlencoded"
+    },
+    body: fields
+  });
+  if (!response.ok) throw new Error(`SMS endpoint returned ${response.status}`);
+  return response.json();
+}
+
 async function sendSmsMessage(text) {
-  const phone = dom.phoneNumber.value.trim() || "+15550001000";
   state.messages.push(userMessage(text.trim()));
   renderMessages();
 
-  const fields = new URLSearchParams();
-  fields.set("From", phone);
-  fields.set("Body", text.trim());
-
   try {
-    const response = await fetch("/api/sms", {
-      method: "POST",
-      headers: {
-        "accept": "application/json",
-        "content-type": "application/x-www-form-urlencoded"
-      },
-      body: fields
-    });
-    if (!response.ok) throw new Error(`SMS endpoint returned ${response.status}`);
-    const result = await response.json();
+    const result = await smsRequest(text);
     let reply = result.reply;
 
     if (result.mode === "save" && result.save) {
@@ -332,6 +343,31 @@ async function sendSmsMessage(text) {
   } catch (error) {
     state.messages.push(botMessage("Local SMS server is not reachable, so I saved this in browser-only mode."));
     saveText(text, dom.quickCollection.value);
+  }
+}
+
+async function syncPhoneSaves({ silent = false } = {}) {
+  persist();
+  try {
+    const response = await fetch(`/api/sms/saves?phone=${encodeURIComponent(currentPhone())}`, {
+      headers: { "accept": "application/json" }
+    });
+    if (!response.ok) throw new Error(`Save list returned ${response.status}`);
+    const result = await response.json();
+    state.saves = (result.saves || []).map(normalizeServerSave);
+    state.selectedId = state.saves[0]?.id || null;
+    state.query = "";
+    dom.searchInput.value = "";
+    persist();
+    if (!silent) {
+      state.messages.push(botMessage(`Loaded ${state.saves.length} saved item${state.saves.length === 1 ? "" : "s"} for ${currentPhone()}.`));
+    }
+    render();
+  } catch (error) {
+    if (!silent) {
+      state.messages.push(botMessage("I could not load that phone number's server saves yet."));
+      renderMessages();
+    }
   }
 }
 
@@ -579,23 +615,21 @@ function renderDetail() {
   `;
 }
 
-function runSearch() {
+async function runSearch() {
   state.query = dom.searchInput.value.trim();
-  if (state.query) {
-    const matches = filteredSaves();
-    state.messages.push(userMessage(state.query));
-    state.messages.push(botMessage(matches.length ? `Found ${matches.length} match${matches.length === 1 ? "" : "es"}. Best result: ${matches[0].title}.` : "I could not find that yet."));
-    if (matches[0]) state.selectedId = matches[0].id;
-  }
-  render();
+  if (!state.query) return;
+  await sendSmsMessage(`find ${state.query}`);
 }
 
-function loadExamples() {
-  const existingTexts = new Set(state.saves.map((save) => save.originalText));
+async function loadExamples() {
+  const existingTexts = new Set(state.saves.map((save) => save.originalText || save.body));
   let added = 0;
   for (const example of examples) {
     if (!existingTexts.has(example.text)) {
-      state.saves.unshift(parseSave(example.text, example.collection));
+      const result = await smsRequest(example.text);
+      if (result.save) {
+        upsertSave(normalizeServerSave(result.save));
+      }
       added += 1;
     }
   }
@@ -668,6 +702,19 @@ dom.clearButton.addEventListener("click", () => {
 
 dom.seedButton.addEventListener("click", loadExamples);
 
+dom.phoneNumber.addEventListener("change", () => {
+  state.messages = [botMessage(`Using ${currentPhone()} as the test account.`)];
+  syncPhoneSaves();
+});
+
+dom.phoneNumber.addEventListener("input", () => {
+  window.clearTimeout(state.phoneSyncTimer);
+  state.phoneSyncTimer = window.setTimeout(() => {
+    state.messages = [botMessage(`Using ${currentPhone()} as the test account.`)];
+    syncPhoneSaves();
+  }, 450);
+});
+
 dom.platformFilter.addEventListener("change", () => {
   state.platformFilter = dom.platformFilter.value;
   renderSaves();
@@ -699,6 +746,10 @@ dom.saveList.addEventListener("keydown", (event) => {
 dom.detailPanel.addEventListener("click", (event) => {
   const button = event.target.closest("[data-delete]");
   if (!button) return;
+  fetch(`/api/sms/saves/${encodeURIComponent(button.dataset.delete)}?phone=${encodeURIComponent(currentPhone())}`, {
+    method: "DELETE",
+    headers: { "accept": "application/json" }
+  }).catch(() => {});
   state.saves = state.saves.filter((save) => save.id !== button.dataset.delete);
   state.selectedId = state.saves[0]?.id || null;
   state.messages.push(botMessage("Deleted the selected save."));
@@ -708,3 +759,4 @@ dom.detailPanel.addEventListener("click", (event) => {
 
 loadState();
 render();
+syncPhoneSaves({ silent: true });

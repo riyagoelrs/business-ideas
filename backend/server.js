@@ -303,6 +303,22 @@ async function handleSms(req, res) {
   res.end(xml);
 }
 
+async function handleListSmsSaves(req, res, url) {
+  const userId = normalizeSmsUser(url.searchParams.get("phone") || url.searchParams.get("from"));
+  const saves = (await readSmsSaves())
+    .filter((save) => save.userId === userId)
+    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  sendJson(res, 200, { ok: true, saves });
+}
+
+async function handleDeleteSmsSave(req, res, saveId, url) {
+  const userId = normalizeSmsUser(url.searchParams.get("phone") || url.searchParams.get("from"));
+  const saves = await readSmsSaves();
+  const nextSaves = saves.filter((save) => !(save.id === saveId && save.userId === userId));
+  await writeSmsSaves(nextSaves);
+  sendJson(res, 200, { ok: true, deleted: nextSaves.length !== saves.length });
+}
+
 function extractPdfText(buffer) {
   const decoded = decodeBuffer(buffer);
   const literalStrings = [...decoded.matchAll(/\(([^()]{2,200})\)/g)]
@@ -580,6 +596,9 @@ async function route(req, res) {
     if (req.method === "GET" && url.pathname === "/api/health") {
       return sendJson(res, 200, { ok: true, service: "FoundLater API" });
     }
+    if (req.method === "GET" && url.pathname === "/api/sms/saves") return handleListSmsSaves(req, res, url);
+    const smsSaveMatch = url.pathname.match(/^\/api\/sms\/saves\/([^/]+)$/);
+    if (req.method === "DELETE" && smsSaveMatch) return handleDeleteSmsSave(req, res, smsSaveMatch[1], url);
     if (req.method === "POST" && url.pathname === "/api/sms") return handleSms(req, res);
     if (req.method === "POST" && url.pathname === "/api/scan") return handleScan(req, res);
     if (req.method === "POST" && url.pathname === "/api/apply-fixes") return handleApplyFixes(req, res);
