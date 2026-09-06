@@ -9,6 +9,7 @@ on:
     paths:
       - ".github/workflows/restaurant-hype-v11-enrich.yml"
       - "restaurant-hype-map/pipeline/enrich_v11.py"
+      - "restaurant-hype-map/pipeline/beli_precise.py"
 
 concurrency:
   group: restaurant-hype-v11-enrich
@@ -34,11 +35,17 @@ jobs:
       - name: Install dependencies
         run: pip install -r restaurant-hype-map/requirements-data.txt
 
-      - name: Enrich Beli Reddit web and public review signals
+      - name: Enrich verified Beli Reddit web and public review signals
         working-directory: restaurant-hype-map/pipeline
         run: |
-          sed -i 's/web_batch(rows)/web_batch(rows,24)/' enrich_v11.py
-          python enrich_v11.py
+          python - <<'PY'
+          import enrich_v11 as e
+          import beli_precise
+          e.fuzzy_beli=beli_precise.clean_and_apply
+          original_web=e.web_batch
+          e.web_batch=lambda rows, limit=420: original_web(rows,24)
+          e.main()
+          PY
 
       - name: Commit enriched data to main
         run: |
