@@ -11,6 +11,10 @@ on:
       - "restaurant-hype-map/pipeline/**"
       - "restaurant-hype-map/requirements-data.txt"
 
+concurrency:
+  group: restaurant-hype-refresh
+  cancel-in-progress: true
+
 permissions:
   contents: write
 
