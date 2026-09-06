@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from collections import defaultdict, deque
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from datetime import datetime, timezone
 from typing import Dict, List, Optional
 
 import refresh_scores as base
@@ -15,13 +16,7 @@ def resolve_relation(query: str, must_contain: str = "") -> Optional[int]:
     try:
         r = base.session().get(
             NOMINATIM_URL,
-            params={
-                "q": query,
-                "format": "jsonv2",
-                "countrycodes": "us",
-                "addressdetails": 1,
-                "limit": 10,
-            },
+            params={"q": query, "format": "jsonv2", "countrycodes": "us", "addressdetails": 1, "limit": 10},
             timeout=20,
         )
         r.raise_for_status()
@@ -91,11 +86,7 @@ def element_rows(city: str, payload: dict) -> List[dict]:
             "cuisine": tags.get("cuisine"),
             "website": website,
             "address": address,
-            "sources": {"osm": {
-                "osm_id": f"{el.get('type')}:{el.get('id')}",
-                "website": website,
-                "cuisine": tags.get("cuisine"),
-            }},
+            "sources": {"osm": {"osm_id": f"{el.get('type')}:{el.get('id')}", "website": website, "cuisine": tags.get("cuisine")}},
         })
     return rows
 
@@ -155,10 +146,7 @@ def fetch_nyc_boroughs(limit: int) -> List[dict]:
 
     all_rows: List[dict] = []
     with ThreadPoolExecutor(max_workers=3) as ex:
-        futures = {
-            ex.submit(fetch_relation_restaurants, "New York, NY", rid, borough): borough
-            for borough, rid in relations.items()
-        }
+        futures = {ex.submit(fetch_relation_restaurants, "New York, NY", rid, borough): borough for borough, rid in relations.items()}
         for f in as_completed(futures):
             try:
                 all_rows.extend(f.result())
@@ -194,7 +182,6 @@ def fallback_tiled_bbox(city: str) -> List[dict]:
 def fetch_osm_city(city: str, limit: int = MAX_RESTAURANTS_PER_CITY) -> List[dict]:
     if city == "New York, NY":
         rows = fetch_nyc_boroughs(limit)
-        # Do not fall back to the old NYC rectangle: it is exactly what let NJ leak in.
         if rows:
             return rows
         print("NYC borough queries returned no restaurants; preserving prior cache rather than importing NJ")
@@ -212,7 +199,59 @@ def fetch_osm_city(city: str, limit: int = MAX_RESTAURANTS_PER_CITY) -> List[dic
     return fallback_tiled_bbox(city)
 
 
+def rotating_web_enrich(rows: List[dict]) -> None:
+    """Enrich the whole city universe in rotating free GDELT batches.
+
+    Priority restaurants (Beli/TikTok) are always included. The remainder rotates
+    daily, so coverage grows across the city instead of staying trapped in a tiny
+    curated subset. Existing web snapshots are preserved later by base.run().
+    """
+    by_city: Dict[str, List[dict]] = defaultdict(list)
+    for r in rows:
+        if r.get("name") and r.get("city"):
+            by_city[r["city"]].append(r)
+
+    day = datetime.now(timezone.utc).timetuple().tm_yday
+    targets: List[tuple[str, str]] = []
+    for city, city_rows in by_city.items():
+        priority = []
+        ordinary = []
+        for r in city_rows:
+            src = r.get("sources") or {}
+            if src.get("beli") or src.get("tiktok"):
+                priority.append(r["name"])
+            else:
+                ordinary.append(r["name"])
+        priority = list(dict.fromkeys(priority))[:30]
+        ordinary = sorted(set(ordinary), key=base.slug)
+        batch_size = 180 if city == "New York, NY" else 70
+        rotation = []
+        if ordinary:
+            start = (day * batch_size) % len(ordinary)
+            rotation = (ordinary[start:start + batch_size] + ordinary[:max(0, start + batch_size - len(ordinary))])[:batch_size]
+        names = list(dict.fromkeys(priority + rotation))
+        targets.extend((city, n) for n in names)
+        print(f"web rotation {city}: {len(names)} restaurants")
+
+    by_key: Dict[str, List[dict]] = defaultdict(list)
+    for r in rows:
+        by_key[base.row_key(r.get("city") or "", r.get("name") or "")].append(r)
+
+    with ThreadPoolExecutor(max_workers=12) as ex:
+        futures = {ex.submit(base.gdelt_signal, name, city): (city, name) for city, name in targets}
+        for f in as_completed(futures):
+            city, name = futures[f]
+            try:
+                sig = f.result()
+            except Exception:
+                sig = None
+            if sig is not None:
+                for r in by_key.get(base.row_key(city, name), []):
+                    r.setdefault("sources", {})["web"] = sig
+
+
 base.fetch_osm_city = fetch_osm_city
+base.web_enrich = rotating_web_enrich
 
 if __name__ == "__main__":
     base.run()
