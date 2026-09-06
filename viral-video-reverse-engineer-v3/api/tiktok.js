@@ -1,190 +1,20 @@
-const PROFILE_EMBED = 'https://www.tiktok.com/embed/@';
-const VIDEO_EMBED = 'https://www.tiktok.com/embed/v2/';
-const PLAYER_API = 'https://www.tiktok.com/player/api/v1/items';
-const UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36';
+const CREATOR_API='https://www.tiktok.com/api/creator/item_list/';
+const PROFILE_EMBED='https://www.tiktok.com/embed/@';
+const UA='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36';
 
-function send(res, status, body) {
-  res.statusCode = status;
-  res.setHeader('Content-Type', 'application/json; charset=utf-8');
-  res.setHeader('Cache-Control', 'no-store, max-age=0');
-  res.end(JSON.stringify(body));
-}
-
-class CookieJar {
-  constructor(){ this.map = new Map(); }
-  header(){ return [...this.map.entries()].map(([k,v])=>`${k}=${v}`).join('; '); }
-  absorb(headers){
-    let values = [];
-    if (typeof headers?.getSetCookie === 'function') values = headers.getSetCookie();
-    if (!values?.length) {
-      const one = headers?.get?.('set-cookie');
-      if (one) values = one.split(/,(?=\s*[A-Za-z0-9_!#$%&'*+.^`|~-]+=)/);
-    }
-    for (const raw of values || []) {
-      const first = String(raw).split(';',1)[0];
-      const idx = first.indexOf('=');
-      if (idx <= 0) continue;
-      const name = first.slice(0, idx).trim();
-      const value = first.slice(idx + 1).trim();
-      if (name && value) this.map.set(name, value);
-    }
-  }
-}
-
-function scriptJson(html, id) {
-  const escaped = id.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  const re = new RegExp(`<script\\b[^>]*\\bid\\s*=\\s*["']${escaped}["'][^>]*>([\\s\\S]*?)<\\/script\\s*>`, 'i');
-  const match = String(html || '').match(re);
-  if (!match) throw new Error(`${id} state was not found`);
-  return JSON.parse(match[1].trim());
-}
-
-async function request(url, {referer, accept, jar, timeoutMs = 10000} = {}) {
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), timeoutMs);
-  try {
-    const headers = {
-      'user-agent': UA,
-      'accept': accept || 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-      'accept-language': 'en-US,en;q=0.9',
-      'cache-control': 'no-cache'
-    };
-    if (referer) headers.referer = referer;
-    const cookie = jar?.header();
-    if (cookie) headers.cookie = cookie;
-    const response = await fetch(url, { headers, redirect:'follow', cache:'no-store', signal:controller.signal });
-    jar?.absorb(response.headers);
-    const text = await response.text();
-    if (!response.ok) throw new Error(`TikTok HTTP ${response.status}`);
-    return { text, response };
-  } finally {
-    clearTimeout(timer);
-  }
-}
-
-function extractHashtags(text) {
-  return [...String(text || '').matchAll(/#([\p{L}\p{N}_.-]+)/gu)].map(m => m[1].toLowerCase());
-}
-
-function findCreatorPage(state, handle) {
-  const pages = Object.values(state?.source?.data || {});
-  for (const page of pages) {
-    if (page?.isError || String(page?.playlistType || '').toLowerCase() !== 'creator') continue;
-    const unique = String(page?.userInfo?.uniqueId || '').toLowerCase();
-    const playlist = String(page?.playlistId || '').toLowerCase();
-    if (unique === handle.toLowerCase() || playlist === handle.toLowerCase()) return page;
-  }
-  throw new Error('TikTok creator embed did not contain this user');
-}
-
-async function fetchCreatorListing(handle, jar) {
-  const profileUrl = `https://www.tiktok.com/@${encodeURIComponent(handle)}`;
-  try { await request(profileUrl, { referer:'https://www.tiktok.com/', jar, timeoutMs:9000 }); } catch (e) { console.warn('profile warmup failed', e.message); }
-
-  const { text: html } = await request(PROFILE_EMBED + encodeURIComponent(handle), { referer:profileUrl, jar, timeoutMs:12000 });
-  const state = scriptJson(html, '__FRONTITY_CONNECT_STATE__');
-  const page = findCreatorPage(state, handle);
-  const videos = (page.videoList || [])
-    .filter(v => v && v.id && !v.privateItem)
-    .slice(0, 10)
-    .map(v => ({
-      id: String(v.id),
-      caption: String(v.desc || ''),
-      views: Number(v.playCount) || 0,
-      duration: 0,
-      likes: 0,
-      comments: 0,
-      shares: 0,
-      createTime: 0,
-      author: String(v.authorUniqueId || page?.userInfo?.uniqueId || handle),
-      hashtags: extractHashtags(v.desc || ''),
-      url: `https://www.tiktok.com/@${encodeURIComponent(v.authorUniqueId || page?.userInfo?.uniqueId || handle)}/video/${encodeURIComponent(v.id)}`,
-      partial: true
-    }));
-  return { page, videos };
-}
-
-function findVideoData(state, id) {
-  for (const page of Object.values(state?.source?.data || {})) {
-    const data = page?.videoData;
-    if (String(data?.itemInfos?.id || '') !== String(id)) continue;
-    if (page?.isError || (page?.code && page.code !== 200)) throw new Error(`TikTok video embed code ${page.code}`);
-    return data;
-  }
-  throw new Error('TikTok video embed did not contain this post');
-}
-
-async function enrichFromEmbed(base, jar) {
-  const { text: html } = await request(VIDEO_EMBED + encodeURIComponent(base.id), { referer:base.url, jar, timeoutMs:8000 });
-  const state = scriptJson(html, '__FRONTITY_CONNECT_STATE__');
-  const data = findVideoData(state, base.id);
-  const item = data.itemInfos || {};
-  const meta = item.video?.videoMeta || {};
-  const author = data.authorInfos || {};
-  const views = Number(item.playCount) || base.views || 0;
-  const likes = Number(item.diggCount) || 0;
-  const comments = Number(item.commentCount) || 0;
-  const shares = Number(item.shareCount) || 0;
-  const caption = String(item.text || base.caption || '');
-  return { ...base, caption, views, likes, comments, shares, duration:Number(meta.duration)||0, createTime:Number(item.createTime)||0, author:String(author.uniqueId||base.author||''), hashtags:extractHashtags(caption), engagement:views?(likes+comments+shares)/views:0, partial:false, detailSource:'embed/v2' };
-}
-
-async function enrichFromPlayer(base, jar) {
-  const u = new URL(PLAYER_API);
-  u.searchParams.set('item_ids', base.id);
-  u.searchParams.set('language', 'en');
-  u.searchParams.set('aid', '1459');
-  u.searchParams.set('data_source', 'web_core');
-  const { text } = await request(u.toString(), { referer:base.url, accept:'application/json, text/plain, */*', jar, timeoutMs:8000 });
-  let j; try { j = JSON.parse(text); } catch { throw new Error('TikTok player returned non-JSON'); }
-  if (Number(j?.status_code) !== 0 || !Array.isArray(j?.items) || !j.items.length) throw new Error(j?.status_msg || 'TikTok player returned no post');
-  const item = j.items[0];
-  const stats = item.statistics_info || {};
-  const meta = item.video_info?.meta || {};
-  const caption = String(item.desc || base.caption || '');
-  const views = Number(base.views) || 0;
-  const likes = Number(stats.digg_count) || 0;
-  const comments = Number(stats.comment_count) || 0;
-  const shares = Number(stats.share_count) || 0;
-  return { ...base, caption, likes, comments, shares, duration:Number(meta.duration)||0, author:String(item.author_info?.unique_id||base.author||''), hashtags:extractHashtags(caption), engagement:views?(likes+comments+shares)/views:0, partial:false, detailSource:'player/api/v1/items' };
-}
-
-async function enrichVideo(base, jar) {
-  try { return await enrichFromEmbed(base, jar); }
-  catch (embedError) {
-    try { return await enrichFromPlayer(base, jar); }
-    catch (playerError) { throw new Error(`embed: ${embedError.message}; player: ${playerError.message}`); }
-  }
-}
-
-async function enrichInBatches(videos, jar, batchSize = 5) {
-  const output = [];
-  for (let i = 0; i < videos.length; i += batchSize) {
-    const batch = videos.slice(i, i + batchSize);
-    const results = await Promise.allSettled(batch.map(v => enrichVideo(v, jar)));
-    results.forEach((result, idx) => {
-      const base = batch[idx];
-      if (result.status === 'fulfilled') output.push(result.value);
-      else output.push({ ...base, engagement:0, enrichError:result.reason?.message || 'detail fetch failed' });
-    });
-  }
-  return output;
-}
-
-module.exports = async function handler(req, res) {
-  if (req.method !== 'GET') return send(res, 405, { error:'GET only' });
-  const handle = String(req.query?.handle || '').trim().replace(/^@/, '').split(/[/?#]/)[0];
-  if (!/^[A-Za-z0-9._]{2,32}$/.test(handle)) return send(res, 400, { error:'Invalid TikTok username' });
-
-  const jar = new CookieJar();
-  try {
-    const listing = await fetchCreatorListing(handle, jar);
-    if (!listing.videos.length) return send(res, 404, { error:'No public videos were exposed by TikTok for this creator.' });
-    const videos = await enrichInBatches(listing.videos, jar);
-    const detailed = videos.filter(v => !v.partial).length;
-    return send(res, 200, { ok:true, handle, source:'TikTok public creator/video embeds', sampleType:'latest_public_embed', count:videos.length, detailedCount:detailed, videos });
-  } catch (error) {
-    console.error('TikTok embed fetch failed:', error);
-    return send(res, 502, { error:'TikTok public embed fetch failed', detail:error?.message || 'Unknown TikTok error' });
-  }
-};
+function send(res,status,body){res.statusCode=status;res.setHeader('Content-Type','application/json; charset=utf-8');res.setHeader('Cache-Control','no-store, max-age=0');res.end(JSON.stringify(body))}
+class CookieJar{constructor(){this.map=new Map()}header(){return[...this.map].map(([k,v])=>`${k}=${v}`).join('; ')}absorb(headers){let values=[];if(typeof headers?.getSetCookie==='function')values=headers.getSetCookie();if(!values.length){const one=headers?.get?.('set-cookie');if(one)values=one.split(/,(?=\s*[A-Za-z0-9_!#$%&'*+.^`|~-]+=)/)}for(const raw of values){const first=String(raw).split(';',1)[0],i=first.indexOf('=');if(i>0)this.map.set(first.slice(0,i).trim(),first.slice(i+1).trim())}}}
+function scriptJson(html,id){const safe=id.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');const m=String(html||'').match(new RegExp(`<script\\b[^>]*\\bid\\s*=\\s*["']${safe}["'][^>]*>([\\s\\S]*?)<\\/script\\s*>`,'i'));if(!m)throw new Error(`${id} state was not found`);return JSON.parse(m[1].trim())}
+async function request(url,{referer,accept,jar,timeoutMs=12000}={}){const c=new AbortController(),t=setTimeout(()=>c.abort(),timeoutMs);try{const headers={'user-agent':UA,'accept':accept||'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8','accept-language':'en-US,en;q=0.9','cache-control':'no-cache','pragma':'no-cache'};if(referer)headers.referer=referer;const cookie=jar?.header();if(cookie)headers.cookie=cookie;const r=await fetch(url,{headers,redirect:'follow',cache:'no-store',signal:c.signal});jar?.absorb(r.headers);const text=await r.text();if(!r.ok)throw new Error(`TikTok HTTP ${r.status}`);return{text,response:r}}finally{clearTimeout(t)}}
+function randDigits(n){let s='';while(s.length<n)s+=Math.floor(Math.random()*10);return s.replace(/^0/,'7')}
+function hashtags(text){return[...String(text||'').matchAll(/#([\p{L}\p{N}_.-]+)/gu)].map(m=>m[1].toLowerCase())}
+function normalize(item,handle){const stats=item?.stats||item?.statsV2||{},video=item?.video||{},author=item?.author||{};const views=Number(stats.playCount)||0,likes=Number(stats.diggCount)||0,comments=Number(stats.commentCount)||0,shares=Number(stats.shareCount)||0,caption=String(item?.desc||'');return{id:String(item?.id||''),caption,views,likes,comments,shares,engagement:views?(likes+comments+shares)/views:0,duration:Number(video.duration)||0,createTime:Number(item?.createTime)||0,author:String(author.uniqueId||handle),hashtags:hashtags(caption),url:item?.id?`https://www.tiktok.com/@${encodeURIComponent(author.uniqueId||handle)}/video/${item.id}`:''}}
+function userDetailFromUniversal(state){return state?.__DEFAULT_SCOPE__?.['webapp.user-detail']||state?.['__DEFAULT_SCOPE__']?.['webapp.user-detail']||null}
+function secUidFromDetail(detail){return String(detail?.userInfo?.user?.secUid||'')}
+function initialItemsFromDetail(detail){const x=detail?.userInfo?.itemList;return Array.isArray(x)?x:[]}
+async function getProfile(handle,jar){const url=`https://www.tiktok.com/@${encodeURIComponent(handle)}`;const{text}=await request(url,{referer:'https://www.tiktok.com/',jar,timeoutMs:12000});let detail=null;try{detail=userDetailFromUniversal(scriptJson(text,'__UNIVERSAL_DATA_FOR_REHYDRATION__'))}catch{}return{url,detail}}
+function creatorQuery(secUid,cursor,deviceId){const q=new URLSearchParams({aid:'1988',app_language:'en',app_name:'tiktok_web',browser_language:'en-US',browser_name:'Mozilla',browser_online:'true',browser_platform:'Win32',browser_version:'5.0 (Windows)',channel:'tiktok_web',cookie_enabled:'true',count:'15',cursor:String(cursor),device_id:deviceId,device_platform:'web_pc',focus_state:'true',from_page:'user',history_len:'2',is_fullscreen:'false',is_page_visible:'true',language:'en',os:'windows',priority_region:'',referer:'',region:'US',screen_height:'1080',screen_width:'1920',secUid,type:'1',tz_name:'UTC',verifyFp:'verify_'+Math.random().toString(16).slice(2,9),webcast_language:'en'});return `${CREATOR_API}?${q.toString()}`}
+async function fetchRecent100(handle,jar,secUid,initial=[]){const target=100,seen=new Set(),videos=[];for(const item of initial){const v=normalize(item,handle);if(v.id&&!seen.has(v.id)){seen.add(v.id);videos.push(v)}}let cursor=Date.now(),deviceId=randDigits(19),samePage=0,lastSig='';for(let page=1;page<=10&&videos.length<target;page++){const url=creatorQuery(secUid,cursor,deviceId);const{text}=await request(url,{referer:`https://www.tiktok.com/@${handle}`,accept:'application/json, text/plain, */*',jar,timeoutMs:12000});let j;try{j=JSON.parse(text)}catch{throw new Error(`TikTok creator API returned non-JSON on page ${page}`)}if(Number(j?.statusCode||0)!==0&&j?.statusMsg)throw new Error(j.statusMsg);const items=Array.isArray(j?.itemList)?j.itemList:[];const sig=items.map(x=>x?.id).filter(Boolean).sort().join(',');if(sig&&sig===lastSig){samePage++;deviceId=randDigits(19);if(samePage>1)break}else samePage=0;lastSig=sig;for(const item of items){const v=normalize(item,handle);if(v.id&&!seen.has(v.id)){seen.add(v.id);videos.push(v);if(videos.length>=target)break}}if(!items.length)break;const last=items[items.length-1];const next=Number(last?.createTime)?Number(last.createTime)*1000:cursor-7*86400000;if(next>=cursor)cursor-=7*86400000;else cursor=next;if(j?.hasMorePrevious===false||j?.hasMore===false)break}
+return videos.slice(0,target)}
+async function embedFallback(handle,jar){const profile=`https://www.tiktok.com/@${encodeURIComponent(handle)}`;const{text}=await request(PROFILE_EMBED+encodeURIComponent(handle),{referer:profile,jar,timeoutMs:12000});const state=scriptJson(text,'__FRONTITY_CONNECT_STATE__');for(const page of Object.values(state?.source?.data||{})){if(page?.isError||String(page?.playlistType||'').toLowerCase()!=='creator')continue;const u=String(page?.userInfo?.uniqueId||'');if(u.toLowerCase()!==handle.toLowerCase()&&String(page?.playlistId||'').toLowerCase()!==handle.toLowerCase())continue;return(page.videoList||[]).filter(v=>v?.id&&!v?.privateItem).map(v=>({id:String(v.id),caption:String(v.desc||''),views:Number(v.playCount)||0,likes:0,comments:0,shares:0,engagement:0,duration:0,createTime:0,author:String(v.authorUniqueId||u||handle),hashtags:hashtags(v.desc||''),url:`https://www.tiktok.com/@${encodeURIComponent(v.authorUniqueId||u||handle)}/video/${v.id}`,partial:true})).slice(0,10)}throw new Error('TikTok creator embed did not contain this user')}
+module.exports=async function handler(req,res){if(req.method!=='GET')return send(res,405,{error:'GET only'});const handle=String(req.query?.handle||'').trim().replace(/^@/,'').split(/[/?#]/)[0];if(!/^[A-Za-z0-9._]{2,32}$/.test(handle))return send(res,400,{error:'Invalid TikTok username'});const jar=new CookieJar();let profileError='';try{const profile=await getProfile(handle,jar);const detail=profile.detail,secUid=secUidFromDetail(detail);if(!secUid)throw new Error('TikTok profile did not expose secUid');const videos=await fetchRecent100(handle,jar,secUid,initialItemsFromDetail(detail));if(videos.length<2)throw new Error('TikTok creator API returned too few posts');return send(res,200,{ok:true,handle,count:videos.length,targetCount:100,sampleType:'recent_100',source:'TikTok creator item_list',videos})}catch(e){profileError=e?.message||'profile/API failed';console.warn('100-post path failed:',profileError)}try{const videos=await embedFallback(handle,jar);return send(res,200,{ok:true,handle,count:videos.length,targetCount:100,sampleType:'embed_fallback',source:'TikTok creator embed fallback',warning:`100-post collection failed: ${profileError}`,videos})}catch(e){console.error('TikTok fetch failed:',e);return send(res,502,{error:'TikTok collection failed',detail:`100-post path: ${profileError}; fallback: ${e?.message||'unknown error'}`})}}
