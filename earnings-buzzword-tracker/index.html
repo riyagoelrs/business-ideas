@@ -21,7 +21,7 @@
         </span>
       </a>
       <div class="topbar-actions">
-        <span class="status-dot"><i></i><span id="sourceStatus">Demo dataset</span></span>
+        <span class="status-dot"><i></i><span id="sourceStatus">Ready to pull transcripts</span></span>
         <a class="github-link" href="https://github.com/riyagoelrs/business-ideas/tree/main/earnings-buzzword-tracker" target="_blank" rel="noreferrer">View code ↗</a>
       </div>
     </header>
@@ -31,7 +31,7 @@
         <div>
           <p class="eyebrow">NARRATIVE INTELLIGENCE / EARNINGS CALLS</p>
           <h1>Every CEO suddenly started saying the same word.</h1>
-          <p class="hero-copy">Track how terms like <strong>AI</strong>, <strong>tariffs</strong>, <strong>GLP-1</strong>, and <strong>consumer pressure</strong> spread across earnings calls — then see which narratives are accelerating fastest.</p>
+          <p class="hero-copy">Enter a company watchlist and SignalCall pulls recent earnings transcripts, counts terms like <strong>AI</strong>, <strong>tariffs</strong>, <strong>GLP-1</strong>, and <strong>consumer pressure</strong>, and shows which narratives are accelerating fastest.</p>
         </div>
         <div class="hero-badge">
           <span>BUZZWORD VELOCITY</span>
@@ -42,12 +42,12 @@
 
       <section class="control-panel" aria-label="Analysis controls">
         <div class="mode-tabs" role="tablist" aria-label="Data source">
-          <button class="mode-tab is-active" data-mode="demo" type="button">Demo data</button>
-          <button class="mode-tab" data-mode="live" type="button">Live API</button>
-          <button class="mode-tab" data-mode="paste" type="button">Paste / upload</button>
+          <button class="mode-tab" data-mode="demo" type="button">Try demo</button>
+          <button class="mode-tab is-active" data-mode="live" type="button">Pull transcripts</button>
+          <button class="mode-tab" data-mode="paste" type="button">Manual fallback</button>
         </div>
 
-        <div class="mode-panel is-active" data-panel="demo">
+        <div class="mode-panel" data-panel="demo">
           <div class="mode-copy">
             <div>
               <p class="eyebrow">INSTANT WALKTHROUGH</p>
@@ -55,15 +55,15 @@
             </div>
             <button class="primary-button" id="runDemo" type="button">Run demo analysis</button>
           </div>
-          <p class="fine-print">Demo counts are illustrative so the interface works instantly. Use Live API or Paste / upload for your own transcript data.</p>
+          <p class="fine-print">Demo counts are illustrative so the interface works instantly. Use Pull transcripts for real earnings-call data.</p>
         </div>
 
-        <div class="mode-panel" data-panel="live">
+        <div class="mode-panel is-active" data-panel="live">
           <div class="form-grid live-grid">
             <label class="field span-2">
               <span>Tickers</span>
               <input id="liveTickers" value="NVDA,META,WMT,NKE,MCD,LLY" placeholder="NVDA,META,WMT,NKE" />
-              <small>Comma-separated. Up to 25 companies.</small>
+              <small>Comma-separated. Use a focused watchlist for faster analysis.</small>
             </label>
             <label class="field">
               <span>From</span>
@@ -84,10 +84,10 @@
           </div>
           <div class="mode-actions">
             <div>
-              <p class="fine-print">Live mode queries transcript search by ticker and period. Full-text search requires an API plan that supports the search endpoint.</p>
+              <p class="fine-print">SignalCall pulls each ticker's earnings-call history, retrieves the selected transcripts, and counts your tracked phrases automatically. No copy/paste required.</p>
               <p id="liveError" class="inline-error" role="alert"></p>
             </div>
-            <button class="primary-button" id="runLive" type="button">Fetch live calls</button>
+            <button class="primary-button" id="runLive" type="button">Pull & analyze transcripts</button>
           </div>
         </div>
 
@@ -121,7 +121,7 @@
                 <button id="clearLibrary" class="text-button" type="button">Clear</button>
               </div>
               <div id="transcriptLibrary" class="transcript-library">
-                <p class="empty-note">Add transcripts to analyze them locally. Nothing is uploaded anywhere.</p>
+                <p class="empty-note">Manual fallback only: paste or upload transcript text if you do not want to use the transcript API.</p>
               </div>
               <button class="primary-button full-width" id="runPaste" type="button" disabled>Analyze transcript library</button>
             </div>
@@ -140,7 +140,7 @@
             </div>
           </div>
           <div class="term-chips" id="termChips"></div>
-          <small class="fine-print" id="termLimitNote">Select any terms for demo / paste mode. Live mode analyzes up to 6 buzzwords per run to keep API requests reasonable.</small>
+          <small class="fine-print" id="termLimitNote">Select the words or phrases you want counted across the pulled transcripts.</small>
         </div>
       </section>
 
@@ -183,7 +183,7 @@
               <h2>Which narratives are taking over?</h2>
             </div>
             <select id="chartMetric" aria-label="Chart metric">
-              <option value="mentions">Mentions / matched calls</option>
+              <option value="mentions">Phrase mentions</option>
               <option value="index">Indexed momentum</option>
             </select>
           </div>
@@ -234,11 +234,11 @@
           <h2>Signal, not sentiment.</h2>
           <p>SignalCall is designed to answer a simple question: <strong>which words are entering corporate vocabulary fastest?</strong></p>
           <ul>
-            <li><strong>Momentum</strong> = change in mentions or matched calls vs. the prior period.</li>
-            <li><strong>Adoption</strong> = how many companies used the term in the latest period.</li>
+            <li><strong>Momentum</strong> = change in exact phrase mentions vs. the prior quarter.</li>
+            <li><strong>Adoption</strong> = how many companies used the term in their latest analyzed call.</li>
             <li><strong>Heatmap</strong> = concentration of a narrative by company.</li>
-            <li><strong>Paste mode</strong> counts exact phrase occurrences locally in your browser.</li>
-            <li><strong>Live API mode</strong> uses transcript-search matches, so it measures calls containing the phrase rather than raw word frequency.</li>
+            <li><strong>Pull transcripts</strong> = fetch the calls automatically, then count phrases locally in your browser.</li>
+            <li><strong>Manual fallback</strong> = paste or upload transcript text only when you want a no-API workflow.</li>
           </ul>
         </article>
       </section>
@@ -251,5 +251,6 @@
   </div>
 
   <script src="app.js"></script>
+  <script src="ux-v2.js"></script>
 </body>
 </html>
