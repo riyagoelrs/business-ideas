@@ -27,12 +27,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Check out TikTok scraper
-        uses: actions/checkout@v4
-        with:
-          repository: riyagoelrs/tiktok-scraper
-          path: _tiktok
-
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -53,7 +47,6 @@ jobs:
             "Kansas City, MO","Atlanta, GA","Miami, FL","New Orleans, LA","Cleveland, OH",
             "Pittsburgh, PA"
           ]
-          # On code changes, immediately seed the cities most likely to be tested.
           if os.environ.get("GITHUB_EVENT_NAME") == "push":
               batch = [
                 "New York, NY","Los Angeles, CA","Chicago, IL","San Francisco, CA",
@@ -72,38 +65,28 @@ jobs:
           PY
 
       - name: Install free data dependencies
-        run: |
-          pip install -r restaurant-hype-map/requirements-data.txt
-          pip install TikTokApi
-          python -m playwright install --with-deps chromium
+        run: pip install -r restaurant-hype-map/requirements-data.txt
 
-      - name: Collect public TikTok restaurant signals
+      - name: Collect TikTok signals when a session token is configured
+        if: ${{ secrets.TIKTOK_MS_TOKEN != '' }}
         continue-on-error: true
         env:
           TIKTOK_HEADLESS: "1"
           TIKTOK_MS_TOKEN: ${{ secrets.TIKTOK_MS_TOKEN }}
         run: |
+          git clone --depth 1 https://github.com/riyagoelrs/tiktok-scraper.git _tiktok
+          pip install TikTokApi
+          python -m playwright install --with-deps chromium
           mkdir -p restaurant-hype-map/data/tiktok
           python - <<'PY'
           import os, re, subprocess
           cities = [x for x in os.environ.get("HYPE_CITIES", "").split("|") if x]
-          special = {
-              "New York": "nycfood",
-              "Los Angeles": "lafood",
-              "San Francisco": "sffood",
-              "Washington": "dcfood",
-          }
+          special = {"New York":"nycfood","Los Angeles":"lafood","San Francisco":"sffood","Washington":"dcfood"}
           for city in cities:
-              city_name = city.split(',')[0]
-              city_slug = re.sub(r"[^a-z0-9]+", "_", city.lower()).strip("_")
-              hashtag = special.get(city_name) or (re.sub(r"[^a-z0-9]+", "", city_name.lower()) + "food")
-              out = f"restaurant-hype-map/data/tiktok/{city_slug}.json"
-              print("TikTok hashtag:", hashtag)
-              subprocess.run([
-                  "python","_tiktok/tiktok_scraper.py",
-                  "--mode","hashtag","--query",hashtag,
-                  "--count","28","--out",out
-              ], check=False)
+              name = city.split(',')[0]
+              slug = re.sub(r"[^a-z0-9]+", "_", city.lower()).strip("_")
+              hashtag = special.get(name) or (re.sub(r"[^a-z0-9]+", "", name.lower()) + "food")
+              subprocess.run(["python","_tiktok/tiktok_scraper.py","--mode","hashtag","--query",hashtag,"--count","28","--out",f"restaurant-hype-map/data/tiktok/{slug}.json"], check=False)
           PY
 
       - name: Refresh zero-cost source snapshots and scores
@@ -119,6 +102,7 @@ jobs:
           if [ -n "$(git status --porcelain -- restaurant-hype-map/data)" ]; then
             git add restaurant-hype-map/data
             git commit -m "Refresh free multi-city restaurant hype data"
+            git pull --rebase origin main
             git push origin main
           else
             echo "No main-branch data changes"
@@ -129,12 +113,13 @@ jobs:
           mkdir -p /tmp/hype-data
           cp -R restaurant-hype-map/data/. /tmp/hype-data/
           git fetch origin gh-pages
-          git checkout gh-pages
+          git checkout -B gh-pages origin/gh-pages
           mkdir -p restaurant-hype-map/data
           cp -R /tmp/hype-data/. restaurant-hype-map/data/
           if [ -n "$(git status --porcelain -- restaurant-hype-map/data)" ]; then
             git add restaurant-hype-map/data
             git commit -m "Publish refreshed free multi-city hype data"
+            git pull --rebase origin gh-pages
             git push origin gh-pages
           else
             echo "No Pages data changes"
