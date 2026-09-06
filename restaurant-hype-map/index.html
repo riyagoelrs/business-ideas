@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>NYC Restaurant Hype Map</title>
+  <meta name="description" content="A visual prototype comparing Beli burger ratings with public review volume and restaurant demand signals." />
+  <link rel="preconnect" href="https://unpkg.com">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <style>
+    :root {
+      --bg:#0b0b0c; --panel:#121214; --card:#18181b; --text:#f5f5f4;
+      --muted:#a1a1aa; --line:#2a2a2e; --accent:#f4f4f5;
+      --green:#40c878; --blue:#55a8ff; --orange:#ffae57; --red:#ff6262;
+    }
+    * { box-sizing:border-box; }
+    html,body { margin:0; height:100%; font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; background:var(--bg); color:var(--text); }
+    body { overflow:hidden; }
+    .app { height:100vh; display:grid; grid-template-columns:360px 1fr; }
+    .panel { background:rgba(11,11,12,.97); border-right:1px solid var(--line); padding:24px; overflow:auto; z-index:1000; }
+    .eyebrow { font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--muted); margin-bottom:8px; }
+    h1 { font-size:32px; line-height:1; margin:0 0 12px; letter-spacing:-.04em; }
+    .lede { color:#c4c4ca; line-height:1.5; font-size:14px; margin-bottom:18px; }
+    .badge { display:inline-flex; align-items:center; gap:7px; border:1px solid var(--line); background:#151517; padding:7px 10px; border-radius:999px; font-size:12px; color:#d4d4d8; margin-bottom:22px; }
+    .dot { width:7px; height:7px; border-radius:999px; background:var(--green); box-shadow:0 0 10px rgba(64,200,120,.7); }
+    .section-title { color:#fafafa; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.08em; margin:18px 0 10px; }
+    .filters { display:flex; flex-wrap:wrap; gap:8px; }
+    button.filter { cursor:pointer; color:#cfcfd4; background:#171719; border:1px solid var(--line); padding:8px 10px; border-radius:10px; font-size:12px; }
+    button.filter.active { background:#f4f4f5; color:#111; border-color:#f4f4f5; }
+    .list { margin-top:8px; display:flex; flex-direction:column; gap:8px; }
+    .restaurant { cursor:pointer; border:1px solid var(--line); background:var(--card); border-radius:14px; padding:12px 13px; transition:.18s ease; }
+    .restaurant:hover { transform:translateY(-1px); border-color:#45454c; }
+    .restaurant-top { display:flex; justify-content:space-between; gap:10px; align-items:flex-start; }
+    .restaurant-name { font-size:14px; font-weight:700; }
+    .restaurant-meta { margin-top:4px; color:var(--muted); font-size:11px; }
+    .score { font-weight:800; font-size:15px; white-space:nowrap; }
+    .verdict { margin-top:9px; font-size:11px; display:inline-block; padding:5px 7px; border-radius:7px; background:#222226; }
+    .method { color:#8d8d95; line-height:1.5; font-size:11px; margin:10px 0 30px; }
+    #map { width:100%; height:100vh; background:#ddd; }
+    .leaflet-popup-content-wrapper,.leaflet-popup-tip { background:#111113; color:#f6f6f6; }
+    .leaflet-popup-content-wrapper { border-radius:16px; box-shadow:0 20px 60px rgba(0,0,0,.35); }
+    .leaflet-popup-content { margin:16px 16px 14px; width:260px!important; }
+    .popup-title { font-size:18px; font-weight:800; letter-spacing:-.02em; }
+    .popup-meta { color:#aaaab2; font-size:12px; margin:4px 0 13px; }
+    .popup-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+    .metric { background:#1d1d20; border:1px solid #2c2c31; border-radius:10px; padding:9px; }
+    .metric-label { color:#909099; font-size:10px; text-transform:uppercase; letter-spacing:.06em; }
+    .metric-value { margin-top:2px; font-size:16px; font-weight:800; }
+    .popup-verdict { margin:10px 0; padding:9px 10px; border:1px solid #303035; border-radius:10px; font-size:12px; }
+    .maps-link { display:block; text-align:center; text-decoration:none; color:#111; background:#f4f4f5; border-radius:10px; padding:10px; font-weight:700; font-size:12px; }
+    .map-label { color:#111; font-weight:800; background:#fff; border:none; border-radius:999px; padding:3px 7px; box-shadow:0 2px 9px rgba(0,0,0,.15); }
+    .leaflet-tooltip.map-label:before { display:none; }
+    .legend { position:absolute; right:18px; top:18px; z-index:800; background:rgba(11,11,12,.94); color:white; border:1px solid #2b2b2f; border-radius:14px; padding:12px; width:190px; backdrop-filter:blur(12px); }
+    .legend-title { font-size:11px; color:#aaa; text-transform:uppercase; letter-spacing:.08em; margin-bottom:8px; }
+    .legend-row { display:flex; align-items:center; gap:8px; font-size:11px; margin:7px 0; }
+    .legend-dot { width:10px; height:10px; border-radius:999px; }
+    .source-note { position:absolute; left:378px; bottom:14px; z-index:800; background:rgba(11,11,12,.88); color:#b6b6bd; border:1px solid #2a2a2e; padding:8px 10px; border-radius:10px; font-size:10px; backdrop-filter:blur(10px); }
+    @media (max-width: 760px) {
+      body { overflow:auto; }
+      .app { display:block; height:auto; }
+      .panel { position:relative; width:100%; height:auto; border-right:0; border-bottom:1px solid var(--line); }
+      #map { height:70vh; }
+      .legend { top:auto; bottom:18px; right:12px; width:165px; }
+      .source-note { display:none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="panel">
+      <div class="eyebrow">Vibe-coded experiment</div>
+      <h1>NYC Restaurant<br>Hype Map</h1>
+      <div class="lede">Which burger spots are actually elite — and which are mostly demand, lines, and lore?</div>
+      <div class="badge"><span class="dot"></span> Live visual prototype · no spreadsheet needed</div>
+
+      <div class="section-title">Filter by verdict</div>
+      <div class="filters" id="filters"></div>
+
+      <div class="section-title">Restaurants</div>
+      <div class="list" id="restaurant-list"></div>
+
+      <div class="section-title">How the prototype works</div>
+      <div class="method">
+        <b>Quality</b> = 75% Beli burger rating + 25% current public rating.<br>
+        <b>Hype</b> = public review-volume signal + estimated access / reservation friction.<br><br>
+        This first public build uses real Beli list scores and current public restaurant metadata. TikTok velocity is the next signal to wire in.
+      </div>
+    </aside>
+
+    <main style="position:relative">
+      <div id="map"></div>
+      <div class="legend">
+        <div class="legend-title">Map verdict</div>
+        <div class="legend-row"><span class="legend-dot" style="background:#40c878"></span> Worth the Hype</div>
+        <div class="legend-row"><span class="legend-dot" style="background:#55a8ff"></span> Sleeper</div>
+        <div class="legend-row"><span class="legend-dot" style="background:#ff6262"></span> Hype &gt; Score</div>
+        <div class="legend-row"><span class="legend-dot" style="background:#ffae57"></span> Mixed</div>
+        <div style="font-size:10px;color:#8f8f97;margin-top:9px">Circle size = hype signal</div>
+      </div>
+      <div class="source-note">Prototype data · Beli burger list + current public restaurant metadata · refreshed Sep 6, 2026</div>
+    </main>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    const restaurants = [{"name": "4 Charles Prime Rib", "neighborhood": "West Village", "address": "4 Charles St, New York, NY 10014", "lat": 40.7353, "lng": -74.0008, "beli": 10.0, "public_rating": 4.6, "reviews": 612, "access": 100, "category": "Burger / Steakhouse", "hype": 65.3, "quality": 98.0, "verdict": "Worth the Hype"}, {"name": "Emily West Village", "neighborhood": "West Village", "address": "35 Downing St, New York, NY 10014", "lat": 40.7298, "lng": -74.0036, "beli": 9.8, "public_rating": 4.1, "reviews": 1182, "access": 70, "category": "Burger / Pizza", "hype": 70.2, "quality": 94.0, "verdict": "Worth the Hype"}, {"name": "Minetta Tavern", "neighborhood": "Greenwich Village", "address": "113 MacDougal St, New York, NY 10012", "lat": 40.73, "lng": -74.0001, "beli": 9.8, "public_rating": 4.1, "reviews": 2686, "access": 80, "category": "Burger / French", "hype": 93.0, "quality": 94.0, "verdict": "Worth the Hype"}, {"name": "Au Cheval", "neighborhood": "Tribeca", "address": "33 Cortlandt Alley, New York, NY 10013", "lat": 40.718, "lng": -74.0025, "beli": 9.7, "public_rating": 4.3, "reviews": 1396, "access": 75, "category": "Burger / New American", "hype": 75.9, "quality": 94.2, "verdict": "Worth the Hype"}, {"name": "7th Street Burger", "neighborhood": "East Village", "address": "91 E 7th St, New York, NY 10009", "lat": 40.7267, "lng": -73.9854, "beli": 9.5, "public_rating": 4.4, "reviews": 509, "access": 55, "category": "Smashburger", "hype": 45.2, "quality": 93.2, "verdict": "Sleeper"}, {"name": "Nowon East Village", "neighborhood": "East Village", "address": "507 E 6th St, New York, NY 10009", "lat": 40.7245, "lng": -73.9824, "beli": 9.5, "public_rating": 4.4, "reviews": 558, "access": 70, "category": "Korean-American", "hype": 52.7, "quality": 93.2, "verdict": "Sleeper"}, {"name": "The Polo Bar", "neighborhood": "Midtown East", "address": "1 E 55th St, New York, NY 10022", "lat": 40.7617, "lng": -73.9747, "beli": 9.4, "public_rating": 4.4, "reviews": 688, "access": 95, "category": "Burger / American", "hype": 66.3, "quality": 92.5, "verdict": "Mixed"}, {"name": "The Fulton", "neighborhood": "Seaport", "address": "89 South St, New York, NY 10038", "lat": 40.7068, "lng": -74.0029, "beli": 9.4, "public_rating": 3.6, "reviews": 560, "access": 45, "category": "Burger / Seafood", "hype": 44.0, "quality": 88.5, "verdict": "Mixed"}];
+
+    const colors = {"Worth the Hype":"#40c878","Sleeper":"#55a8ff","Hype > Score":"#ff6262","Mixed":"#ffae57"};
+
+    const map = L.map("map", { zoomControl:true, attributionControl:true }).setView([40.7296,-73.9965], 13);
+    L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
+      maxZoom:20,
+      attribution:'&copy; OpenStreetMap contributors &copy; CARTO'
+    }).addTo(map);
+
+    const markerLayer = L.layerGroup().addTo(map);
+    const markerByName = new Map();
+    let activeFilter = "All";
+
+    function googleMapsUrl(r) {
+      return "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(r.name + " " + r.address);
+    }
+
+    function popup(r) {
+      return `
+        <div class="popup-title">${r.name}</div>
+        <div class="popup-meta">${r.neighborhood} · ${r.category}</div>
+        <div class="popup-grid">
+          <div class="metric"><div class="metric-label">Beli</div><div class="metric-value">${r.beli.toFixed(1)}/10</div></div>
+          <div class="metric"><div class="metric-label">Public rating</div><div class="metric-value">${r.public_rating.toFixed(1)}/5</div></div>
+          <div class="metric"><div class="metric-label">Quality</div><div class="metric-value">${r.quality.toFixed(0)}</div></div>
+          <div class="metric"><div class="metric-label">Hype signal</div><div class="metric-value">${r.hype.toFixed(0)}</div></div>
+        </div>
+        <div class="popup-verdict"><b>${r.verdict}</b><br><span style="color:#999">${r.reviews.toLocaleString()} public reviews · access signal ${r.access}/100</span></div>
+        <a class="maps-link" href="${googleMapsUrl(r)}" target="_blank" rel="noopener">Open in Google Maps ↗</a>
+      `;
+    }
+
+    function drawMarkers() {
+      markerLayer.clearLayers(); markerByName.clear();
+      restaurants.filter(r => activeFilter === "All" || r.verdict === activeFilter).forEach(r => {
+        const marker = L.circleMarker([r.lat,r.lng], {
+          radius:8 + (r.hype/100)*10, color:"#111", weight:2,
+          fillColor:colors[r.verdict] || "#999", fillOpacity:.92
+        }).bindPopup(popup(r)).bindTooltip(`${r.name} · Beli ${r.beli.toFixed(1)}`, {direction:"top", className:"map-label", offset:[0,-7]}).addTo(markerLayer);
+        markerByName.set(r.name, marker);
+      });
+    }
+
+    function buildFilters() {
+      const options = ["All", ...new Set(restaurants.map(r => r.verdict))];
+      const wrap = document.getElementById("filters"); wrap.innerHTML = "";
+      options.forEach(opt => {
+        const b = document.createElement("button");
+        b.className = "filter" + (opt === activeFilter ? " active" : ""); b.textContent = opt;
+        b.onclick = () => { activeFilter = opt; buildFilters(); drawMarkers(); buildList(); };
+        wrap.appendChild(b);
+      });
+    }
+
+    function buildList() {
+      const list = document.getElementById("restaurant-list"); list.innerHTML = "";
+      restaurants.filter(r => activeFilter === "All" || r.verdict === activeFilter).sort((a,b) => b.beli - a.beli).forEach(r => {
+        const el = document.createElement("div"); el.className = "restaurant";
+        el.innerHTML = `<div class="restaurant-top"><div><div class="restaurant-name">${r.name}</div><div class="restaurant-meta">${r.neighborhood} · Hype ${r.hype.toFixed(0)}</div></div><div class="score">${r.beli.toFixed(1)}</div></div><div class="verdict" style="color:${colors[r.verdict]}">${r.verdict}</div>`;
+        el.onclick = () => { const marker = markerByName.get(r.name); if (marker) { map.flyTo([r.lat,r.lng], 15, {duration:.7}); marker.openPopup(); } };
+        list.appendChild(el);
+      });
+    }
+
+    buildFilters(); drawMarkers(); buildList();
+  </script>
+</body>
+</html>
