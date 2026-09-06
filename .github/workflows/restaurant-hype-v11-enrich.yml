@@ -1,0 +1,65 @@
+name: Enrich restaurant hype signals
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "37 */6 * * *"
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/restaurant-hype-v11-enrich.yml"
+      - "restaurant-hype-map/pipeline/enrich_v11.py"
+
+concurrency:
+  group: restaurant-hype-v11-enrich
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  enrich:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out main
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r restaurant-hype-map/requirements-data.txt
+
+      - name: Enrich Beli Reddit web and public review signals
+        working-directory: restaurant-hype-map/pipeline
+        run: python enrich_v11.py
+
+      - name: Commit enriched data to main
+        run: |
+          git config user.name "restaurant-hype-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add restaurant-hype-map/data
+          if ! git diff --cached --quiet; then
+            git commit -m "Refresh aggregate restaurant signals"
+            git pull --rebase origin main
+            git push origin main
+          fi
+
+      - name: Publish enriched score data to Pages
+        run: |
+          mkdir -p /tmp/hype-v11-data
+          cp -R restaurant-hype-map/data/. /tmp/hype-v11-data/
+          git fetch origin gh-pages
+          git checkout -B gh-pages origin/gh-pages
+          mkdir -p restaurant-hype-map/data
+          cp -R /tmp/hype-v11-data/. restaurant-hype-map/data/
+          git add restaurant-hype-map/data
+          if ! git diff --cached --quiet; then
+            git commit -m "Publish aggregate restaurant scores"
+            git pull --rebase origin gh-pages
+            git push origin gh-pages
+          fi
