@@ -38,6 +38,32 @@ jobs:
         with:
           python-version: "3.11"
 
+      - name: Select rotating city batch
+        run: |
+          python - <<'PY'
+          import datetime, os
+          cities = [
+            "New York, NY","Los Angeles, CA","Chicago, IL","Houston, TX","Phoenix, AZ",
+            "Philadelphia, PA","San Antonio, TX","San Diego, CA","Dallas, TX","San Jose, CA",
+            "Austin, TX","Jacksonville, FL","Fort Worth, TX","Columbus, OH","Indianapolis, IN",
+            "Charlotte, NC","San Francisco, CA","Seattle, WA","Denver, CO","Washington, DC",
+            "Nashville, TN","Oklahoma City, OK","El Paso, TX","Boston, MA","Portland, OR",
+            "Las Vegas, NV","Detroit, MI","Memphis, TN","Louisville, KY","Baltimore, MD",
+            "Milwaukee, WI","Albuquerque, NM","Tucson, AZ","Fresno, CA","Sacramento, CA",
+            "Kansas City, MO","Atlanta, GA","Miami, FL","New Orleans, LA","Cleveland, OH",
+            "Pittsburgh, PA"
+          ]
+          batches = 6
+          idx = datetime.datetime.utcnow().timetuple().tm_yday % batches
+          batch = cities[idx::batches]
+          if idx != 0 and "New York, NY" not in batch:
+              batch = ["New York, NY"] + batch
+          value = "|".join(batch)
+          print("City batch:", value)
+          with open(os.environ["GITHUB_ENV"], "a") as f:
+              f.write("HYPE_CITIES=" + value + "\n")
+          PY
+
       - name: Install free data dependencies
         run: |
           pip install -r restaurant-hype-map/requirements-data.txt
@@ -51,12 +77,25 @@ jobs:
           TIKTOK_MS_TOKEN: ${{ secrets.TIKTOK_MS_TOKEN }}
         run: |
           mkdir -p restaurant-hype-map/data/tiktok
-          python _tiktok/tiktok_scraper.py --mode search --query "nyc restaurants" --count 80 --out restaurant-hype-map/data/tiktok/nyc_restaurants.json || true
-          python _tiktok/tiktok_scraper.py --mode search --query "nyc food" --count 80 --out restaurant-hype-map/data/tiktok/nyc_food.json || true
-          python _tiktok/tiktok_scraper.py --mode search --query "new york restaurants" --count 80 --out restaurant-hype-map/data/tiktok/new_york_restaurants.json || true
+          python - <<'PY'
+          import os, re, subprocess
+          cities = [x for x in os.environ.get("HYPE_CITIES", "").split("|") if x]
+          for city in cities:
+              slug = re.sub(r"[^a-z0-9]+", "_", city.lower()).strip("_")
+              query = f"{city.split(',')[0]} restaurants"
+              out = f"restaurant-hype-map/data/tiktok/{slug}.json"
+              print("TikTok:", query)
+              subprocess.run([
+                  "python","_tiktok/tiktok_scraper.py",
+                  "--mode","search","--query",query,
+                  "--count","28","--out",out
+              ], check=False)
+          PY
 
       - name: Refresh zero-cost source snapshots and scores
         working-directory: restaurant-hype-map/pipeline
+        env:
+          HYPE_CITIES: ${{ env.HYPE_CITIES }}
         run: python refresh_scores.py
 
       - name: Commit refreshed snapshot to main
@@ -65,7 +104,7 @@ jobs:
           git config user.email "actions@users.noreply.github.com"
           if ! git diff --quiet -- restaurant-hype-map/data; then
             git add restaurant-hype-map/data
-            git commit -m "Refresh free restaurant hype data"
+            git commit -m "Refresh free multi-city restaurant hype data"
             git push origin main
           else
             echo "No main-branch data changes"
@@ -81,7 +120,7 @@ jobs:
           cp -R /tmp/hype-data/. restaurant-hype-map/data/
           if ! git diff --quiet -- restaurant-hype-map/data; then
             git add restaurant-hype-map/data
-            git commit -m "Publish refreshed free restaurant hype data"
+            git commit -m "Publish refreshed free multi-city hype data"
             git push origin gh-pages
           else
             echo "No Pages data changes"
