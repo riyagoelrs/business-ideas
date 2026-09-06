@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import json
 import re
-import time
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Dict, Iterable, List, Optional
@@ -19,161 +19,33 @@ DATA_DIR.mkdir(parents=True, exist_ok=True)
 RAW_PATH = DATA_DIR / "raw_snapshot.json"
 SCORES_PATH = DATA_DIR / "restaurant_scores.json"
 TIKTOK_DIR = DATA_DIR / "tiktok"
-
-UA = "RestaurantHypeMap/0.3 (+https://github.com/riyagoelrs/business-ideas)"
-SESSION = requests.Session()
-SESSION.headers.update({"User-Agent": UA})
-
+UA = "RestaurantHypeMap/0.4 (+https://github.com/riyagoelrs/business-ideas)"
 BELI_LISTS = [
     ("Burger", "https://beliapp.com/nyc-burger-search"),
     ("Italian Sandwich", "https://beliapp.com/nyc-italian-sandwich-search"),
 ]
-OVERPASS_ENDPOINTS = [
-    "https://overpass.kumi.systems/api/interpreter",
-    "https://overpass-api.de/api/interpreter",
-]
+OVERPASS_ENDPOINTS = ["https://overpass.kumi.systems/api/interpreter", "https://overpass-api.de/api/interpreter"]
 GDELT_URL = "https://api.gdeltproject.org/api/v2/doc/doc"
+
+
+def session() -> requests.Session:
+    s = requests.Session()
+    s.headers.update({"User-Agent": UA})
+    return s
 
 
 def slug(s: str) -> str:
     return re.sub(r"[^a-z0-9]+", " ", (s or "").lower()).strip()
 
 
-def _num(value) -> Optional[float]:
+def num(v) -> Optional[float]:
     try:
-        return float(str(value).replace(",", ""))
+        return float(str(v).replace(",", ""))
     except Exception:
         return None
 
 
-def load_previous() -> Dict[str, dict]:
-    if not RAW_PATH.exists():
-        return {}
-    try:
-        rows = json.loads(RAW_PATH.read_text())
-        return {slug(r.get("name", "")): r for r in rows if r.get("name")}
-    except Exception:
-        return {}
-
-
-def fetch_osm_universe() -> List[dict]:
-    query = '[out:json][timeout:45];nwr["amenity"="restaurant"]["name"](40.49,-74.27,40.92,-73.68);out center tags 1600;'
-    payload = None
-    for endpoint in OVERPASS_ENDPOINTS:
-        try:
-            r = SESSION.get(endpoint, params={"data": query}, timeout=65)
-            r.raise_for_status()
-            payload = r.json()
-            break
-        except Exception:
-            continue
-    if not payload:
-        return []
-
-    rows = []
-    seen = set()
-    for el in payload.get("elements", []):
-        tags = el.get("tags") or {}
-        name = tags.get("name")
-        lat = el.get("lat") or (el.get("center") or {}).get("lat")
-        lng = el.get("lon") or (el.get("center") or {}).get("lon")
-        if not name or lat is None or lng is None:
-            continue
-        key = f"{slug(name)}|{float(lat):.4f}|{float(lng):.4f}"
-        if key in seen:
-            continue
-        seen.add(key)
-        website = tags.get("website") or tags.get("contact:website")
-        rows.append(
-            {
-                "name": name,
-                "city": "New York, NY",
-                "lat": float(lat),
-                "lng": float(lng),
-                "cuisine": tags.get("cuisine"),
-                "website": website,
-                "sources": {
-                    "osm": {
-                        "osm_id": f"{el.get('type')}:{el.get('id')}",
-                        "website": website,
-                        "cuisine": tags.get("cuisine"),
-                    }
-                },
-            }
-        )
-    return rows
-
-
-def fetch_beli() -> List[dict]:
-    rows = []
-    for category, url in BELI_LISTS:
-        try:
-            r = SESSION.get(url, timeout=25)
-            r.raise_for_status()
-            soup = BeautifulSoup(r.text, "html.parser")
-        except Exception:
-            continue
-
-        found = []
-        for heading in soup.find_all(["h2", "h3"]):
-            name = heading.get_text(" ", strip=True)
-            if not name:
-                continue
-            block = heading.find_next(string=re.compile(r"Beli rating:\s*\d+(?:\.\d+)?", re.I))
-            if not block:
-                continue
-            m = re.search(r"Beli rating:\s*(\d+(?:\.\d+)?)", str(block), re.I)
-            if m:
-                rating = float(m.group(1))
-                if 0 <= rating <= 10:
-                    found.append((name, rating))
-
-        seen = set()
-        clean = []
-        for name, rating in found:
-            k = slug(name)
-            if k and k not in seen:
-                seen.add(k)
-                clean.append((name, rating))
-
-        total = len(clean)
-        for i, (name, rating) in enumerate(clean, start=1):
-            rows.append(
-                {
-                    "name": name,
-                    "city": "New York, NY",
-                    "sources": {
-                        "beli": {
-                            "rating": rating,
-                            "category": category,
-                            "rank": i,
-                            "total": total,
-                            "source_url": url,
-                        }
-                    },
-                }
-            )
-        time.sleep(0.5)
-    return rows
-
-
-def merge_beli(rows: List[dict], beli_rows: List[dict]) -> None:
-    by_name: Dict[str, List[dict]] = {}
-    for row in rows:
-        by_name.setdefault(slug(row["name"]), []).append(row)
-
-    for b in beli_rows:
-        k = slug(b["name"])
-        matches = by_name.get(k, [])
-        if matches:
-            for row in matches:
-                row.setdefault("sources", {})["beli"] = b["sources"]["beli"]
-        else:
-            rows.append(b)
-            by_name.setdefault(k, []).append(b)
-
-
-def _parse_dt(value: str) -> Optional[datetime]:
+def parse_dt(value: str) -> Optional[datetime]:
     if not value:
         return None
     for fmt in ("%Y%m%dT%H%M%SZ", "%Y%m%d%H%M%S"):
@@ -187,228 +59,225 @@ def _parse_dt(value: str) -> Optional[datetime]:
         return None
 
 
-def load_tiktok_snapshots(rows: List[dict]) -> None:
-    if not TIKTOK_DIR.exists():
-        return
-    videos_by_id = {}
-    for path in TIKTOK_DIR.glob("*.json"):
+def load_previous() -> Dict[str, dict]:
+    try:
+        rows = json.loads(RAW_PATH.read_text()) if RAW_PATH.exists() else []
+        return {slug(r["name"]): r for r in rows if r.get("name")}
+    except Exception:
+        return {}
+
+
+def fetch_osm_universe() -> List[dict]:
+    q = '[out:json][timeout:45];nwr["amenity"="restaurant"]["name"](40.49,-74.27,40.92,-73.68);out center tags 1600;'
+    payload = None
+    for ep in OVERPASS_ENDPOINTS:
         try:
-            payload = json.loads(path.read_text())
-            if isinstance(payload, dict):
-                payload = payload.get("videos", payload.get("data", []))
-            for v in payload if isinstance(payload, list) else []:
-                vid = str(v.get("id") or "")
-                if vid:
-                    videos_by_id[vid] = v
+            r = session().get(ep, params={"data": q}, timeout=60)
+            r.raise_for_status()
+            payload = r.json()
+            break
+        except Exception:
+            pass
+    if not payload:
+        return []
+    rows, seen = [], set()
+    for el in payload.get("elements", []):
+        tags = el.get("tags") or {}
+        name = tags.get("name")
+        lat = el.get("lat") or (el.get("center") or {}).get("lat")
+        lng = el.get("lon") or (el.get("center") or {}).get("lon")
+        if not name or lat is None or lng is None:
+            continue
+        key = f"{slug(name)}|{float(lat):.4f}|{float(lng):.4f}"
+        if key in seen:
+            continue
+        seen.add(key)
+        website = tags.get("website") or tags.get("contact:website")
+        rows.append({
+            "name": name, "city": "New York, NY", "lat": float(lat), "lng": float(lng),
+            "cuisine": tags.get("cuisine"), "website": website,
+            "sources": {"osm": {"osm_id": f"{el.get('type')}:{el.get('id')}", "website": website, "cuisine": tags.get("cuisine")}},
+        })
+    return rows
+
+
+def fetch_beli() -> List[dict]:
+    out = []
+    for category, url in BELI_LISTS:
+        try:
+            r = session().get(url, timeout=20)
+            r.raise_for_status()
+            soup = BeautifulSoup(r.text, "html.parser")
         except Exception:
             continue
-    videos = list(videos_by_id.values())
-    if not videos:
+        found, seen = [], set()
+        for h in soup.find_all(["h2", "h3"]):
+            name = h.get_text(" ", strip=True)
+            block = h.find_next(string=re.compile(r"Beli rating:\s*\d+(?:\.\d+)?", re.I)) if name else None
+            m = re.search(r"Beli rating:\s*(\d+(?:\.\d+)?)", str(block), re.I) if block else None
+            if m and slug(name) not in seen:
+                rating = float(m.group(1))
+                if 0 <= rating <= 10:
+                    seen.add(slug(name)); found.append((name, rating))
+        total = len(found)
+        for i, (name, rating) in enumerate(found, 1):
+            out.append({"name": name, "city": "New York, NY", "sources": {"beli": {"rating": rating, "category": category, "rank": i, "total": total, "source_url": url}}})
+    return out
+
+
+def merge_beli(rows: List[dict], beli_rows: List[dict]) -> None:
+    by = {}
+    for r in rows:
+        by.setdefault(slug(r["name"]), []).append(r)
+    for b in beli_rows:
+        matches = by.get(slug(b["name"]), [])
+        if matches:
+            for r in matches:
+                r["sources"]["beli"] = b["sources"]["beli"]
+        else:
+            rows.append(b); by.setdefault(slug(b["name"]), []).append(b)
+
+
+def load_tiktok(rows: List[dict]) -> None:
+    if not TIKTOK_DIR.exists():
         return
-
-    now = datetime.now(timezone.utc)
-    cutoff_7 = now - timedelta(days=7)
-    cutoff_14 = now - timedelta(days=14)
-
+    videos = {}
+    for p in TIKTOK_DIR.glob("*.json"):
+        try:
+            data = json.loads(p.read_text())
+            if isinstance(data, dict): data = data.get("videos", data.get("data", []))
+            for v in data if isinstance(data, list) else []:
+                if v.get("id"): videos[str(v["id"])] = v
+        except Exception:
+            pass
+    now = datetime.now(timezone.utc); c7 = now - timedelta(days=7); c14 = now - timedelta(days=14)
     for row in rows:
-        name_key = slug(row["name"])
-        tokens = [t for t in name_key.split() if len(t) > 2]
-        if not tokens or (len(tokens) == 1 and len(tokens[0]) < 7):
-            continue
-        current, previous = [], []
-        for v in videos:
+        key = slug(row["name"]); toks = [t for t in key.split() if len(t) > 2]
+        if not toks or (len(toks) == 1 and len(toks[0]) < 7): continue
+        cur, prev = [], []
+        for v in videos.values():
             text = " " + slug(v.get("description") or v.get("caption") or "") + " "
-            if f" {name_key} " not in text and not all(t in text for t in tokens):
-                continue
-            created = _parse_dt(v.get("created_at") or "")
-            if created is None:
-                current.append(v)
-            elif created >= cutoff_7:
-                current.append(v)
-            elif created >= cutoff_14:
-                previous.append(v)
-        if not current and not previous:
-            continue
-        row["sources"]["tiktok"] = {
-            "mentions_7d": len(current),
-            "mentions_prev_7d": len(previous),
-            "views_7d": sum(int(v.get("views") or 0) for v in current),
-            "engagements_7d": sum(int(v.get("likes") or 0) + int(v.get("comments") or 0) + int(v.get("shares") or 0) for v in current),
-            "creators_7d": len({v.get("author_username") for v in current if v.get("author_username")}),
-        }
+            if f" {key} " not in text and not all(t in text for t in toks): continue
+            dt = parse_dt(v.get("created_at") or "")
+            if dt is None or dt >= c7: cur.append(v)
+            elif dt >= c14: prev.append(v)
+        if cur or prev:
+            row["sources"]["tiktok"] = {
+                "mentions_7d": len(cur), "mentions_prev_7d": len(prev),
+                "views_7d": sum(int(v.get("views") or 0) for v in cur),
+                "engagements_7d": sum(int(v.get("likes") or 0)+int(v.get("comments") or 0)+int(v.get("shares") or 0) for v in cur),
+                "creators_7d": len({v.get("author_username") for v in cur if v.get("author_username")}),
+            }
 
 
 def gdelt_signal(name: str) -> Optional[dict]:
-    # GDELT DOC 2.0 is a public, no-key news/web coverage API.
-    query = f'"{name}" restaurant "New York"'
     try:
-        r = SESSION.get(
-            GDELT_URL,
-            params={
-                "query": query,
-                "mode": "artlist",
-                "maxrecords": 250,
-                "timespan": "30d",
-                "sort": "datedesc",
-                "format": "json",
-            },
-            timeout=30,
-        )
-        r.raise_for_status()
-        articles = r.json().get("articles", [])
+        r = session().get(GDELT_URL, params={"query": f'"{name}" restaurant "New York"', "mode": "artlist", "maxrecords": 250, "timespan": "30d", "sort": "datedesc", "format": "json"}, timeout=12)
+        r.raise_for_status(); arts = r.json().get("articles", [])
+    except Exception:
+        return None
+    now = datetime.now(timezone.utc); c7 = now-timedelta(days=7); c14 = now-timedelta(days=14)
+    seven = previous = 0; domains = set(); examples = []
+    for a in arts:
+        dt = parse_dt(a.get("seendate") or "")
+        if dt and dt >= c7: seven += 1
+        elif dt and dt >= c14: previous += 1
+        d = a.get("domain") or urlparse(a.get("url") or "").netloc
+        if d: domains.add(d.lower().removeprefix("www."))
+        if len(examples) < 3 and a.get("url"): examples.append({"title": a.get("title"), "url": a.get("url"), "domain": d})
+    return {"mentions_30d": len(arts), "mentions_7d": seven, "mentions_prev_7d": previous, "domains_30d": len(domains), "examples": examples, "provider": "GDELT DOC 2.0"}
+
+
+def web_enrich(rows: List[dict], limit: int = 120) -> None:
+    candidates = {}
+    for r in rows:
+        src = r.get("sources", {}); tt = src.get("tiktok") or {}; has_beli = bool(src.get("beli"))
+        if has_beli or tt.get("mentions_7d") or tt.get("mentions_prev_7d"):
+            priority = int(tt.get("mentions_7d") or 0)*100 + (1000 if has_beli else 0)
+            k = slug(r["name"])
+            if k not in candidates or priority > candidates[k][0]: candidates[k] = (priority, r["name"])
+    names = [n for _, n in sorted(candidates.values(), reverse=True)[:limit]]
+    by = {}
+    for r in rows: by.setdefault(slug(r["name"]), []).append(r)
+    with ThreadPoolExecutor(max_workers=8) as ex:
+        futures = {ex.submit(gdelt_signal, n): n for n in names}
+        for f in as_completed(futures):
+            n = futures[f]
+            try: sig = f.result()
+            except Exception: sig = None
+            if sig:
+                for r in by.get(slug(n), []): r["sources"]["web"] = sig
+
+
+def walk_json(v) -> Iterable[dict]:
+    if isinstance(v, dict):
+        yield v
+        for x in v.values(): yield from walk_json(x)
+    elif isinstance(v, list):
+        for x in v: yield from walk_json(x)
+
+
+def website_signal(url: str) -> Optional[dict]:
+    try:
+        r = session().get(url, timeout=5, allow_redirects=True)
+        if r.status_code >= 400 or "text/html" not in r.headers.get("content-type", ""): return None
+        soup = BeautifulSoup(r.text, "html.parser"); best = None
+        for script in soup.find_all("script", attrs={"type": "application/ld+json"}):
+            try: payload = json.loads(script.string or script.get_text())
+            except Exception: continue
+            for obj in walk_json(payload):
+                agg = obj.get("aggregateRating")
+                if not isinstance(agg, dict): continue
+                rating = num(agg.get("ratingValue")); reviews = num(agg.get("reviewCount") or agg.get("ratingCount"))
+                if rating is not None and 0 <= rating <= 5:
+                    c = {"rating": rating, "review_count": int(reviews or 0), "url": r.url}
+                    if best is None or c["review_count"] > best["review_count"]: best = c
+        return best
     except Exception:
         return None
 
-    now = datetime.now(timezone.utc)
-    cutoff_7 = now - timedelta(days=7)
-    cutoff_14 = now - timedelta(days=14)
-    seven = previous = 0
-    domains = set()
-    examples = []
-    for a in articles:
-        seen = _parse_dt(a.get("seendate") or "")
-        if seen and seen >= cutoff_7:
-            seven += 1
-        elif seen and seen >= cutoff_14:
-            previous += 1
-        domain = a.get("domain") or urlparse(a.get("url") or "").netloc
-        if domain:
-            domains.add(domain.lower().removeprefix("www."))
-        if len(examples) < 3 and a.get("url"):
-            examples.append({"title": a.get("title"), "url": a.get("url"), "domain": domain})
-    return {
-        "mentions_30d": len(articles),
-        "mentions_7d": seven,
-        "mentions_prev_7d": previous,
-        "domains_30d": len(domains),
-        "examples": examples,
-        "provider": "GDELT DOC 2.0",
-    }
 
-
-def web_enrich(rows: List[dict], limit: int = 220) -> None:
-    # Spend the free public-web queries where they add the most value: restaurants
-    # already surfaced by Beli or TikTok. OSM-only venues remain discoverable on map.
-    candidates = {}
-    for row in rows:
-        k = slug(row["name"])
-        has_beli = bool(row.get("sources", {}).get("beli"))
-        tt = row.get("sources", {}).get("tiktok") or {}
-        if has_beli or tt.get("mentions_7d") or tt.get("mentions_prev_7d"):
-            score = int(tt.get("mentions_7d") or 0) * 100 + (1000 if has_beli else 0)
-            if k not in candidates or score > candidates[k][0]:
-                candidates[k] = (score, row["name"])
-    names = [name for _, name in sorted(candidates.values(), reverse=True)[:limit]]
-    by_name: Dict[str, List[dict]] = {}
-    for row in rows:
-        by_name.setdefault(slug(row["name"]), []).append(row)
-    for i, name in enumerate(names, start=1):
-        signal = gdelt_signal(name)
-        if signal is not None:
-            for row in by_name.get(slug(name), []):
-                row["sources"]["web"] = signal
-        if i % 25 == 0:
-            print(f"web coverage {i}/{len(names)}")
-        time.sleep(0.25)
-
-
-def _walk_json(value) -> Iterable[dict]:
-    if isinstance(value, dict):
-        yield value
-        for v in value.values():
-            yield from _walk_json(v)
-    elif isinstance(value, list):
-        for item in value:
-            yield from _walk_json(item)
-
-
-def website_enrich(rows: List[dict], limit: int = 100) -> None:
-    checked = set()
-    count = 0
-    for row in rows:
-        website = row.get("website")
-        if not website or website in checked:
-            continue
-        # Only inspect sites for restaurants already carrying a hype/quality signal.
-        if not any(row.get("sources", {}).get(s) for s in ("beli", "tiktok", "web")):
-            continue
-        checked.add(website)
-        count += 1
-        if count > limit:
-            break
-        try:
-            r = SESSION.get(website, timeout=10, allow_redirects=True)
-            if r.status_code >= 400 or "text/html" not in r.headers.get("content-type", ""):
-                continue
-            soup = BeautifulSoup(r.text, "html.parser")
-            best = None
-            for script in soup.find_all("script", attrs={"type": "application/ld+json"}):
-                try:
-                    payload = json.loads(script.string or script.get_text())
-                except Exception:
-                    continue
-                for obj in _walk_json(payload):
-                    agg = obj.get("aggregateRating")
-                    if not isinstance(agg, dict):
-                        continue
-                    rating = _num(agg.get("ratingValue"))
-                    reviews = _num(agg.get("reviewCount") or agg.get("ratingCount"))
-                    if rating is not None and 0 <= rating <= 5:
-                        candidate = {"rating": rating, "review_count": int(reviews or 0), "url": r.url}
-                        if best is None or candidate["review_count"] > best["review_count"]:
-                            best = candidate
-            if best:
-                row["sources"]["website"] = best
-        except Exception:
-            continue
-        time.sleep(0.12)
+def website_enrich(rows: List[dict], limit: int = 60) -> None:
+    targets, seen = [], set()
+    for r in rows:
+        url = r.get("website")
+        if not url or url in seen or not any(r.get("sources", {}).get(s) for s in ("beli", "tiktok", "web")): continue
+        seen.add(url); targets.append((url, r))
+        if len(targets) >= limit: break
+    with ThreadPoolExecutor(max_workers=8) as ex:
+        futures = {ex.submit(website_signal, u): r for u, r in targets}
+        for f in as_completed(futures):
+            row = futures[f]
+            try: sig = f.result()
+            except Exception: sig = None
+            if sig: row["sources"]["website"] = sig
 
 
 def reservation_enrich(row: dict) -> None:
-    path = DATA_DIR / "reservation_scarcity.json"
-    if not path.exists():
-        return
+    p = DATA_DIR / "reservation_scarcity.json"
+    if not p.exists(): return
     try:
-        payload = json.loads(path.read_text())
-        value = payload.get(row["name"])
-        if value is not None:
-            row["sources"]["reservation"] = {"scarcity_score": max(0, min(100, float(value)))}
-    except Exception:
-        pass
+        v = json.loads(p.read_text()).get(row["name"])
+        if v is not None: row["sources"]["reservation"] = {"scarcity_score": max(0, min(100, float(v)))}
+    except Exception: pass
 
 
-def preserve_last_good(rows: List[dict], previous_map: Dict[str, dict]) -> None:
-    for row in rows:
-        prev = previous_map.get(slug(row["name"])) or {}
-        old_sources = prev.get("sources") or {}
-        current = row.setdefault("sources", {})
-        for source in ("tiktok", "web", "website", "reservation"):
-            if source not in current and source in old_sources:
-                current[source] = old_sources[source]
+def preserve(rows: List[dict], previous: Dict[str, dict]) -> None:
+    for r in rows:
+        old = (previous.get(slug(r["name"])) or {}).get("sources") or {}; cur = r.setdefault("sources", {})
+        for s in ("tiktok", "web", "website", "reservation"):
+            if s not in cur and s in old: cur[s] = old[s]
 
 
 def run() -> None:
-    previous_map = load_previous()
-    rows = fetch_osm_universe()
-    beli_rows = fetch_beli()
-    merge_beli(rows, beli_rows)
-    load_tiktok_snapshots(rows)
-    web_enrich(rows)
-    website_enrich(rows)
-    for row in rows:
-        reservation_enrich(row)
-    preserve_last_good(rows, previous_map)
-
-    now = datetime.now(timezone.utc).isoformat()
-    for row in rows:
-        row["snapshot_at"] = now
-
+    previous = load_previous(); rows = fetch_osm_universe(); merge_beli(rows, fetch_beli()); load_tiktok(rows); web_enrich(rows); website_enrich(rows)
+    for r in rows: reservation_enrich(r)
+    preserve(rows, previous)
+    stamp = datetime.now(timezone.utc).isoformat()
+    for r in rows: r["snapshot_at"] = stamp
     RAW_PATH.write_text(json.dumps(rows, indent=2, ensure_ascii=False))
-    scored = score_restaurants(rows)
-    SCORES_PATH.write_text(json.dumps(scored, indent=2, ensure_ascii=False))
-    with_hype = sum(1 for r in scored if (r.get("scores") or {}).get("hype") is not None)
-    print(f"wrote {SCORES_PATH} ({len(scored)} restaurants; {with_hype} with hype scores)")
+    scored = score_restaurants(rows); SCORES_PATH.write_text(json.dumps(scored, indent=2, ensure_ascii=False))
+    print(f"restaurants={len(scored)} hype_scored={sum(1 for r in scored if (r.get('scores') or {}).get('hype') is not None)}")
 
 
-if __name__ == "__main__":
-    run()
+if __name__ == "__main__": run()
