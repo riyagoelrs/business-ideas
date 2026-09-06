@@ -71,11 +71,17 @@ jobs:
           HYPE_CITIES: ${{ env.HYPE_CITIES }}
         run: python refresh_city_boundaries.py
 
-      - name: Rebuild aggregate Beli Reddit web and review signals
+      - name: Rebuild verified aggregate restaurant signals
         working-directory: restaurant-hype-map/pipeline
         run: |
-          sed -i 's/web_batch(rows)/web_batch(rows,120)/' enrich_v11.py
-          python enrich_v11.py
+          python - <<'PY'
+          import enrich_v11 as e
+          import beli_precise
+          e.fuzzy_beli=beli_precise.clean_and_apply
+          original_web=e.web_batch
+          e.web_batch=lambda rows, limit=420: original_web(rows,24)
+          e.main()
+          PY
 
       - name: Commit restaurant app and enriched data to main safely
         run: |
