@@ -1,0 +1,85 @@
+name: Quick seed restaurant aggregate scores
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/restaurant-hype-v11-quick-seed.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  seed:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out main
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r restaurant-hype-map/requirements-data.txt
+
+      - name: Build immediate Beli Reddit and review seed
+        working-directory: restaurant-hype-map/pipeline
+        run: |
+          python - <<'PY'
+          import json
+          from datetime import datetime, timezone
+          import enrich_v11 as e
+          rows=e.load_rows()
+          if not rows:
+              raise SystemExit('No restaurant snapshot')
+          e.ensure_seed(rows)
+          e.fuzzy_beli(rows)
+          e.add_reddit(rows,e.reddit_entries())
+          stamp=datetime.now(timezone.utc).isoformat()
+          for r in rows:
+              if r.get('city')=='New York, NY': r['v11_enriched_at']=stamp
+          e.RAW.write_text(json.dumps(rows,indent=2,ensure_ascii=False))
+          scored=e.score(rows)
+          e.SCORES.write_text(json.dumps(scored,indent=2,ensure_ascii=False))
+          ny=[r for r in scored if r.get('city')=='New York, NY']
+          print('QUICK SUMMARY',{
+            'nyc':len(ny),
+            'hype':sum((r.get('scores') or {}).get('hype') is not None for r in ny),
+            'quality':sum((r.get('scores') or {}).get('quality') is not None for r in ny),
+            'beli':sum(bool((r.get('sources') or {}).get('beli')) for r in ny),
+            'reddit':sum(bool((r.get('sources') or {}).get('reddit')) for r in ny),
+            'web_existing':sum(bool((r.get('sources') or {}).get('web')) for r in ny),
+            'public_reviews':sum(bool((r.get('sources') or {}).get('public_reviews')) for r in ny),
+          })
+          PY
+
+      - name: Commit score seed to main
+        run: |
+          git config user.name "restaurant-hype-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add restaurant-hype-map/data
+          if ! git diff --cached --quiet; then
+            git commit -m "Seed Manhattan aggregate restaurant scores"
+            git pull --rebase origin main
+            git push origin main
+          fi
+
+      - name: Publish score seed to Pages
+        run: |
+          mkdir -p /tmp/quick-seed
+          cp -R restaurant-hype-map/data/. /tmp/quick-seed/
+          git fetch origin gh-pages
+          git checkout -B gh-pages origin/gh-pages
+          mkdir -p restaurant-hype-map/data
+          cp -R /tmp/quick-seed/. restaurant-hype-map/data/
+          git add restaurant-hype-map/data
+          if ! git diff --cached --quiet; then
+            git commit -m "Publish Manhattan aggregate score seed"
+            git pull --rebase origin gh-pages
+            git push origin gh-pages
+          fi
