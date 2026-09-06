@@ -2,11 +2,18 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 INDEX = ROOT / "index.html"
-OLD1 = '<script src="v9-overlay.js?v=9.1"></script>'
-OLD2 = '<script src="v9-1-overlay.js?v=9.1"></script>'
-TAG = '<script src="v9-1-overlay.js?v=10"></script>'
-
-text = INDEX.read_text().replace(OLD1, "").replace(OLD2, "").replace(TAG, "")
-text = text.replace("</body>", TAG + "</body>")
+TAGS = [
+    '<script src="v9-overlay.js?v=9.1"></script>',
+    '<script src="v9-1-overlay.js?v=9.1"></script>',
+    '<script src="v9-1-overlay.js?v=10"></script>',
+    '<script src="v9-1-overlay.js?v=11"></script>',
+    '<script src="v11-addon.js?v=11"></script>',
+]
+BASE = '<script src="v9-1-overlay.js?v=11"></script>'
+ADDON = '<script src="v11-addon.js?v=11"></script>'
+text = INDEX.read_text()
+for tag in TAGS:
+    text = text.replace(tag, "")
+text = text.replace("</body>", BASE + ADDON + "</body>")
 INDEX.write_text(text)
-print("Injected v10 restaurant interaction layer")
+print("Injected v11 aggregate restaurant interaction layer")
