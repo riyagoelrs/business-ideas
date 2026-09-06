@@ -36,7 +36,9 @@ jobs:
 
       - name: Enrich Beli Reddit web and public review signals
         working-directory: restaurant-hype-map/pipeline
-        run: python enrich_v11.py
+        run: |
+          sed -i 's/web_batch(rows)/web_batch(rows,120)/' enrich_v11.py
+          python enrich_v11.py
 
       - name: Commit enriched data to main
         run: |
