@@ -1,0 +1,56 @@
+name: Publish restaurant hype map UI
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/restaurant-hype-ui-publish.yml"
+      - "restaurant-hype-map/v9-1-overlay.js"
+      - "restaurant-hype-map/pipeline/apply_v9_frontend.py"
+
+concurrency:
+  group: restaurant-hype-ui-publish
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  publish-ui:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out main
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Inject v9.1 interaction layer
+        run: python restaurant-hype-map/pipeline/apply_v9_frontend.py
+
+      - name: Commit injected index to main
+        run: |
+          git config user.name "restaurant-hype-bot"
+          git config user.email "actions@users.noreply.github.com"
+          if [ -n "$(git status --porcelain -- restaurant-hype-map/index.html)" ]; then
+            git add restaurant-hype-map/index.html
+            git commit -m "Load clickable color-rated restaurant layer"
+            git pull --rebase origin main
+            git push origin main
+          fi
+
+      - name: Publish UI to gh-pages
+        run: |
+          mkdir -p /tmp/hype-ui
+          cp restaurant-hype-map/index.html /tmp/hype-ui/index.html
+          cp restaurant-hype-map/v9-1-overlay.js /tmp/hype-ui/v9-1-overlay.js
+          git fetch origin gh-pages
+          git checkout -B gh-pages origin/gh-pages
+          cp /tmp/hype-ui/index.html restaurant-hype-map/index.html
+          cp /tmp/hype-ui/v9-1-overlay.js restaurant-hype-map/v9-1-overlay.js
+          if [ -n "$(git status --porcelain -- restaurant-hype-map/index.html restaurant-hype-map/v9-1-overlay.js)" ]; then
+            git add restaurant-hype-map/index.html restaurant-hype-map/v9-1-overlay.js
+            git commit -m "Publish clickable color-rated restaurant layer"
+            git pull --rebase origin gh-pages
+            git push origin gh-pages
+          fi
