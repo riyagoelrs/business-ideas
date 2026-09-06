@@ -1,1 +1,94 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Viral Reverse Engineer</title><style>:root{--bg:#07080b;--panel:#12151d;--border:#2d3441;--text:#f7f8fa;--muted:#9ba3b4;--accent:#c7ff4f;--bad:#ff9f9f;--good:#5be593}*{box-sizing:border-box}body{margin:0;background:#07080b;color:var(--text);font-family:Inter,system-ui,-apple-system,sans-serif}.wrap{max-width:1050px;margin:0 auto;padding:50px 22px}.hero{display:grid;grid-template-columns:1fr 1fr;gap:34px;align-items:center}.eyebrow{color:var(--accent);font-size:12px;font-weight:900;letter-spacing:.1em;text-transform:uppercase}h1{font-size:clamp(44px,6vw,72px);line-height:.97;letter-spacing:-.055em;margin:14px 0 18px}.lead{color:#b6bdca;font-size:17px;line-height:1.6}.panel,.card{background:linear-gradient(180deg,#151821,#0d0f14);border:1px solid var(--border);border-radius:22px}.panel{padding:26px}.panel h2{margin:0 0 7px}.small{color:var(--muted);font-size:13px;line-height:1.5}.label{display:block;margin:20px 0 8px;font-size:11px;font-weight:850;letter-spacing:.08em;text-transform:uppercase}.row{display:flex;gap:10px}.input{position:relative;flex:1}.input span{position:absolute;left:15px;top:50%;transform:translateY(-50%);color:#747d8e;font-weight:800}.input input{width:100%;height:54px;border:1px solid #313846;background:#080a0e;border-radius:15px;color:#fff;padding:0 14px 0 35px;font-size:17px;outline:none}.btn{height:54px;border:0;border-radius:15px;background:var(--accent);font-weight:950;padding:0 28px;cursor:pointer}.btn:disabled{opacity:.55}.status{display:none;margin-top:15px;padding:12px 13px;border:1px solid var(--border);border-radius:12px;font-size:12px;line-height:1.5}.status.show{display:block}.status.error{color:var(--bad);border-color:#713c40}.status.ok{color:#bdf7d2;border-color:#28553a}.results{display:none;margin-top:42px}.results.show{display:block}.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.card{padding:18px}.k{font-size:11px;color:var(--muted);text-transform:uppercase;font-weight:800}.v{font-size:28px;font-weight:900;margin-top:7px}.section{margin-top:28px}.section h2{font-size:25px;margin:0 0 12px}.tableWrap{overflow:auto;border:1px solid var(--border);border-radius:18px}.table{width:100%;min-width:850px;border-collapse:collapse;background:#0d0f14}.table th,.table td{padding:12px;border-bottom:1px solid #232832;text-align:left;font-size:12px}.table th{color:#8f97a5;font-size:10px;text-transform:uppercase}.caption{max-width:360px}.pill{display:inline-block;margin:3px 4px 3px 0;padding:6px 9px;border:1px solid #303846;border-radius:999px;color:#cbd2dd;font-size:11px}.strategy{padding:20px;border:1px solid rgba(199,255,79,.2);border-radius:18px;background:rgba(199,255,79,.05);line-height:1.6;color:#dfe5ed}.stamp{margin-top:12px;color:#697181;font-size:10px}@media(max-width:800px){.hero{grid-template-columns:1fr}.kpis{grid-template-columns:1fr 1fr}}@media(max-width:520px){.row{flex-direction:column}.btn{width:100%}}</style></head><body><div class="wrap"><div class="hero"><div><div class="eyebrow">● viral video reverse engineer</div><h1>Why does this creator keep going viral?</h1><div class="lead">Type a TikTok creator. We pull recent public posts, rank the best performers, and look for repeatable patterns in views, engagement, length, hooks, timing and topics.</div></div><div class="panel"><h2>Analyze a creator</h2><div class="small">Server-side fetch only. No browser CORS relays.</div><label class="label" for="creator">TikTok username</label><div class="row"><div class="input"><span>@</span><input id="creator" value="riyagoel103" autocomplete="off"></div><button id="analyze" class="btn" type="button">Analyze</button></div><div id="status" class="status"></div><div class="stamp">V3 · build 2026-09-06-0908</div></div></div><main id="results" class="results"><div class="kpis"><div class="card"><div class="k">Videos fetched</div><div class="v" id="count">—</div></div><div class="card"><div class="k">Median views</div><div class="v" id="medViews">—</div></div><div class="card"><div class="k">Median length</div><div class="v" id="medLen">—</div></div><div class="card"><div class="k">Avg engagement</div><div class="v" id="eng">—</div></div></div><section class="section"><h2>Repeatable pattern</h2><div id="strategy" class="strategy"></div></section><section class="section"><h2>Recurring topics</h2><div id="topics"></div></section><section class="section"><h2>Top videos</h2><div class="tableWrap"><table class="table"><thead><tr><th>#</th><th>Views</th><th>Eng.</th><th>Length</th><th>Posted</th><th>Caption</th><th>Video</th></tr></thead><tbody id="rows"></tbody></table></div></section></main></div><script>const $=id=>document.getElementById(id);const fmt=n=>{n=Number(n)||0;if(n>=1e9)return(n/1e9).toFixed(1)+'B';if(n>=1e6)return(n/1e6).toFixed(n>=1e7?0:1)+'M';if(n>=1e3)return(n/1e3).toFixed(n>=1e4?0:1)+'K';return Math.round(n).toLocaleString()};const median=a=>{const x=[...a].filter(Number.isFinite).sort((a,b)=>a-b);if(!x.length)return 0;const m=Math.floor(x.length/2);return x.length%2?x[m]:(x[m-1]+x[m])/2};const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));function status(msg,type=''){const el=$('status');el.textContent=msg;el.className='status show'+(type?' '+type:'')}function hashtags(t){return [...String(t).matchAll(/#([A-Za-z0-9_.-]+)/g)].map(m=>m[1].toLowerCase())}function render(videos,handle){const ranked=[...videos].sort((a,b)=>b.views-a.views).slice(0,50);$('count').textContent=videos.length;$('medViews').textContent=fmt(median(ranked.map(v=>v.views)));$('medLen').textContent=Math.round(median(ranked.map(v=>v.duration)))+'s';const av=ranked.length?ranked.reduce((s,v)=>s+v.engagement,0)/ranked.length:0;$('eng').textContent=(av*100).toFixed(1)+'%';const term=new Map();ranked.forEach(v=>hashtags(v.caption).forEach(t=>term.set(t,(term.get(t)||0)+1)));const top=[...term.entries()].sort((a,b)=>b[1]-a[1]).slice(0,12);$('topics').innerHTML=top.length?top.map(([t,n])=>'<span class="pill">#'+esc(t)+' · '+n+'</span>').join(''):'<span class="small">No recurring hashtags in this sample.</span>';const bestLen=(()=>{const b={'0–10s':[],'11–20s':[],'21–35s':[],'36–60s':[],'60s+':[]};ranked.forEach(v=>{const s=v.duration;const k=s<=10?'0–10s':s<=20?'11–20s':s<=35?'21–35s':s<=60?'36–60s':'60s+';b[k].push(v.views)});return Object.entries(b).filter(x=>x[1].length).map(([k,a])=>[k,median(a)]).sort((a,b)=>b[1]-a[1])[0]?.[0]||'unknown'})();$('strategy').innerHTML='<b>@'+esc(handle)+'</b>: the strongest duration bucket in this fetched sample is <b>'+esc(bestLen)+'</b>. The top post has <b>'+fmt(ranked[0]?.views||0)+'</b> views. '+(top.length?'The most repeated hashtag/topic signal is <b>#'+esc(top[0][0])+'</b>.':'')+' Use these as hypotheses for the next content test—not causal proof.';$('rows').innerHTML=ranked.map((v,i)=>'<tr><td>'+(i+1)+'</td><td><b>'+fmt(v.views)+'</b></td><td>'+(v.engagement*100).toFixed(1)+'%</td><td>'+v.duration+'s</td><td>'+(v.createTime?new Date(v.createTime*1000).toLocaleDateString():'—')+'</td><td class="caption">'+esc(v.caption||'(no caption)')+'</td><td>'+(v.url?'<a href="'+esc(v.url)+'" target="_blank" style="color:#8df2ff">Open ↗</a>':'—')+'</td></tr>').join('');$('results').classList.add('show')}async function analyze(){const handle=$('creator').value.trim().replace(/^@/,'').split(/[/?#]/)[0];if(!handle){status('Enter a TikTok username.','error');return}const b=$('analyze');b.disabled=true;b.textContent='Analyzing…';status('Button works — contacting the server for @'+handle+'…');try{const r=await fetch('/api/tiktok?handle='+encodeURIComponent(handle)+'&limit=100',{cache:'no-store'});const text=await r.text();let j;try{j=JSON.parse(text)}catch{throw new Error('Server returned a non-JSON response (HTTP '+r.status+').')}if(!r.ok||!j.ok)throw new Error(j.error||j.detail||('Server HTTP '+r.status));render(j.videos,handle);status('Done — '+j.videos.length+' public posts fetched and analyzed.','ok')}catch(e){console.error(e);status('Fetch failed: '+e.message,'error')}finally{b.disabled=false;b.textContent='Analyze'}}$('analyze').addEventListener('click',analyze);$('creator').addEventListener('keydown',e=>{if(e.key==='Enter')analyze()});</script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
+<title>Viral Reverse Engineer</title>
+<style>
+:root{--bg:#07080b;--panel:#12151d;--border:#2d3441;--text:#f7f8fa;--muted:#9ba3b4;--accent:#c7ff4f;--bad:#ff9f9f;--good:#5be593;--cyan:#8df2ff}*{box-sizing:border-box}body{margin:0;background:#07080b;color:var(--text);font-family:Inter,system-ui,-apple-system,sans-serif}.wrap{max-width:1050px;margin:0 auto;padding:50px 22px}.hero{display:grid;grid-template-columns:1fr 1fr;gap:34px;align-items:center}.eyebrow{color:var(--accent);font-size:12px;font-weight:900;letter-spacing:.1em;text-transform:uppercase}h1{font-size:clamp(44px,6vw,72px);line-height:.97;letter-spacing:-.055em;margin:14px 0 18px}.lead{color:#b6bdca;font-size:17px;line-height:1.6}.panel,.card{background:linear-gradient(180deg,#151821,#0d0f14);border:1px solid var(--border);border-radius:22px}.panel{padding:26px}.panel h2{margin:0 0 7px}.small{color:var(--muted);font-size:13px;line-height:1.5}.label{display:block;margin:20px 0 8px;font-size:11px;font-weight:850;letter-spacing:.08em;text-transform:uppercase}.row{display:flex;gap:10px}.input{position:relative;flex:1}.input span{position:absolute;left:15px;top:50%;transform:translateY(-50%);color:#747d8e;font-weight:800}.input input{width:100%;height:54px;border:1px solid #313846;background:#080a0e;border-radius:15px;color:#fff;padding:0 14px 0 35px;font-size:17px;outline:none}.btn{height:54px;border:0;border-radius:15px;background:var(--accent);font-weight:950;padding:0 28px;cursor:pointer}.btn:disabled{opacity:.55}.status{display:none;margin-top:15px;padding:12px 13px;border:1px solid var(--border);border-radius:12px;font-size:12px;line-height:1.5}.status.show{display:block}.status.error{color:var(--bad);border-color:#713c40}.status.ok{color:#bdf7d2;border-color:#28553a}.results{display:none;margin-top:42px}.results.show{display:block}.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.card{padding:18px}.k{font-size:11px;color:var(--muted);text-transform:uppercase;font-weight:800}.v{font-size:28px;font-weight:900;margin-top:7px}.section{margin-top:28px}.section h2{font-size:25px;margin:0 0 12px}.tableWrap{overflow:auto;border:1px solid var(--border);border-radius:18px}.table{width:100%;min-width:850px;border-collapse:collapse;background:#0d0f14}.table th,.table td{padding:12px;border-bottom:1px solid #232832;text-align:left;font-size:12px}.table th{color:#8f97a5;font-size:10px;text-transform:uppercase}.caption{max-width:360px}.pill{display:inline-block;margin:3px 4px 3px 0;padding:6px 9px;border:1px solid #303846;border-radius:999px;color:#cbd2dd;font-size:11px}.strategy{padding:20px;border:1px solid rgba(199,255,79,.2);border-radius:18px;background:rgba(199,255,79,.05);line-height:1.6;color:#dfe5ed}.stamp{margin-top:12px;color:#697181;font-size:10px}.note{margin-top:12px;color:#7f8898;font-size:11px;line-height:1.45}.sourceDot{color:var(--good)}a{color:var(--cyan)}@media(max-width:800px){.hero{grid-template-columns:1fr}.kpis{grid-template-columns:1fr 1fr}}@media(max-width:520px){.row{flex-direction:column}.btn{width:100%}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hero">
+    <div>
+      <div class="eyebrow">● viral video reverse engineer</div>
+      <h1>Why does this creator keep going viral?</h1>
+      <div class="lead">Type a TikTok creator. We analyze the latest public posts TikTok exposes through its own embed surfaces, then rank them by views and look for repeatable patterns in length, hooks, timing and topics.</div>
+    </div>
+    <div class="panel">
+      <h2>Analyze a creator</h2>
+      <div class="small"><span class="sourceDot">●</span> TikTok-native public embed data. No TikWM or browser CORS relay.</div>
+      <label class="label" for="creator">TikTok username</label>
+      <div class="row"><div class="input"><span>@</span><input id="creator" value="riyagoel103" autocomplete="off"></div><button id="analyze" class="btn" type="button">Analyze</button></div>
+      <div id="status" class="status"></div>
+      <div class="note">TikTok's public creator embed currently exposes up to 10 recent public posts. This version prioritizes a reliable live analysis over pretending we can pull 50 anonymously. A larger archive requires creator authorization or an authenticated scraper.</div>
+      <div class="stamp">V3.1 · build 2026-09-06-0948</div>
+    </div>
+  </div>
+  <main id="results" class="results">
+    <div class="kpis">
+      <div class="card"><div class="k">Videos analyzed</div><div class="v" id="count">—</div></div>
+      <div class="card"><div class="k">Median views</div><div class="v" id="medViews">—</div></div>
+      <div class="card"><div class="k">Median length</div><div class="v" id="medLen">—</div></div>
+      <div class="card"><div class="k">Avg engagement</div><div class="v" id="eng">—</div></div>
+    </div>
+    <section class="section"><h2>Repeatable pattern</h2><div id="strategy" class="strategy"></div></section>
+    <section class="section"><h2>Recurring topics</h2><div id="topics"></div></section>
+    <section class="section"><h2>Latest public sample, ranked by views</h2><div class="tableWrap"><table class="table"><thead><tr><th>#</th><th>Views</th><th>Eng.</th><th>Length</th><th>Posted</th><th>Caption</th><th>Video</th></tr></thead><tbody id="rows"></tbody></table></div></section>
+  </main>
+</div>
+<script>
+const $=id=>document.getElementById(id);
+const fmt=n=>{n=Number(n)||0;if(n>=1e9)return(n/1e9).toFixed(1)+'B';if(n>=1e6)return(n/1e6).toFixed(n>=1e7?0:1)+'M';if(n>=1e3)return(n/1e3).toFixed(n>=1e4?0:1)+'K';return Math.round(n).toLocaleString()};
+const median=a=>{const x=[...a].filter(n=>Number.isFinite(n)&&n>0).sort((a,b)=>a-b);if(!x.length)return 0;const m=Math.floor(x.length/2);return x.length%2?x[m]:(x[m-1]+x[m])/2};
+const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+function status(msg,type=''){const el=$('status');el.textContent=msg;el.className='status show'+(type?' '+type:'')}
+function hashtags(t){return [...String(t).matchAll(/#([\p{L}\p{N}_.-]+)/gu)].map(m=>m[1].toLowerCase())}
+function render(videos,handle){
+  const ranked=[...videos].sort((a,b)=>(b.views||0)-(a.views||0));
+  $('count').textContent=ranked.length;
+  $('medViews').textContent=fmt(median(ranked.map(v=>Number(v.views)||0)));
+  const durationValues=ranked.map(v=>Number(v.duration)||0).filter(Boolean);
+  $('medLen').textContent=durationValues.length?Math.round(median(durationValues))+'s':'—';
+  const detailed=ranked.filter(v=>!v.partial && Number.isFinite(Number(v.engagement)));
+  const av=detailed.length?detailed.reduce((s,v)=>s+(Number(v.engagement)||0),0)/detailed.length:0;
+  $('eng').textContent=detailed.length?(av*100).toFixed(1)+'%':'—';
+  const term=new Map();ranked.forEach(v=>hashtags(v.caption).forEach(t=>term.set(t,(term.get(t)||0)+1)));
+  const top=[...term.entries()].sort((a,b)=>b[1]-a[1]).slice(0,12);
+  $('topics').innerHTML=top.length?top.map(([t,n])=>'<span class="pill">#'+esc(t)+' · '+n+'</span>').join(''):'<span class="small">No recurring hashtags in this sample.</span>';
+  const buckets={'0–10s':[],'11–20s':[],'21–35s':[],'36–60s':[],'60s+':[]};
+  ranked.filter(v=>Number(v.duration)>0).forEach(v=>{const s=Number(v.duration);const k=s<=10?'0–10s':s<=20?'11–20s':s<=35?'21–35s':s<=60?'36–60s':'60s+';buckets[k].push(Number(v.views)||0)});
+  const bestLen=Object.entries(buckets).filter(x=>x[1].length).map(([k,a])=>[k,median(a)]).sort((a,b)=>b[1]-a[1])[0]?.[0];
+  const pieces=['<b>@'+esc(handle)+'</b>: the highest-viewed post in this live sample has <b>'+fmt(ranked[0]?.views||0)+'</b> views.'];
+  if(bestLen) pieces.push('The strongest duration bucket is <b>'+esc(bestLen)+'</b>.');
+  if(top.length) pieces.push('The most repeated hashtag/topic signal is <b>#'+esc(top[0][0])+'</b>.');
+  pieces.push('Treat these as content hypotheses, not causal proof.');
+  $('strategy').innerHTML=pieces.join(' ');
+  $('rows').innerHTML=ranked.map((v,i)=>{
+    const eng=!v.partial&&Number.isFinite(Number(v.engagement))?(Number(v.engagement)*100).toFixed(1)+'%':'—';
+    const len=Number(v.duration)?Number(v.duration)+'s':'—';
+    const posted=Number(v.createTime)?new Date(Number(v.createTime)*1000).toLocaleDateString():'—';
+    return '<tr><td>'+(i+1)+'</td><td><b>'+fmt(v.views)+'</b></td><td>'+eng+'</td><td>'+len+'</td><td>'+posted+'</td><td class="caption">'+esc(v.caption||'(no caption)')+'</td><td>'+(v.url?'<a href="'+esc(v.url)+'" target="_blank" rel="noreferrer">Open ↗</a>':'—')+'</td></tr>'
+  }).join('');
+  $('results').classList.add('show');
+}
+async function analyze(){
+  const handle=$('creator').value.trim().replace(/^@/,'').split(/[/?#]/)[0];
+  if(!handle){status('Enter a TikTok username.','error');return}
+  const b=$('analyze');b.disabled=true;b.textContent='Analyzing…';status('Fetching TikTok public embeds for @'+handle+'…');
+  try{
+    const r=await fetch('/api/tiktok?handle='+encodeURIComponent(handle),{cache:'no-store'});
+    const text=await r.text();let j;try{j=JSON.parse(text)}catch{throw new Error('Server returned non-JSON (HTTP '+r.status+')')}
+    if(!r.ok||!j.ok)throw new Error(j.detail||j.error||('Server HTTP '+r.status));
+    render(j.videos,handle);
+    const detailText=j.detailedCount===j.videos.length?'full post details loaded':j.detailedCount+' of '+j.videos.length+' posts enriched with full detail';
+    status('Done — '+j.videos.length+' public posts analyzed; '+detailText+'.','ok');
+  }catch(e){console.error(e);status('Fetch failed: '+e.message,'error')}
+  finally{b.disabled=false;b.textContent='Analyze'}
+}
+$('analyze').addEventListener('click',analyze);$('creator').addEventListener('keydown',e=>{if(e.key==='Enter')analyze()});
+</script>
+</body>
+</html>
