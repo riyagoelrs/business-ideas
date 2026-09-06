@@ -38,7 +38,7 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Select rotating city batch
+      - name: Select city batch
         run: |
           python - <<'PY'
           import datetime, os
@@ -53,11 +53,18 @@ jobs:
             "Kansas City, MO","Atlanta, GA","Miami, FL","New Orleans, LA","Cleveland, OH",
             "Pittsburgh, PA"
           ]
-          batches = 6
-          idx = datetime.datetime.utcnow().timetuple().tm_yday % batches
-          batch = cities[idx::batches]
-          if idx != 0 and "New York, NY" not in batch:
-              batch = ["New York, NY"] + batch
+          # On code changes, immediately seed the cities most likely to be tested.
+          if os.environ.get("GITHUB_EVENT_NAME") == "push":
+              batch = [
+                "New York, NY","Los Angeles, CA","Chicago, IL","San Francisco, CA",
+                "Miami, FL","Austin, TX","Boston, MA","Atlanta, GA"
+              ]
+          else:
+              batches = 6
+              idx = datetime.datetime.utcnow().timetuple().tm_yday % batches
+              batch = cities[idx::batches]
+              if "New York, NY" not in batch:
+                  batch = ["New York, NY"] + batch
           value = "|".join(batch)
           print("City batch:", value)
           with open(os.environ["GITHUB_ENV"], "a") as f:
@@ -80,14 +87,21 @@ jobs:
           python - <<'PY'
           import os, re, subprocess
           cities = [x for x in os.environ.get("HYPE_CITIES", "").split("|") if x]
+          special = {
+              "New York": "nycfood",
+              "Los Angeles": "lafood",
+              "San Francisco": "sffood",
+              "Washington": "dcfood",
+          }
           for city in cities:
-              slug = re.sub(r"[^a-z0-9]+", "_", city.lower()).strip("_")
-              query = f"{city.split(',')[0]} restaurants"
-              out = f"restaurant-hype-map/data/tiktok/{slug}.json"
-              print("TikTok:", query)
+              city_name = city.split(',')[0]
+              city_slug = re.sub(r"[^a-z0-9]+", "_", city.lower()).strip("_")
+              hashtag = special.get(city_name) or (re.sub(r"[^a-z0-9]+", "", city_name.lower()) + "food")
+              out = f"restaurant-hype-map/data/tiktok/{city_slug}.json"
+              print("TikTok hashtag:", hashtag)
               subprocess.run([
                   "python","_tiktok/tiktok_scraper.py",
-                  "--mode","search","--query",query,
+                  "--mode","hashtag","--query",hashtag,
                   "--count","28","--out",out
               ], check=False)
           PY
@@ -102,7 +116,7 @@ jobs:
         run: |
           git config user.name "restaurant-hype-bot"
           git config user.email "actions@users.noreply.github.com"
-          if ! git diff --quiet -- restaurant-hype-map/data; then
+          if [ -n "$(git status --porcelain -- restaurant-hype-map/data)" ]; then
             git add restaurant-hype-map/data
             git commit -m "Refresh free multi-city restaurant hype data"
             git push origin main
@@ -118,7 +132,7 @@ jobs:
           git checkout gh-pages
           mkdir -p restaurant-hype-map/data
           cp -R /tmp/hype-data/. restaurant-hype-map/data/
-          if ! git diff --quiet -- restaurant-hype-map/data; then
+          if [ -n "$(git status --porcelain -- restaurant-hype-map/data)" ]; then
             git add restaurant-hype-map/data
             git commit -m "Publish refreshed free multi-city hype data"
             git push origin gh-pages
