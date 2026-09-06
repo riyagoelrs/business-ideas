@@ -8,6 +8,10 @@ on:
       - ".github/workflows/restaurant-hype-v11-quick-seed.yml"
       - "restaurant-hype-map/pipeline/beli_precise.py"
 
+concurrency:
+  group: restaurant-hype-map-writes
+  cancel-in-progress: true
+
 permissions:
   contents: write
 
@@ -67,8 +71,10 @@ jobs:
           git add restaurant-hype-map/data
           if ! git diff --cached --quiet; then
             git commit -m "Seed verified Manhattan aggregate restaurant scores"
-            git pull --rebase origin main
-            git push origin main
+            for i in 1 2 3; do
+              git pull --rebase origin main && git push origin main && break
+              sleep 3
+            done
           fi
 
       - name: Publish verified score seed to Pages
@@ -82,6 +88,8 @@ jobs:
           git add restaurant-hype-map/data
           if ! git diff --cached --quiet; then
             git commit -m "Publish verified Manhattan aggregate score seed"
-            git pull --rebase origin gh-pages
-            git push origin gh-pages
+            for i in 1 2 3; do
+              git pull --rebase origin gh-pages && git push origin gh-pages && break
+              sleep 3
+            done
           fi
