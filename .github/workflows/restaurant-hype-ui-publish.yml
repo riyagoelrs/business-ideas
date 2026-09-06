@@ -1,3 +1,4 @@
+# v11.1 forced republish after workflow race fix
 name: Publish restaurant hype map UI
 
 on:
