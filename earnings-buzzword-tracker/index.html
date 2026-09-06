@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Track the buzzwords CEOs repeat across earnings calls and compare narrative momentum across companies and quarters." />
+  <title>SignalCall — Earnings Call Buzzword Tracker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <a class="brand" href="#top" aria-label="SignalCall home">
+        <span class="brand-mark">SC</span>
+        <span>
+          <strong>SignalCall</strong>
+          <small>Earnings language tracker</small>
+        </span>
+      </a>
+      <div class="topbar-actions">
+        <span class="status-dot"><i></i><span id="sourceStatus">Demo dataset</span></span>
+        <a class="github-link" href="https://github.com/riyagoelrs/business-ideas/tree/main/earnings-buzzword-tracker" target="_blank" rel="noreferrer">View code ↗</a>
+      </div>
+    </header>
+
+    <main id="top">
+      <section class="hero">
+        <div>
+          <p class="eyebrow">NARRATIVE INTELLIGENCE / EARNINGS CALLS</p>
+          <h1>Every CEO suddenly started saying the same word.</h1>
+          <p class="hero-copy">Track how terms like <strong>AI</strong>, <strong>tariffs</strong>, <strong>GLP-1</strong>, and <strong>consumer pressure</strong> spread across earnings calls — then see which narratives are accelerating fastest.</p>
+        </div>
+        <div class="hero-badge">
+          <span>BUZZWORD VELOCITY</span>
+          <strong id="heroVelocity">+84%</strong>
+          <small id="heroVelocityLabel">AI vs. prior quarter</small>
+        </div>
+      </section>
+
+      <section class="control-panel" aria-label="Analysis controls">
+        <div class="mode-tabs" role="tablist" aria-label="Data source">
+          <button class="mode-tab is-active" data-mode="demo" type="button">Demo data</button>
+          <button class="mode-tab" data-mode="live" type="button">Live API</button>
+          <button class="mode-tab" data-mode="paste" type="button">Paste / upload</button>
+        </div>
+
+        <div class="mode-panel is-active" data-panel="demo">
+          <div class="mode-copy">
+            <div>
+              <p class="eyebrow">INSTANT WALKTHROUGH</p>
+              <h2>See the product with a preloaded illustrative dataset.</h2>
+            </div>
+            <button class="primary-button" id="runDemo" type="button">Run demo analysis</button>
+          </div>
+          <p class="fine-print">Demo counts are illustrative so the interface works instantly. Use Live API or Paste / upload for your own transcript data.</p>
+        </div>
+
+        <div class="mode-panel" data-panel="live">
+          <div class="form-grid live-grid">
+            <label class="field span-2">
+              <span>Tickers</span>
+              <input id="liveTickers" value="NVDA,META,WMT,NKE,MCD,LLY" placeholder="NVDA,META,WMT,NKE" />
+              <small>Comma-separated. Up to 25 companies.</small>
+            </label>
+            <label class="field">
+              <span>From</span>
+              <input id="dateFrom" type="date" value="2025-01-01" />
+            </label>
+            <label class="field">
+              <span>To</span>
+              <input id="dateTo" type="date" value="2026-09-06" />
+            </label>
+            <label class="field span-2">
+              <span>EarningsCalls.dev API key</span>
+              <div class="secret-row">
+                <input id="apiKey" type="password" autocomplete="off" placeholder="ec_••••••••••••" />
+                <button id="toggleKey" class="mini-button" type="button">Show</button>
+              </div>
+              <small>Your key stays in this browser session and is sent only to earningscalls.dev.</small>
+            </label>
+          </div>
+          <div class="mode-actions">
+            <div>
+              <p class="fine-print">Live mode queries transcript search by ticker and period. Full-text search requires an API plan that supports the search endpoint.</p>
+              <p id="liveError" class="inline-error" role="alert"></p>
+            </div>
+            <button class="primary-button" id="runLive" type="button">Fetch live calls</button>
+          </div>
+        </div>
+
+        <div class="mode-panel" data-panel="paste">
+          <div class="paste-layout">
+            <div class="form-grid paste-form">
+              <label class="field">
+                <span>Ticker / company</span>
+                <input id="pasteTicker" placeholder="e.g. NVDA" />
+              </label>
+              <label class="field">
+                <span>Period</span>
+                <input id="pastePeriod" placeholder="e.g. 2026 Q2" />
+              </label>
+              <label class="field span-2">
+                <span>Transcript text</span>
+                <textarea id="pasteText" rows="7" placeholder="Paste prepared remarks or the full call transcript here..."></textarea>
+              </label>
+              <div class="span-2 paste-actions">
+                <button class="secondary-button" id="addTranscript" type="button">Add transcript</button>
+                <label class="upload-button" for="transcriptFiles">Upload .txt / .md files</label>
+                <input id="transcriptFiles" type="file" accept=".txt,.md,text/plain,text/markdown" multiple />
+              </div>
+            </div>
+            <div class="library-card">
+              <div class="library-head">
+                <div>
+                  <p class="eyebrow">LOCAL LIBRARY</p>
+                  <strong id="libraryCount">0 transcripts</strong>
+                </div>
+                <button id="clearLibrary" class="text-button" type="button">Clear</button>
+              </div>
+              <div id="transcriptLibrary" class="transcript-library">
+                <p class="empty-note">Add transcripts to analyze them locally. Nothing is uploaded anywhere.</p>
+              </div>
+              <button class="primary-button full-width" id="runPaste" type="button" disabled>Analyze transcript library</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="term-builder">
+          <div class="term-head">
+            <div>
+              <p class="eyebrow">TRACKED LANGUAGE</p>
+              <h3>Choose the narratives you care about.</h3>
+            </div>
+            <div class="custom-term">
+              <input id="customTerm" placeholder="Add a buzzword…" />
+              <button id="addTerm" class="mini-button" type="button">+ Add</button>
+            </div>
+          </div>
+          <div class="term-chips" id="termChips"></div>
+          <small class="fine-print" id="termLimitNote">Select any terms for demo / paste mode. Live mode analyzes up to 6 buzzwords per run to keep API requests reasonable.</small>
+        </div>
+      </section>
+
+      <section class="progress-card" id="progressCard" hidden>
+        <div class="progress-copy">
+          <strong id="progressLabel">Analyzing calls…</strong>
+          <span id="progressCount">0 / 0</span>
+        </div>
+        <div class="progress-track"><span id="progressBar"></span></div>
+      </section>
+
+      <section class="metrics-grid" aria-live="polite">
+        <article class="metric-card">
+          <span>Calls analyzed</span>
+          <strong id="metricCalls">48</strong>
+          <small id="metricCallsSub">8 companies · 6 quarters</small>
+        </article>
+        <article class="metric-card">
+          <span>Tracked phrases</span>
+          <strong id="metricTerms">6</strong>
+          <small id="metricTermsSub">selected narratives</small>
+        </article>
+        <article class="metric-card highlight">
+          <span>Fastest riser</span>
+          <strong id="metricRiser">AI</strong>
+          <small id="metricRiserSub">+84% vs. prior quarter</small>
+        </article>
+        <article class="metric-card">
+          <span>Widest adoption</span>
+          <strong id="metricAdoption">Tariffs</strong>
+          <small id="metricAdoptionSub">6 of 8 companies</small>
+        </article>
+      </section>
+
+      <section class="dashboard-grid">
+        <article class="panel chart-panel">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow">BUZZWORD MOMENTUM</p>
+              <h2>Which narratives are taking over?</h2>
+            </div>
+            <select id="chartMetric" aria-label="Chart metric">
+              <option value="mentions">Mentions / matched calls</option>
+              <option value="index">Indexed momentum</option>
+            </select>
+          </div>
+          <div class="chart-legend" id="chartLegend"></div>
+          <div class="chart-wrap">
+            <svg id="trendChart" viewBox="0 0 900 360" role="img" aria-label="Buzzword trend chart"></svg>
+          </div>
+        </article>
+
+        <article class="panel leaderboard-panel">
+          <div class="panel-head compact-head">
+            <div>
+              <p class="eyebrow">NARRATIVE SHIFTS</p>
+              <h2>What changed this quarter?</h2>
+            </div>
+          </div>
+          <div id="shiftList" class="shift-list"></div>
+        </article>
+      </section>
+
+      <section class="panel heatmap-panel">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">COMPANY × NARRATIVE</p>
+            <h2>Who is talking about what?</h2>
+          </div>
+          <span class="period-pill" id="heatmapPeriod">Latest quarter</span>
+        </div>
+        <div class="heatmap-scroll">
+          <div id="heatmap" class="heatmap"></div>
+        </div>
+      </section>
+
+      <section class="dashboard-grid lower-grid">
+        <article class="panel excerpts-panel">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow">LANGUAGE IN CONTEXT</p>
+              <h2>What management actually said.</h2>
+            </div>
+            <button id="shuffleExcerpt" class="mini-button" type="button">Shuffle</button>
+          </div>
+          <div id="excerptList" class="excerpt-list"></div>
+        </article>
+
+        <article class="panel methodology-panel">
+          <p class="eyebrow">HOW TO READ THIS</p>
+          <h2>Signal, not sentiment.</h2>
+          <p>SignalCall is designed to answer a simple question: <strong>which words are entering corporate vocabulary fastest?</strong></p>
+          <ul>
+            <li><strong>Momentum</strong> = change in mentions or matched calls vs. the prior period.</li>
+            <li><strong>Adoption</strong> = how many companies used the term in the latest period.</li>
+            <li><strong>Heatmap</strong> = concentration of a narrative by company.</li>
+            <li><strong>Paste mode</strong> counts exact phrase occurrences locally in your browser.</li>
+            <li><strong>Live API mode</strong> uses transcript-search matches, so it measures calls containing the phrase rather than raw word frequency.</li>
+          </ul>
+        </article>
+      </section>
+    </main>
+
+    <footer>
+      <span>Built for narrative research, not investment advice.</span>
+      <span>SignalCall / Business Ideas</span>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
