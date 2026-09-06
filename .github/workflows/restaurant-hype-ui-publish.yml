@@ -7,6 +7,7 @@ on:
     paths:
       - ".github/workflows/restaurant-hype-ui-publish.yml"
       - "restaurant-hype-map/v9-1-overlay.js"
+      - "restaurant-hype-map/v11-addon.js"
       - "restaurant-hype-map/pipeline/apply_v9_frontend.py"
 
 concurrency:
@@ -25,7 +26,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Inject v9.1 interaction layer
+      - name: Inject v11 interaction layer
         run: python restaurant-hype-map/pipeline/apply_v9_frontend.py
 
       - name: Commit injected index to main
@@ -34,7 +35,7 @@ jobs:
           git config user.email "actions@users.noreply.github.com"
           if [ -n "$(git status --porcelain -- restaurant-hype-map/index.html)" ]; then
             git add restaurant-hype-map/index.html
-            git commit -m "Load clickable color-rated restaurant layer"
+            git commit -m "Load v11 aggregate restaurant layer"
             git pull --rebase origin main
             git push origin main
           fi
@@ -44,13 +45,15 @@ jobs:
           mkdir -p /tmp/hype-ui
           cp restaurant-hype-map/index.html /tmp/hype-ui/index.html
           cp restaurant-hype-map/v9-1-overlay.js /tmp/hype-ui/v9-1-overlay.js
+          cp restaurant-hype-map/v11-addon.js /tmp/hype-ui/v11-addon.js
           git fetch origin gh-pages
           git checkout -B gh-pages origin/gh-pages
           cp /tmp/hype-ui/index.html restaurant-hype-map/index.html
           cp /tmp/hype-ui/v9-1-overlay.js restaurant-hype-map/v9-1-overlay.js
-          if [ -n "$(git status --porcelain -- restaurant-hype-map/index.html restaurant-hype-map/v9-1-overlay.js)" ]; then
-            git add restaurant-hype-map/index.html restaurant-hype-map/v9-1-overlay.js
-            git commit -m "Publish clickable color-rated restaurant layer"
+          cp /tmp/hype-ui/v11-addon.js restaurant-hype-map/v11-addon.js
+          if [ -n "$(git status --porcelain -- restaurant-hype-map/index.html restaurant-hype-map/v9-1-overlay.js restaurant-hype-map/v11-addon.js)" ]; then
+            git add restaurant-hype-map/index.html restaurant-hype-map/v9-1-overlay.js restaurant-hype-map/v11-addon.js
+            git commit -m "Publish v11 aggregate restaurant layer"
             git pull --rebase origin gh-pages
             git push origin gh-pages
           fi
