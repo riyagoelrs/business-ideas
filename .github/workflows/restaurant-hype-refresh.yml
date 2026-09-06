@@ -12,7 +12,7 @@ on:
       - "restaurant-hype-map/requirements-data.txt"
 
 concurrency:
-  group: restaurant-hype-refresh
+  group: restaurant-hype-map-writes
   cancel-in-progress: true
 
 permissions:
@@ -90,8 +90,10 @@ jobs:
           if [ -n "$(git status --porcelain -- restaurant-hype-map/data restaurant-hype-map/index.html)" ]; then
             git add restaurant-hype-map/data restaurant-hype-map/index.html
             git commit -m "Refresh restaurant universe and aggregate scores"
-            git pull --rebase origin main
-            git push origin main
+            for i in 1 2 3; do
+              git pull --rebase origin main && git push origin main && break
+              sleep 3
+            done
           else
             echo "No restaurant app/data changes"
           fi
@@ -113,8 +115,10 @@ jobs:
           if [ -n "$(git status --porcelain -- restaurant-hype-map/data restaurant-hype-map/index.html restaurant-hype-map/v9-1-overlay.js restaurant-hype-map/v11-addon.js)" ]; then
             git add restaurant-hype-map/data restaurant-hype-map/index.html restaurant-hype-map/v9-1-overlay.js restaurant-hype-map/v11-addon.js
             git commit -m "Publish aggregate restaurant hype map v11"
-            git pull --rebase origin gh-pages
-            git push origin gh-pages
+            for i in 1 2 3; do
+              git pull --rebase origin gh-pages && git push origin gh-pages && break
+              sleep 3
+            done
           else
             echo "No Pages restaurant changes"
           fi
