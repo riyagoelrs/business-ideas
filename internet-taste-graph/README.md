@@ -1,61 +1,76 @@
 # Internet Taste Graph
 
-Internet Taste Graph is a browser-based prototype for turning a person's digital and physical behavior into a navigable taste profile.
+Internet Taste Graph is a consent-first browser prototype that turns a person's digital and physical behavior into an editable taste model, then maps both what they already know and the cultural whitespace they have not explored yet.
 
 Live app: https://riyagoelrs.github.io/business-ideas/internet-taste-graph/
 
-## V2: behavioral taste signals
+## V3 product flow
 
-The graph can now combine:
+The product now follows five steps:
 
-- typed accounts, interests and current obsessions
-- Google/Search or My Activity exports
-- YouTube search/watch-history exports
-- social account exports containing following, followers, likes or saves
-- Maps/Timeline/place-history exports
-- browser-history exports
+1. **Connect / import signals** — Search, YouTube, social, places, browser history, or manually stated interests.
+2. **Review the Signal Inbox** — Every detected interest is visible before it shapes the model. Users can boost, reduce, remove, mark as core taste, mark as current curiosity, or mute it.
+3. **Build My World** — Known and adjacent entities are mapped across brands, places, creators, media, products, aesthetics and restaurants.
+4. **Reveal My Whitespace** — Dashed ghost nodes represent high predicted affinity with low prior exposure.
+5. **Enter a World** — Recommended nodes link outward to relevant YouTube, web, creator and Maps discovery routes.
 
-The static prototype accepts ZIP, JSON, CSV, TXT and HTML files. Files are parsed in the browser. It stores derived keyword weights in `localStorage`; the raw imported history is not uploaded by this demo.
+## Signal model
 
-Each source is intentionally weighted differently. High-intent or repeated behavior (places, saves/likes, searches and watch history) should matter more than generic browsing. Following is a better self-taste signal than followers; followers are eventually most useful for a separate audience graph.
+The prototype combines source intent, user weighting and role:
 
-## Personalized discovery feed
+- repeat places are high-signal offline evidence
+- searches and watch history are high-intent curiosity signals
+- following / saves / likes represent chosen cultural inputs
+- generic browser history is broad but lower-confidence
+- manual interests can capture things that are not present in an export yet
+- **Core** signals represent persistent taste
+- **Current** signals represent temporary or emerging curiosity and are discounted relative to core taste
+- **Muted** signals do not influence the graph
 
-The behavioral layer generates a ranked discovery feed with:
+Imported JSON, CSV, TXT and HTML files are parsed locally in the browser. ZIP support loads a browser-side ZIP helper only when the user actually selects a ZIP. Raw history is not uploaded by the GitHub Pages prototype; only derived signal weights are stored in local storage.
 
-- a taste-fit score
-- a novelty score
-- the signals that caused the recommendation
-- direct routes to YouTube, Google, Instagram and Maps searches for the recommendation
+## Whitespace
 
-The goal is not only to say “you may like X,” but to make the next rabbit hole one click away.
+Unknown does not automatically mean relevant. For each entity the prototype estimates:
+
+- **Affinity** — similarity to the user's active signals
+- **Bridge value** — whether the entity connects multiple strong parts of the taste profile
+- **Exposure** — direct evidence that the user already knows or consumes it
+- **Whitespace** — affinity × bridge value × novelty × (1 − exposure)
+
+The UI renders:
+
+- solid nodes = **Known**
+- outlined nodes = **Adjacent**
+- dashed translucent nodes = **Whitespace**
+
+Users can also tell the graph “more like this,” “less like this,” or “I already know this,” and that feedback changes the model.
 
 ## Current architecture
 
-`index.html` — product shell and graph UI  
-`styles.css` — original graph design  
-`app.js` — curated cross-category graph and interactive visualization  
-`signals.css` — behavioral-ingestion and discovery-feed UI  
-`signals.js` — local import parsing, signal weighting, evidence and recommendation ranking
+- `index.html` — Connect → Review → Map → Whitespace product shell
+- `styles.css` — responsive visual system
+- `taste-data.js` — curated cross-category entity universe and demo profile
+- `taste-engine.js` — signal ingestion, local persistence, affinity, exposure, bridge and whitespace scoring
+- `taste-ui.js` — editable Signal Inbox, native SVG graph, feedback controls and discovery links
+
+The core graph uses native SVG and has no visualization-library dependency. ZIP parsing is lazy-loaded only for ZIP imports.
 
 ## What a production version needs
 
-The live GitHub Pages build is still a prototype. A production version should add a backend plus consented OAuth/data-portability integrations and a much larger entity/content index.
+The GitHub Pages build remains a prototype. A production version should add:
 
-Recommended ingestion order:
-
-1. Google Takeout / My Activity for Search + YouTube history
-2. TikTok Data Portability where eligible and approved
-3. Instagram account data export / approved Meta surfaces
-4. browser extension for ongoing browser-history signals
-5. Maps/Timeline or other user-provided place history
-6. optional manual interests and account handles
-
-The recommendation layer should then move from the small curated catalog to embeddings + entity resolution + co-occurrence + audience overlap + place affinity, with fresh content retrieval for each recommended node.
+- approved OAuth / data-portability integrations for supported platforms
+- a browser extension for ongoing user-consented browsing signals
+- a larger entity and content index using embeddings, entity resolution and co-occurrence
+- audience-overlap signals separated from the user's own consumption graph
+- timestamps and proper recency decay so short-term obsessions do not overwrite long-term taste
+- fresh content retrieval so every whitespace node resolves to specific videos, articles, creators, products and nearby places rather than search-result links
+- encrypted user accounts, source-level privacy controls, export and deletion
 
 ## Privacy model
 
-This product handles unusually intimate behavioral data. The intended design is explicit consent, source-level controls, clear explanations of why every recommendation exists, user-visible deletion, and minimizing retention of raw history.
+This product handles unusually intimate behavioral data. The intended design is explicit consent, source-level controls, visible explanations for every recommendation, user-editable signals, user-visible deletion and minimizing retention of raw history.
 
 ## License
 
