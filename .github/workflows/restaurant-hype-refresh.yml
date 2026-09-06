@@ -1,0 +1,46 @@
+name: Refresh restaurant hype data
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 10 * * *"
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install data dependencies
+        run: pip install -r restaurant-hype-map/requirements-data.txt
+
+      - name: Refresh source snapshots and scores
+        working-directory: restaurant-hype-map/pipeline
+        env:
+          GOOGLE_PLACES_API_KEY: ${{ secrets.GOOGLE_PLACES_API_KEY }}
+          YELP_API_KEY: ${{ secrets.YELP_API_KEY }}
+          TRIPADVISOR_API_KEY: ${{ secrets.TRIPADVISOR_API_KEY }}
+          REDDIT_CLIENT_ID: ${{ secrets.REDDIT_CLIENT_ID }}
+          REDDIT_CLIENT_SECRET: ${{ secrets.REDDIT_CLIENT_SECRET }}
+        run: python refresh_scores.py
+
+      - name: Commit refreshed snapshot
+        run: |
+          if git diff --quiet -- restaurant-hype-map/data; then
+            echo "No data changes"
+            exit 0
+          fi
+          git config user.name "restaurant-hype-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add restaurant-hype-map/data
+          git commit -m "Refresh restaurant hype data"
+          git push
