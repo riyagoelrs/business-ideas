@@ -1,1 +1,164 @@
-const UPSTREAM='https://tikwm.com/api/user/posts';function send(res,status,body){res.statusCode=status;res.setHeader('Content-Type','application/json; charset=utf-8');res.setHeader('Cache-Control','no-store');res.end(JSON.stringify(body))}function normalize(v){const views=Number(v.play_count)||0,likes=Number(v.digg_count)||0,comments=Number(v.comment_count)||0,shares=Number(v.share_count)||0,caption=String(v.title||'').trim(),author=v.author?.unique_id||'';return{id:String(v.id||v.video_id||''),caption,duration:Number(v.duration)||0,views,likes,comments,shares,engagement:views?(likes+comments+shares)/views:0,createTime:Number(v.create_time)||0,author,url:(v.id||v.video_id)?`https://www.tiktok.com/@${author||'user'}/video/${v.id||v.video_id}`:''}}async function page(handle,count,cursor){const u=new URL(UPSTREAM);u.searchParams.set('unique_id',handle);u.searchParams.set('count',String(count));u.searchParams.set('cursor',String(cursor||0));const c=new AbortController();const t=setTimeout(()=>c.abort(),15000);try{const r=await fetch(u,{headers:{accept:'application/json,text/plain,*/*','user-agent':'Mozilla/5.0','referer':'https://tikwm.com/'},signal:c.signal,cache:'no-store'});const text=await r.text();if(!r.ok)throw new Error('TikWM HTTP '+r.status);let j;try{j=JSON.parse(text)}catch{throw new Error('TikWM returned non-JSON')}if(j.code!==0||!j.data)throw new Error(j.msg||'TikWM returned no creator data');return j.data}finally{clearTimeout(t)}}module.exports=async function(req,res){if(req.method!=='GET')return send(res,405,{error:'GET only'});const handle=String(req.query?.handle||'').trim().replace(/^@/,'').split(/[/?#]/)[0];if(!/^[A-Za-z0-9._]{2,32}$/.test(handle))return send(res,400,{error:'Invalid TikTok username'});const limit=Math.min(100,Math.max(1,Number(req.query?.limit)||100));const videos=[],seen=new Set();let cursor='0';try{for(let i=0;i<4&&videos.length<limit;i++){const d=await page(handle,Math.min(35,limit-videos.length),cursor);for(const item of(d.videos||[])){const v=normalize(item);if(v.id&&!seen.has(v.id)){seen.add(v.id);videos.push(v)}}if(!d.hasMore||!d.cursor)break;cursor=String(d.cursor);await new Promise(r=>setTimeout(r,250))}if(!videos.length)return send(res,404,{error:'No public videos returned for this creator'});return send(res,200,{ok:true,handle,count:videos.length,videos})}catch(e){console.error(e);return send(res,502,{error:'TikTok provider failed',detail:e.message})}};
+const PROFILE_EMBED = 'https://www.tiktok.com/embed/@';
+const VIDEO_EMBED = 'https://www.tiktok.com/embed/v2/';
+const UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36';
+
+function send(res, status, body) {
+  res.statusCode = status;
+  res.setHeader('Content-Type', 'application/json; charset=utf-8');
+  res.setHeader('Cache-Control', 'no-store, max-age=0');
+  res.end(JSON.stringify(body));
+}
+
+function scriptJson(html, id) {
+  const escaped = id.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const re = new RegExp(`<script\\b[^>]*\\bid\\s*=\\s*["']${escaped}["'][^>]*>([\\s\\S]*?)<\\/script\\s*>`, 'i');
+  const match = String(html || '').match(re);
+  if (!match) throw new Error(`${id} state was not found`);
+  return JSON.parse(match[1].trim());
+}
+
+async function getText(url, referer, timeoutMs = 10000) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    const response = await fetch(url, {
+      headers: {
+        'user-agent': UA,
+        'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        'accept-language': 'en-US,en;q=0.9',
+        'cache-control': 'no-cache',
+        'referer': referer || 'https://www.tiktok.com/'
+      },
+      redirect: 'follow',
+      cache: 'no-store',
+      signal: controller.signal
+    });
+    const text = await response.text();
+    if (!response.ok) throw new Error(`TikTok HTTP ${response.status}`);
+    return text;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+function extractHashtags(text) {
+  return [...String(text || '').matchAll(/#([\p{L}\p{N}_.-]+)/gu)].map(m => m[1].toLowerCase());
+}
+
+function findCreatorPage(state, handle) {
+  const pages = Object.values(state?.source?.data || {});
+  for (const page of pages) {
+    if (page?.isError || String(page?.playlistType || '').toLowerCase() !== 'creator') continue;
+    const unique = String(page?.userInfo?.uniqueId || '').toLowerCase();
+    const playlist = String(page?.playlistId || '').toLowerCase();
+    if (unique === handle.toLowerCase() || playlist === handle.toLowerCase()) return page;
+  }
+  throw new Error('TikTok creator embed did not contain this user');
+}
+
+async function fetchCreatorListing(handle) {
+  const profileUrl = `https://www.tiktok.com/@${encodeURIComponent(handle)}`;
+  const html = await getText(PROFILE_EMBED + encodeURIComponent(handle), profileUrl, 12000);
+  const state = scriptJson(html, '__FRONTITY_CONNECT_STATE__');
+  const page = findCreatorPage(state, handle);
+  const videos = (page.videoList || [])
+    .filter(v => v && v.id && !v.privateItem)
+    .slice(0, 10)
+    .map(v => ({
+      id: String(v.id),
+      caption: String(v.desc || ''),
+      views: Number(v.playCount) || 0,
+      duration: 0,
+      likes: 0,
+      comments: 0,
+      shares: 0,
+      createTime: 0,
+      author: String(v.authorUniqueId || page?.userInfo?.uniqueId || handle),
+      hashtags: extractHashtags(v.desc || ''),
+      url: `https://www.tiktok.com/@${encodeURIComponent(v.authorUniqueId || page?.userInfo?.uniqueId || handle)}/video/${encodeURIComponent(v.id)}`,
+      partial: true
+    }));
+  return { page, videos };
+}
+
+function findVideoData(state, id) {
+  const pages = Object.values(state?.source?.data || {});
+  for (const page of pages) {
+    const data = page?.videoData;
+    if (String(data?.itemInfos?.id || '') !== String(id)) continue;
+    if (page?.isError || (page?.code && page.code !== 200)) throw new Error(`TikTok video embed code ${page.code}`);
+    return data;
+  }
+  throw new Error('TikTok video embed did not contain this post');
+}
+
+async function enrichVideo(base) {
+  const html = await getText(VIDEO_EMBED + encodeURIComponent(base.id), base.url, 9000);
+  const state = scriptJson(html, '__FRONTITY_CONNECT_STATE__');
+  const data = findVideoData(state, base.id);
+  const item = data.itemInfos || {};
+  const video = item.video || {};
+  const meta = video.videoMeta || {};
+  const author = data.authorInfos || {};
+  const views = Number(item.playCount) || base.views || 0;
+  const likes = Number(item.diggCount) || 0;
+  const comments = Number(item.commentCount) || 0;
+  const shares = Number(item.shareCount) || 0;
+  const caption = String(item.text || base.caption || '');
+  return {
+    ...base,
+    caption,
+    views,
+    likes,
+    comments,
+    shares,
+    duration: Number(meta.duration) || 0,
+    createTime: Number(item.createTime) || 0,
+    author: String(author.uniqueId || base.author || ''),
+    hashtags: extractHashtags(caption),
+    engagement: views ? (likes + comments + shares) / views : 0,
+    partial: false
+  };
+}
+
+async function enrichInBatches(videos, batchSize = 5) {
+  const output = [];
+  for (let i = 0; i < videos.length; i += batchSize) {
+    const batch = videos.slice(i, i + batchSize);
+    const results = await Promise.allSettled(batch.map(enrichVideo));
+    results.forEach((result, idx) => {
+      const base = batch[idx];
+      if (result.status === 'fulfilled') output.push(result.value);
+      else output.push({ ...base, engagement: 0, enrichError: result.reason?.message || 'detail fetch failed' });
+    });
+  }
+  return output;
+}
+
+module.exports = async function handler(req, res) {
+  if (req.method !== 'GET') return send(res, 405, { error: 'GET only' });
+  const handle = String(req.query?.handle || '').trim().replace(/^@/, '').split(/[/?#]/)[0];
+  if (!/^[A-Za-z0-9._]{2,32}$/.test(handle)) return send(res, 400, { error: 'Invalid TikTok username' });
+
+  try {
+    const listing = await fetchCreatorListing(handle);
+    if (!listing.videos.length) return send(res, 404, { error: 'No public videos were exposed by TikTok for this creator.' });
+    const videos = await enrichInBatches(listing.videos);
+    const detailed = videos.filter(v => !v.partial).length;
+    return send(res, 200, {
+      ok: true,
+      handle,
+      source: 'TikTok public creator/video embeds',
+      sampleType: 'latest_public_embed',
+      count: videos.length,
+      detailedCount: detailed,
+      videos
+    });
+  } catch (error) {
+    console.error('TikTok embed fetch failed:', error);
+    return send(res, 502, {
+      error: 'TikTok public embed fetch failed',
+      detail: error?.message || 'Unknown TikTok error'
+    });
+  }
+};
