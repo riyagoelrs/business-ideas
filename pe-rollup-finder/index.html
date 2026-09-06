@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PE Roll-Up Finder</title>
+  <meta name="description" content="Map fragmented local-service markets, rank roll-up targets, and pressure-test buy-and-build economics." />
+  <link rel="preconnect" href="https://unpkg.com" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <div>
+        <div class="eyebrow">PE SOURCING LAB</div>
+        <h1>Roll-Up Finder</h1>
+        <p>Find fragmented local-service markets, rank acquisition targets, and sanity-check a buy-and-build case.</p>
+      </div>
+      <a class="github-link" href="https://github.com/riyagoelrs/business-ideas/tree/main/pe-rollup-finder" target="_blank" rel="noreferrer">View code ↗</a>
+    </header>
+
+    <main>
+      <section class="search-panel">
+        <form id="search-form" class="search-grid">
+          <label>
+            <span>Market</span>
+            <input id="city" name="city" value="Charlotte, NC" autocomplete="off" />
+          </label>
+          <label>
+            <span>Industry</span>
+            <select id="industry" name="industry"></select>
+          </label>
+          <label>
+            <span>Radius</span>
+            <select id="radius" name="radius">
+              <option value="10">10 km</option>
+              <option value="20" selected>20 km</option>
+              <option value="30">30 km</option>
+              <option value="40">40 km</option>
+              <option value="50">50 km</option>
+            </select>
+          </label>
+          <button id="run-search" class="primary" type="submit">Scan market</button>
+        </form>
+        <div id="status" class="status" role="status" aria-live="polite">Showing an illustrative Charlotte HVAC screen. Run a scan for live OpenStreetMap data.</div>
+        <div id="thesis" class="thesis"></div>
+      </section>
+
+      <section class="kpi-grid" aria-label="Market scorecards">
+        <article class="kpi"><span>Roll-up score</span><strong id="kpi-score">82</strong><small>/ 100</small></article>
+        <article class="kpi"><span>Locations found</span><strong id="kpi-locations">24</strong><small>operators</small></article>
+        <article class="kpi"><span>Likely independent</span><strong id="kpi-independent">79%</strong><small id="kpi-independent-count">19 targets</small></article>
+        <article class="kpi"><span>A / A+ targets</span><strong id="kpi-top">11</strong><small>priority leads</small></article>
+      </section>
+
+      <section class="workspace">
+        <div class="map-card">
+          <div class="section-heading">
+            <div>
+              <span class="eyebrow">TARGET MAP</span>
+              <h2 id="map-title">Charlotte HVAC</h2>
+            </div>
+            <div class="legend"><span class="dot high"></span>A/A+ <span class="dot mid"></span>B <span class="dot low"></span>Watch</div>
+          </div>
+          <div id="map" aria-label="Interactive map of roll-up targets"></div>
+          <div class="map-footnote">Public business listings via OpenStreetMap. Scores are sourcing heuristics, not investment diligence.</div>
+        </div>
+
+        <aside class="score-card">
+          <div class="section-heading compact">
+            <div>
+              <span class="eyebrow">MARKET QUALITY</span>
+              <h2>Why this market?</h2>
+            </div>
+          </div>
+          <div class="score-row"><span>Fragmentation</span><b id="fragmentation-value">79</b><div class="bar"><i id="fragmentation-bar" style="width:79%"></i></div></div>
+          <div class="score-row"><span>Density</span><b id="density-value">88</b><div class="bar"><i id="density-bar" style="width:88%"></i></div></div>
+          <div class="score-row"><span>Target universe</span><b id="scale-value">60</b><div class="bar"><i id="scale-bar" style="width:60%"></i></div></div>
+          <div class="callout">
+            <span>Screening logic</span>
+            <p>50% fragmentation · 30% operator density · 20% target-universe size.</p>
+          </div>
+          <div class="callout muted">
+            <span>Next diligence layer</span>
+            <p>Owner age, revenue, EBITDA, reviews, customer mix, labor, capex, local growth, and dealability.</p>
+          </div>
+        </aside>
+      </section>
+
+      <section class="lower-grid">
+        <div class="table-card">
+          <div class="section-heading table-heading">
+            <div>
+              <span class="eyebrow">RANKED TARGETS</span>
+              <h2>Acquisition shortlist</h2>
+            </div>
+            <div class="filters">
+              <label><input id="independent-only" type="checkbox" checked /> Independent only</label>
+              <select id="tier-filter" aria-label="Filter target tier">
+                <option value="all">All tiers</option>
+                <option value="top" selected>A / A+ only</option>
+                <option value="A+">A+ only</option>
+                <option value="A">A only</option>
+                <option value="B">B only</option>
+              </select>
+              <button id="download-csv" type="button" class="secondary">Export CSV</button>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>#</th><th>Operator</th><th>Tier</th><th>Score</th><th>Nearby</th><th>Distance</th><th>Contact</th></tr></thead>
+              <tbody id="target-body"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <aside class="model-card">
+          <div class="section-heading compact">
+            <div>
+              <span class="eyebrow">ROLL-UP MATH</span>
+              <h2>5-year case</h2>
+            </div>
+          </div>
+          <div class="model-inputs">
+            <label><span>Acquired locations</span><input id="m-targets" type="number" min="1" max="100" value="8" /></label>
+            <label><span>Revenue / target ($m)</span><input id="m-revenue" type="number" min="0.1" max="100" step="0.1" value="2.0" /></label>
+            <label><span>EBITDA margin</span><input id="m-margin" type="number" min="1" max="60" step="1" value="16" /><em>%</em></label>
+            <label><span>Entry multiple</span><input id="m-entry" type="number" min="1" max="30" step="0.5" value="6" /><em>x</em></label>
+            <label><span>Exit multiple</span><input id="m-exit" type="number" min="1" max="30" step="0.5" value="9" /><em>x</em></label>
+            <label><span>Synergies / revenue</span><input id="m-synergy" type="number" min="0" max="20" step="1" value="3" /><em>%</em></label>
+            <label><span>Debt / purchase EV</span><input id="m-debt" type="number" min="0" max="90" step="5" value="50" /><em>%</em></label>
+          </div>
+          <div class="model-results">
+            <div><span>Purchase EV</span><b id="r-purchase">$15.4m</b></div>
+            <div><span>Pro forma EBITDA</span><b id="r-ebitda">$3.0m</b></div>
+            <div><span>5-year MoC</span><b id="r-moc">2.54x</b></div>
+            <div class="hero-result"><span>Illustrative IRR</span><b id="r-irr">20.5%</b></div>
+          </div>
+          <p class="model-note">Simplified screen: no debt paydown, interest, taxes, fees, capex, working capital, or same-store growth.</p>
+        </aside>
+      </section>
+    </main>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+  <script src="./app.js"></script>
+</body>
+</html>
