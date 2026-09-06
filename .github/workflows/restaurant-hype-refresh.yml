@@ -14,6 +14,8 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -33,14 +35,30 @@ jobs:
           REDDIT_CLIENT_SECRET: ${{ secrets.REDDIT_CLIENT_SECRET }}
         run: python refresh_scores.py
 
-      - name: Commit refreshed snapshot
+      - name: Commit refreshed snapshot to main
         run: |
-          if git diff --quiet -- restaurant-hype-map/data; then
-            echo "No data changes"
-            exit 0
-          fi
           git config user.name "restaurant-hype-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add restaurant-hype-map/data
-          git commit -m "Refresh restaurant hype data"
-          git push
+          if ! git diff --quiet -- restaurant-hype-map/data; then
+            git add restaurant-hype-map/data
+            git commit -m "Refresh restaurant hype data"
+            git push origin main
+          else
+            echo "No main-branch data changes"
+          fi
+
+      - name: Publish data snapshot to GitHub Pages branch
+        run: |
+          mkdir -p /tmp/hype-data
+          cp -R restaurant-hype-map/data/. /tmp/hype-data/
+          git fetch origin gh-pages
+          git checkout gh-pages
+          mkdir -p restaurant-hype-map/data
+          cp -R /tmp/hype-data/. restaurant-hype-map/data/
+          if ! git diff --quiet -- restaurant-hype-map/data; then
+            git add restaurant-hype-map/data
+            git commit -m "Publish refreshed restaurant hype data"
+            git push origin gh-pages
+          else
+            echo "No Pages data changes"
+          fi
