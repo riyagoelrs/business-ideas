@@ -3,180 +3,152 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#f2eee5" />
-  <meta name="description" content="Internet Taste Graph turns your searches, social graph, places, watch history and stated interests into a private taste profile and next-step discovery feed." />
+  <meta name="theme-color" content="#f3efe8" />
+  <meta name="description" content="Internet Taste Graph turns consented behavioral signals into an editable taste model, then maps what you know and the whitespace you have not explored yet." />
   <title>Internet Taste Graph</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
-  <link rel="stylesheet" href="signals.css" />
 </head>
 <body>
   <main class="app-shell">
     <header class="topbar">
-      <a class="wordmark" href="./" aria-label="Internet Taste Graph home">
-        <span class="wordmark-dot"></span>
-        INTERNET TASTE GRAPH
-      </a>
-      <div class="topbar-actions">
-        <button id="randomSeed" class="text-button" type="button">random person</button>
-        <button id="shareButton" class="pill-button" type="button">copy share card</button>
-      </div>
+      <a class="wordmark" href="#top"><span class="wordmark-dot"></span>INTERNET TASTE GRAPH</a>
+      <nav class="journey" aria-label="Product flow">
+        <a href="#connect">01 Connect</a>
+        <a href="#review">02 Review</a>
+        <a href="#map">03 Map</a>
+        <a href="#whitespace">04 Whitespace</a>
+      </nav>
+      <button id="demoButton" class="pill-button" type="button">use demo profile</button>
     </header>
 
-    <section class="hero">
-      <div class="hero-copy">
-        <p class="eyebrow">PERSONAL CULTURAL DISCOVERY ENGINE / 002</p>
-        <h1>Your internet behavior<br/>has a <em>taste graph.</em></h1>
-        <p class="hero-subcopy">Combine what you search, watch, follow and physically return to. We turn those behaviors into a map of your taste—and show you where to explore next.</p>
+    <section class="hero" id="top">
+      <div>
+        <p class="eyebrow">PERSONAL CULTURAL DISCOVERY ENGINE / 003</p>
+        <h1>Map what you know.<br/><em>Find what you don't.</em></h1>
       </div>
-
-      <form class="seed-card" id="seedForm">
-        <label for="seedInput">ADD AN ACCOUNT, INTERESTS OR CURRENT OBSESSIONS</label>
-        <div class="seed-row">
-          <input id="seedInput" autocomplete="off" value="Bode, The Row, Dimes, Mexico City, film photography" aria-label="Taste seeds" />
-          <button type="submit">MAP IT</button>
+      <div class="hero-side">
+        <p>Your searches, watch history, follows, saves, places and browser rabbit holes become an editable taste model. The graph then makes the gaps visible.</p>
+        <div class="hero-legend">
+          <span><i class="dot known"></i> known</span>
+          <span><i class="dot adjacent"></i> adjacent</span>
+          <span><i class="dot ghost"></i> whitespace</span>
         </div>
-        <div class="starter-row" aria-label="Example taste profiles">
-          <span>TRY</span>
-          <button type="button" data-seed="Paloma Wool, Apartamento, natural wine, Barcelona, film photography">editorial mediterranean</button>
-          <button type="button" data-seed="Aime Leon Dore, Ralph Lauren, Via Carota, jazz, vintage Porsche">new york heritage</button>
-          <button type="button" data-seed="Miu Miu, Letterboxd, matcha, Tokyo, point-and-shoot cameras">internet girl</button>
-        </div>
-      </form>
+      </div>
     </section>
 
-    <section class="signal-section" id="signals">
-      <div class="signal-section-head">
-        <div>
-          <p class="eyebrow">CONNECT YOUR SIGNALS</p>
-          <h2>What you <em>do</em> is more useful than what you say you like.</h2>
-        </div>
-        <p class="signal-privacy">V2 processes imported exports in your browser and stores only derived keyword weights in local storage. Raw history files are not uploaded by this static demo.</p>
+    <section class="step-section" id="connect">
+      <div class="section-heading">
+        <div><span class="step-number">01</span><p class="eyebrow">CONNECT</p><h2>Start with behavior, not a personality quiz.</h2></div>
+        <p>For this static prototype, imports are processed locally in your browser. Raw files are never uploaded. Production connections would use approved OAuth or data-portability flows.</p>
       </div>
 
       <input id="signalFileInput" type="file" multiple hidden accept=".zip,.json,.csv,.txt,.html,.htm,application/zip,application/json,text/csv,text/plain,text/html" />
       <div class="source-grid">
-        <article class="source-card" data-source-card="google">
-          <div><span class="source-icon">G</span><h3>Google + Search</h3><p>Search activity, Chrome activity and My Activity exports. High-intent curiosity signals.</p></div>
-          <div><button type="button" data-import-source="google">Import export</button><div class="source-status">Takeout / My Activity</div></div>
-        </article>
-        <article class="source-card" data-source-card="youtube">
-          <div><span class="source-icon">▶</span><h3>YouTube</h3><p>Search and watch history. Strong for topics you repeatedly spend time learning about.</p></div>
-          <div><button type="button" data-import-source="youtube">Import export</button><div class="source-status">History export</div></div>
-        </article>
-        <article class="source-card" data-source-card="social">
-          <div><span class="source-icon">@</span><h3>Social graph</h3><p>Following, followers, likes or saves when included in an account data export.</p></div>
-          <div><button type="button" data-import-source="social">Import export</button><div class="source-status">Instagram / TikTok / other</div></div>
-        </article>
-        <article class="source-card" data-source-card="places">
-          <div><span class="source-icon">⌖</span><h3>Places + cafés</h3><p>Maps, Timeline or location exports. Repeat visits tell us what your offline taste actually is.</p></div>
-          <div><button type="button" data-import-source="places">Import export</button><div class="source-status">Maps / Timeline / visits</div></div>
-        </article>
-        <article class="source-card" data-source-card="browser">
-          <div><span class="source-icon">↗</span><h3>Browser history</h3><p>Sites, stores, articles and rabbit holes outside the major platforms. Lower weight, broad coverage.</p></div>
-          <div><button type="button" data-import-source="browser">Import export</button><div class="source-status">JSON / CSV / HTML</div></div>
-        </article>
+        <button class="source-card" type="button" data-import-source="google"><span>G</span><strong>Google / Search</strong><small>queries + activity</small><b>import →</b></button>
+        <button class="source-card" type="button" data-import-source="youtube"><span>▶</span><strong>YouTube</strong><small>search + watch history</small><b>import →</b></button>
+        <button class="source-card" type="button" data-import-source="social"><span>@</span><strong>Social</strong><small>following + saves + likes</small><b>import →</b></button>
+        <button class="source-card" type="button" data-import-source="places"><span>⌖</span><strong>Places</strong><small>repeat visits + cafés</small><b>import →</b></button>
+        <button class="source-card" type="button" data-import-source="browser"><span>↗</span><strong>Browser</strong><small>sites + rabbit holes</small><b>import →</b></button>
       </div>
 
-      <div class="signal-console">
-        <div class="signal-cloud">
-          <div class="signal-cloud-head"><span>DETECTED TASTE SIGNALS</span><span>frequency × source intent</span></div>
-          <div class="signal-tags" id="signalTags"></div>
-        </div>
-        <div class="source-mix">
-          <div class="source-mix-head"><span>SOURCE MIX</span><span>behavior represented</span></div>
-          <div class="source-bars" id="sourceBars"></div>
-        </div>
-      </div>
-      <div class="signal-actions">
-        <button id="analyzeSignals" type="button">Add typed interests</button>
-        <button id="demoSignals" type="button">Try behavioral demo</button>
-        <button id="clearSignals" class="quiet" type="button">Clear local data</button>
-      </div>
-      <p class="signal-note">Best signal order for the full product: saves/likes + repeat places → searches + watch history → following → followers/audience → generic browsing.</p>
+      <form id="manualForm" class="manual-input-card">
+        <label for="manualInput">Or tell us what is on your mind right now</label>
+        <div><input id="manualInput" placeholder="e.g. Tokyo jazz bars, ceramics, Kerala, consumer AI" /><button type="submit">add signals</button></div>
+      </form>
+      <div class="connection-status" id="connectionStatus">No behavioral sources imported yet.</div>
     </section>
 
-    <section class="workspace">
-      <aside class="control-panel">
-        <div class="panel-block profile-block">
-          <p class="micro-label">YOUR TASTE DNA</p>
-          <h2 id="profileName">Analog Internet</h2>
-          <p id="profileSummary" class="muted">Editorial, globally curious, design-led and more interested in cultural signal than obvious status.</p>
-          <div class="dna-bars" id="dnaBars"></div>
+    <section class="step-section review-section" id="review">
+      <div class="section-heading">
+        <div><span class="step-number">02</span><p class="eyebrow">REVIEW SIGNALS</p><h2>Tell the algorithm what is actually <em>you.</em></h2></div>
+        <p>A purchase search, work research and a real obsession are not the same thing. Boost, mute, remove or mark a signal as temporary before it shapes the graph.</p>
+      </div>
+      <div class="review-layout">
+        <div class="signal-inbox">
+          <div class="table-head"><span>SIGNAL</span><span>EVIDENCE</span><span>WEIGHT</span><span>ROLE</span><span></span></div>
+          <div id="signalInbox"></div>
+          <div class="empty-inbox" id="emptyInbox">Import a source, type interests above, or use the demo profile to populate your Signal Inbox.</div>
         </div>
+        <aside class="taste-summary">
+          <p class="micro-label">YOUR CURRENT MODEL</p>
+          <h3 id="modelName">Unbuilt taste</h3>
+          <p id="modelSummary">We need a few signals before the graph can distinguish your core taste from a passing curiosity.</p>
+          <div id="clusterBars" class="cluster-bars"></div>
+          <button id="buildGraphButton" type="button">build my graph →</button>
+          <button id="clearButton" class="quiet-button" type="button">clear local profile</button>
+        </aside>
+      </div>
+    </section>
 
-        <div class="panel-block">
-          <div class="block-title-row">
-            <p class="micro-label">TASTE DISTANCE</p>
-            <output id="distanceLabel">ADJACENT</output>
+    <section class="step-section map-section" id="map">
+      <div class="map-heading">
+        <div><span class="step-number">03</span><p class="eyebrow">YOUR GRAPH</p><h2 id="mapTitle">My World</h2></div>
+        <div class="mode-toggle" role="group" aria-label="Graph mode">
+          <button type="button" class="active" data-mode="world">MY WORLD</button>
+          <button type="button" data-mode="whitespace">MY WHITESPACE</button>
+        </div>
+      </div>
+
+      <div class="graph-layout">
+        <aside class="graph-controls">
+          <div class="control-block">
+            <span class="micro-label">LEGEND</span>
+            <p><i class="dot known"></i><b>Known</b><small>direct evidence</small></p>
+            <p><i class="dot adjacent"></i><b>Adjacent</b><small>high fit, some evidence</small></p>
+            <p><i class="dot ghost"></i><b>Whitespace</b><small>high fit, low exposure</small></p>
           </div>
-          <input id="distanceRange" class="range" type="range" min="1" max="3" step="1" value="2" />
-          <div class="range-labels"><span>SAFE</span><span>WEIRD</span></div>
-        </div>
+          <div class="control-block">
+            <span class="micro-label">TASTE DISTANCE</span>
+            <input id="distanceRange" type="range" min="1" max="3" value="2" />
+            <div class="range-labels"><span>safe</span><span>weird</span></div>
+          </div>
+          <div class="control-block">
+            <span class="micro-label">FILTER</span>
+            <div id="categoryFilters" class="category-filters"></div>
+          </div>
+        </aside>
 
-        <div class="panel-block">
-          <p class="micro-label">SHOW ME</p>
-          <div id="categoryFilters" class="filter-list"></div>
-        </div>
+        <section class="graph-card">
+          <div class="graph-toolbar"><span id="graphStatus">0 nodes</span><span>drag · zoom · click a node</span></div>
+          <div id="graph" class="graph"></div>
+        </section>
 
-        <div class="panel-block surprise-block">
-          <p class="micro-label">BREAK THE ALGORITHM</p>
-          <p>Jump to the highest-fit thing furthest from your starting taste.</p>
-          <button id="surpriseButton" class="surprise-button" type="button">SURPRISE ME <span>↗</span></button>
-        </div>
-      </aside>
-
-      <section class="graph-card" aria-label="Interactive taste graph">
-        <div class="graph-toolbar">
-          <div><span class="live-dot"></span><span id="graphStatus">30 NODES / 42 CONNECTIONS</span></div>
-          <div class="graph-key" id="graphKey"></div>
-        </div>
-        <div id="graph" class="graph"></div>
-        <div class="graph-caption"><span>CLICK A NODE TO GO DEEPER</span><span>DRAG TO EXPLORE · SCROLL TO ZOOM</span></div>
-      </section>
-
-      <aside class="inspector" id="inspector">
-        <div class="inspector-kicker" id="inspectorCategory">YOUR CENTER</div>
-        <h3 id="inspectorTitle">Your Taste</h3>
-        <p id="inspectorDescription">The graph starts with your inputs, then connects them to culturally adjacent signals across categories.</p>
-        <div class="signal-row">
-          <div><span id="fitScore">94</span><small>FIT</small></div>
-          <div><span id="noveltyScore">62</span><small>NOVELTY</small></div>
-          <div><span id="distanceScore">1.4×</span><small>DISTANCE</small></div>
-        </div>
-        <div class="why-box"><span>WHY THIS CONNECTS</span><p id="whyText">Shared visual language, audience overlap, editorial sensibility and cultural co-mentions.</p></div>
-        <div class="adjacent-box"><span>KEEP GOING</span><div id="adjacentList"></div></div>
-      </aside>
-    </section>
-
-    <section class="discovery-strip">
-      <div><p class="eyebrow">YOUR NEXT OBSESSIONS</p><h2>Things the algorithm thinks you'll like <em>before</em> you do.</h2></div>
-      <div class="discovery-grid" id="discoveryGrid"></div>
-    </section>
-
-    <section class="personal-feed" id="personalFeed">
-      <div class="feed-head">
-        <div><p class="eyebrow">PERSONAL DISCOVERY FEED</p><h2>Don't just name the next thing. <em>Point me there.</em></h2></div>
-        <div>
-          <p>Recommendations are ranked from your imported behavior and typed interests. Each card shows the evidence and gives you a direct route into aligned content.</p>
-          <div class="feed-actions"><button id="refreshFeed" type="button">Refresh from my signals</button></div>
-        </div>
+        <aside class="inspector" id="inspector">
+          <span class="inspector-type" id="inspectorType">YOUR CENTER</span>
+          <h3 id="inspectorTitle">Your Taste</h3>
+          <p id="inspectorDescription">Build your profile to see why each node belongs in your world—or in your whitespace.</p>
+          <div class="score-grid">
+            <div><b id="fitScore">—</b><span>FIT</span></div>
+            <div><b id="exposureScore">—</b><span>EXPOSURE</span></div>
+            <div><b id="whiteScore">—</b><span>WHITESPACE</span></div>
+          </div>
+          <div class="why-card"><span>WHY THIS IS HERE</span><p id="whyText">Your strongest signals will appear here.</p></div>
+          <div class="node-actions" id="nodeActions">
+            <button type="button" data-node-action="more">+ more like this</button>
+            <button type="button" data-node-action="less">− less like this</button>
+            <button type="button" data-node-action="known">I already know this</button>
+          </div>
+          <div class="entry-ramp" id="entryRamp"></div>
+        </aside>
       </div>
-      <div class="feed-grid" id="personalFeedGrid"></div>
     </section>
 
-    <footer>
-      <span>INTERNET TASTE GRAPH — BEHAVIORAL PROTOTYPE</span>
-      <span>SEARCH + WATCH + SOCIAL + PLACE + BROWSE SIGNALS</span>
-    </footer>
+    <section class="step-section whitespace-section" id="whitespace">
+      <div class="section-heading">
+        <div><span class="step-number">04</span><p class="eyebrow">YOUR WHITESPACE</p><h2>High affinity. Low exposure.<br/><em>Your next rabbit holes.</em></h2></div>
+        <p>Unknown does not automatically mean relevant. Whitespace ranks things that bridge multiple strong parts of your taste while showing little evidence that you have already explored them.</p>
+      </div>
+      <div class="whitespace-metric">
+        <span>WHITESPACE SCORE</span>
+        <strong>affinity × bridge value × novelty × (1 − exposure)</strong>
+      </div>
+      <div id="whitespaceGrid" class="whitespace-grid"></div>
+    </section>
+
+    <footer><span>INTERNET TASTE GRAPH — CONSENT-FIRST PROTOTYPE</span><span>BEHAVIOR → EDITABLE SIGNALS → WORLD → WHITESPACE</span></footer>
   </main>
 
-  <div id="toast" class="toast" role="status" aria-live="polite"></div>
-  <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
-  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
   <script src="app.js"></script>
-  <script src="signals.js"></script>
 </body>
 </html>
