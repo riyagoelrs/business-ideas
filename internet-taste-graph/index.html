@@ -4,12 +4,13 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#f2eee5" />
-  <meta name="description" content="Internet Taste Graph maps the aesthetics, brands, creators, restaurants, places, products, and media adjacent to your taste." />
+  <meta name="description" content="Internet Taste Graph turns your searches, social graph, places, watch history and stated interests into a private taste profile and next-step discovery feed." />
   <title>Internet Taste Graph</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="signals.css" />
 </head>
 <body>
   <main class="app-shell">
@@ -26,13 +27,13 @@
 
     <section class="hero">
       <div class="hero-copy">
-        <p class="eyebrow">CULTURAL DISCOVERY ENGINE / 001</p>
-        <h1>See where your<br/><em>taste</em> lives.</h1>
-        <p class="hero-subcopy">Enter a few things you love. We map the brands, places, creators, products, media and aesthetics sitting just outside your internet neighborhood.</p>
+        <p class="eyebrow">PERSONAL CULTURAL DISCOVERY ENGINE / 002</p>
+        <h1>Your internet behavior<br/>has a <em>taste graph.</em></h1>
+        <p class="hero-subcopy">Combine what you search, watch, follow and physically return to. We turn those behaviors into a map of your taste—and show you where to explore next.</p>
       </div>
 
       <form class="seed-card" id="seedForm">
-        <label for="seedInput">START WITH AN ACCOUNT OR 3–5 INTERESTS</label>
+        <label for="seedInput">ADD AN ACCOUNT, INTERESTS OR CURRENT OBSESSIONS</label>
         <div class="seed-row">
           <input id="seedInput" autocomplete="off" value="Bode, The Row, Dimes, Mexico City, film photography" aria-label="Taste seeds" />
           <button type="submit">MAP IT</button>
@@ -44,6 +45,57 @@
           <button type="button" data-seed="Miu Miu, Letterboxd, matcha, Tokyo, point-and-shoot cameras">internet girl</button>
         </div>
       </form>
+    </section>
+
+    <section class="signal-section" id="signals">
+      <div class="signal-section-head">
+        <div>
+          <p class="eyebrow">CONNECT YOUR SIGNALS</p>
+          <h2>What you <em>do</em> is more useful than what you say you like.</h2>
+        </div>
+        <p class="signal-privacy">V2 processes imported exports in your browser and stores only derived keyword weights in local storage. Raw history files are not uploaded by this static demo.</p>
+      </div>
+
+      <input id="signalFileInput" type="file" multiple hidden accept=".zip,.json,.csv,.txt,.html,.htm,application/zip,application/json,text/csv,text/plain,text/html" />
+      <div class="source-grid">
+        <article class="source-card" data-source-card="google">
+          <div><span class="source-icon">G</span><h3>Google + Search</h3><p>Search activity, Chrome activity and My Activity exports. High-intent curiosity signals.</p></div>
+          <div><button type="button" data-import-source="google">Import export</button><div class="source-status">Takeout / My Activity</div></div>
+        </article>
+        <article class="source-card" data-source-card="youtube">
+          <div><span class="source-icon">▶</span><h3>YouTube</h3><p>Search and watch history. Strong for topics you repeatedly spend time learning about.</p></div>
+          <div><button type="button" data-import-source="youtube">Import export</button><div class="source-status">History export</div></div>
+        </article>
+        <article class="source-card" data-source-card="social">
+          <div><span class="source-icon">@</span><h3>Social graph</h3><p>Following, followers, likes or saves when included in an account data export.</p></div>
+          <div><button type="button" data-import-source="social">Import export</button><div class="source-status">Instagram / TikTok / other</div></div>
+        </article>
+        <article class="source-card" data-source-card="places">
+          <div><span class="source-icon">⌖</span><h3>Places + cafés</h3><p>Maps, Timeline or location exports. Repeat visits tell us what your offline taste actually is.</p></div>
+          <div><button type="button" data-import-source="places">Import export</button><div class="source-status">Maps / Timeline / visits</div></div>
+        </article>
+        <article class="source-card" data-source-card="browser">
+          <div><span class="source-icon">↗</span><h3>Browser history</h3><p>Sites, stores, articles and rabbit holes outside the major platforms. Lower weight, broad coverage.</p></div>
+          <div><button type="button" data-import-source="browser">Import export</button><div class="source-status">JSON / CSV / HTML</div></div>
+        </article>
+      </div>
+
+      <div class="signal-console">
+        <div class="signal-cloud">
+          <div class="signal-cloud-head"><span>DETECTED TASTE SIGNALS</span><span>frequency × source intent</span></div>
+          <div class="signal-tags" id="signalTags"></div>
+        </div>
+        <div class="source-mix">
+          <div class="source-mix-head"><span>SOURCE MIX</span><span>behavior represented</span></div>
+          <div class="source-bars" id="sourceBars"></div>
+        </div>
+      </div>
+      <div class="signal-actions">
+        <button id="analyzeSignals" type="button">Add typed interests</button>
+        <button id="demoSignals" type="button">Try behavioral demo</button>
+        <button id="clearSignals" class="quiet" type="button">Clear local data</button>
+      </div>
+      <p class="signal-note">Best signal order for the full product: saves/likes + repeat places → searches + watch history → following → followers/audience → generic browsing.</p>
     </section>
 
     <section class="workspace">
@@ -78,19 +130,11 @@
 
       <section class="graph-card" aria-label="Interactive taste graph">
         <div class="graph-toolbar">
-          <div>
-            <span class="live-dot"></span>
-            <span id="graphStatus">30 NODES / 42 CONNECTIONS</span>
-          </div>
+          <div><span class="live-dot"></span><span id="graphStatus">30 NODES / 42 CONNECTIONS</span></div>
           <div class="graph-key" id="graphKey"></div>
         </div>
-
         <div id="graph" class="graph"></div>
-
-        <div class="graph-caption">
-          <span>CLICK A NODE TO GO DEEPER</span>
-          <span>DRAG TO EXPLORE · SCROLL TO ZOOM</span>
-        </div>
+        <div class="graph-caption"><span>CLICK A NODE TO GO DEEPER</span><span>DRAG TO EXPLORE · SCROLL TO ZOOM</span></div>
       </section>
 
       <aside class="inspector" id="inspector">
@@ -102,34 +146,37 @@
           <div><span id="noveltyScore">62</span><small>NOVELTY</small></div>
           <div><span id="distanceScore">1.4×</span><small>DISTANCE</small></div>
         </div>
-        <div class="why-box">
-          <span>WHY THIS CONNECTS</span>
-          <p id="whyText">Shared visual language, audience overlap, editorial sensibility and cultural co-mentions.</p>
-        </div>
-        <div class="adjacent-box">
-          <span>KEEP GOING</span>
-          <div id="adjacentList"></div>
-        </div>
+        <div class="why-box"><span>WHY THIS CONNECTS</span><p id="whyText">Shared visual language, audience overlap, editorial sensibility and cultural co-mentions.</p></div>
+        <div class="adjacent-box"><span>KEEP GOING</span><div id="adjacentList"></div></div>
       </aside>
     </section>
 
     <section class="discovery-strip">
-      <div>
-        <p class="eyebrow">YOUR NEXT OBSESSIONS</p>
-        <h2>Things the algorithm thinks you'll like <em>before</em> you do.</h2>
-      </div>
+      <div><p class="eyebrow">YOUR NEXT OBSESSIONS</p><h2>Things the algorithm thinks you'll like <em>before</em> you do.</h2></div>
       <div class="discovery-grid" id="discoveryGrid"></div>
     </section>
 
+    <section class="personal-feed" id="personalFeed">
+      <div class="feed-head">
+        <div><p class="eyebrow">PERSONAL DISCOVERY FEED</p><h2>Don't just name the next thing. <em>Point me there.</em></h2></div>
+        <div>
+          <p>Recommendations are ranked from your imported behavior and typed interests. Each card shows the evidence and gives you a direct route into aligned content.</p>
+          <div class="feed-actions"><button id="refreshFeed" type="button">Refresh from my signals</button></div>
+        </div>
+      </div>
+      <div class="feed-grid" id="personalFeedGrid"></div>
+    </section>
+
     <footer>
-      <span>INTERNET TASTE GRAPH — PROTOTYPE</span>
-      <span>SEMANTIC + CULTURAL + AUDIENCE SIGNALS</span>
+      <span>INTERNET TASTE GRAPH — BEHAVIORAL PROTOTYPE</span>
+      <span>SEARCH + WATCH + SOCIAL + PLACE + BROWSE SIGNALS</span>
     </footer>
   </main>
 
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
-
   <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
   <script src="app.js"></script>
+  <script src="signals.js"></script>
 </body>
 </html>
