@@ -48,7 +48,7 @@ jobs:
             "Pittsburgh, PA"
           ]
           if os.environ.get("GITHUB_EVENT_NAME") == "push":
-              batch = ["New York, NY","Los Angeles, CA","Chicago, IL","San Francisco, CA","Miami, FL","Austin, TX","Boston, MA","Atlanta, GA"]
+              batch = ["New York, NY"]
           else:
               idx = datetime.datetime.utcnow().timetuple().tm_yday % 6
               batch = cities[idx::6]
