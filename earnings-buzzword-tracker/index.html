@@ -153,105 +153,38 @@
       </section>
 
       <section class="metrics-grid" aria-live="polite">
-        <article class="metric-card">
-          <span>Calls analyzed</span>
-          <strong id="metricCalls">48</strong>
-          <small id="metricCallsSub">8 companies · 6 quarters</small>
-        </article>
-        <article class="metric-card">
-          <span>Tracked phrases</span>
-          <strong id="metricTerms">6</strong>
-          <small id="metricTermsSub">selected narratives</small>
-        </article>
-        <article class="metric-card highlight">
-          <span>Fastest riser</span>
-          <strong id="metricRiser">AI</strong>
-          <small id="metricRiserSub">+84% vs. prior quarter</small>
-        </article>
-        <article class="metric-card">
-          <span>Widest adoption</span>
-          <strong id="metricAdoption">Tariffs</strong>
-          <small id="metricAdoptionSub">6 of 8 companies</small>
-        </article>
+        <article class="metric-card"><span>Calls analyzed</span><strong id="metricCalls">48</strong><small id="metricCallsSub">8 companies · 6 quarters</small></article>
+        <article class="metric-card"><span>Tracked phrases</span><strong id="metricTerms">6</strong><small id="metricTermsSub">selected narratives</small></article>
+        <article class="metric-card highlight"><span>Fastest riser</span><strong id="metricRiser">AI</strong><small id="metricRiserSub">+84% vs. prior quarter</small></article>
+        <article class="metric-card"><span>Widest adoption</span><strong id="metricAdoption">Tariffs</strong><small id="metricAdoptionSub">6 of 8 companies</small></article>
       </section>
 
       <section class="dashboard-grid">
         <article class="panel chart-panel">
-          <div class="panel-head">
-            <div>
-              <p class="eyebrow">BUZZWORD MOMENTUM</p>
-              <h2>Which narratives are taking over?</h2>
-            </div>
-            <select id="chartMetric" aria-label="Chart metric">
-              <option value="mentions">Phrase mentions</option>
-              <option value="index">Indexed momentum</option>
-            </select>
-          </div>
+          <div class="panel-head"><div><p class="eyebrow">BUZZWORD MOMENTUM</p><h2>Which narratives are taking over?</h2></div><select id="chartMetric" aria-label="Chart metric"><option value="mentions">Phrase mentions</option><option value="index">Indexed momentum</option></select></div>
           <div class="chart-legend" id="chartLegend"></div>
-          <div class="chart-wrap">
-            <svg id="trendChart" viewBox="0 0 900 360" role="img" aria-label="Buzzword trend chart"></svg>
-          </div>
+          <div class="chart-wrap"><svg id="trendChart" viewBox="0 0 900 360" role="img" aria-label="Buzzword trend chart"></svg></div>
         </article>
-
-        <article class="panel leaderboard-panel">
-          <div class="panel-head compact-head">
-            <div>
-              <p class="eyebrow">NARRATIVE SHIFTS</p>
-              <h2>What changed this quarter?</h2>
-            </div>
-          </div>
-          <div id="shiftList" class="shift-list"></div>
-        </article>
+        <article class="panel leaderboard-panel"><div class="panel-head compact-head"><div><p class="eyebrow">NARRATIVE SHIFTS</p><h2>What changed this quarter?</h2></div></div><div id="shiftList" class="shift-list"></div></article>
       </section>
 
       <section class="panel heatmap-panel">
-        <div class="panel-head">
-          <div>
-            <p class="eyebrow">COMPANY × NARRATIVE</p>
-            <h2>Who is talking about what?</h2>
-          </div>
-          <span class="period-pill" id="heatmapPeriod">Latest quarter</span>
-        </div>
-        <div class="heatmap-scroll">
-          <div id="heatmap" class="heatmap"></div>
-        </div>
+        <div class="panel-head"><div><p class="eyebrow">COMPANY × NARRATIVE</p><h2>Who is talking about what?</h2></div><span class="period-pill" id="heatmapPeriod">Latest quarter</span></div>
+        <div class="heatmap-scroll"><div id="heatmap" class="heatmap"></div></div>
       </section>
 
       <section class="dashboard-grid lower-grid">
-        <article class="panel excerpts-panel">
-          <div class="panel-head">
-            <div>
-              <p class="eyebrow">LANGUAGE IN CONTEXT</p>
-              <h2>What management actually said.</h2>
-            </div>
-            <button id="shuffleExcerpt" class="mini-button" type="button">Shuffle</button>
-          </div>
-          <div id="excerptList" class="excerpt-list"></div>
-        </article>
-
-        <article class="panel methodology-panel">
-          <p class="eyebrow">HOW TO READ THIS</p>
-          <h2>Signal, not sentiment.</h2>
-          <p>SignalCall is designed to answer a simple question: <strong>which words are entering corporate vocabulary fastest?</strong></p>
-          <ul>
-            <li><strong>Momentum</strong> = change in exact phrase mentions vs. the prior quarter.</li>
-            <li><strong>Adoption</strong> = how many companies used the term in their latest analyzed call.</li>
-            <li><strong>Heatmap</strong> = concentration of a narrative by company.</li>
-            <li><strong>Pull transcripts</strong> = fetch the calls automatically, then count phrases locally in your browser.</li>
-            <li><strong>Manual fallback</strong> = paste or upload transcript text only when you want a no-API workflow.</li>
-          </ul>
-        </article>
+        <article class="panel excerpts-panel"><div class="panel-head"><div><p class="eyebrow">LANGUAGE IN CONTEXT</p><h2>What management actually said.</h2></div><button id="shuffleExcerpt" class="mini-button" type="button">Shuffle</button></div><div id="excerptList" class="excerpt-list"></div></article>
+        <article class="panel methodology-panel"><p class="eyebrow">HOW TO READ THIS</p><h2>Signal, not sentiment.</h2><p>SignalCall is designed to answer a simple question: <strong>which words are entering corporate vocabulary fastest?</strong></p><ul><li><strong>Momentum</strong> = change in exact phrase mentions vs. the prior quarter.</li><li><strong>Adoption</strong> = how many companies used the term in their latest analyzed call.</li><li><strong>Heatmap</strong> = concentration of a narrative by company.</li><li><strong>Pull transcripts</strong> = fetch the calls automatically, then count phrases locally in your browser.</li><li><strong>Manual fallback</strong> = paste or upload transcript text only when you want a no-API workflow.</li></ul></article>
       </section>
     </main>
 
-    <footer>
-      <span>Built for narrative research, not investment advice.</span>
-      <span>SignalCall / Business Ideas</span>
-    </footer>
+    <footer><span>Built for narrative research, not investment advice.</span><span>SignalCall / Business Ideas</span></footer>
   </div>
 
   <script src="app.js"></script>
   <script src="ux-v2.js"></script>
   <script src="no-key-preview.js"></script>
+  <script src="preview-router-fix.js"></script>
 </body>
 </html>
