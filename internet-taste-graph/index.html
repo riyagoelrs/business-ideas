@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#f2eee5" />
+  <meta name="description" content="Internet Taste Graph maps the aesthetics, brands, creators, restaurants, places, products, and media adjacent to your taste." />
+  <title>Internet Taste Graph</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="app-shell">
+    <header class="topbar">
+      <a class="wordmark" href="./" aria-label="Internet Taste Graph home">
+        <span class="wordmark-dot"></span>
+        INTERNET TASTE GRAPH
+      </a>
+      <div class="topbar-actions">
+        <button id="randomSeed" class="text-button" type="button">random person</button>
+        <button id="shareButton" class="pill-button" type="button">copy share card</button>
+      </div>
+    </header>
+
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">CULTURAL DISCOVERY ENGINE / 001</p>
+        <h1>See where your<br/><em>taste</em> lives.</h1>
+        <p class="hero-subcopy">Enter a few things you love. We map the brands, places, creators, products, media and aesthetics sitting just outside your internet neighborhood.</p>
+      </div>
+
+      <form class="seed-card" id="seedForm">
+        <label for="seedInput">START WITH AN ACCOUNT OR 3–5 INTERESTS</label>
+        <div class="seed-row">
+          <input id="seedInput" autocomplete="off" value="Bode, The Row, Dimes, Mexico City, film photography" aria-label="Taste seeds" />
+          <button type="submit">MAP IT</button>
+        </div>
+        <div class="starter-row" aria-label="Example taste profiles">
+          <span>TRY</span>
+          <button type="button" data-seed="Paloma Wool, Apartamento, natural wine, Barcelona, film photography">editorial mediterranean</button>
+          <button type="button" data-seed="Aime Leon Dore, Ralph Lauren, Via Carota, jazz, vintage Porsche">new york heritage</button>
+          <button type="button" data-seed="Miu Miu, Letterboxd, matcha, Tokyo, point-and-shoot cameras">internet girl</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="workspace">
+      <aside class="control-panel">
+        <div class="panel-block profile-block">
+          <p class="micro-label">YOUR TASTE DNA</p>
+          <h2 id="profileName">Analog Internet</h2>
+          <p id="profileSummary" class="muted">Editorial, globally curious, design-led and more interested in cultural signal than obvious status.</p>
+          <div class="dna-bars" id="dnaBars"></div>
+        </div>
+
+        <div class="panel-block">
+          <div class="block-title-row">
+            <p class="micro-label">TASTE DISTANCE</p>
+            <output id="distanceLabel">ADJACENT</output>
+          </div>
+          <input id="distanceRange" class="range" type="range" min="1" max="3" step="1" value="2" />
+          <div class="range-labels"><span>SAFE</span><span>WEIRD</span></div>
+        </div>
+
+        <div class="panel-block">
+          <p class="micro-label">SHOW ME</p>
+          <div id="categoryFilters" class="filter-list"></div>
+        </div>
+
+        <div class="panel-block surprise-block">
+          <p class="micro-label">BREAK THE ALGORITHM</p>
+          <p>Jump to the highest-fit thing furthest from your starting taste.</p>
+          <button id="surpriseButton" class="surprise-button" type="button">SURPRISE ME <span>↗</span></button>
+        </div>
+      </aside>
+
+      <section class="graph-card" aria-label="Interactive taste graph">
+        <div class="graph-toolbar">
+          <div>
+            <span class="live-dot"></span>
+            <span id="graphStatus">30 NODES / 42 CONNECTIONS</span>
+          </div>
+          <div class="graph-key" id="graphKey"></div>
+        </div>
+
+        <div id="graph" class="graph"></div>
+
+        <div class="graph-caption">
+          <span>CLICK A NODE TO GO DEEPER</span>
+          <span>DRAG TO EXPLORE · SCROLL TO ZOOM</span>
+        </div>
+      </section>
+
+      <aside class="inspector" id="inspector">
+        <div class="inspector-kicker" id="inspectorCategory">YOUR CENTER</div>
+        <h3 id="inspectorTitle">Your Taste</h3>
+        <p id="inspectorDescription">The graph starts with your inputs, then connects them to culturally adjacent signals across categories.</p>
+        <div class="signal-row">
+          <div><span id="fitScore">94</span><small>FIT</small></div>
+          <div><span id="noveltyScore">62</span><small>NOVELTY</small></div>
+          <div><span id="distanceScore">1.4×</span><small>DISTANCE</small></div>
+        </div>
+        <div class="why-box">
+          <span>WHY THIS CONNECTS</span>
+          <p id="whyText">Shared visual language, audience overlap, editorial sensibility and cultural co-mentions.</p>
+        </div>
+        <div class="adjacent-box">
+          <span>KEEP GOING</span>
+          <div id="adjacentList"></div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="discovery-strip">
+      <div>
+        <p class="eyebrow">YOUR NEXT OBSESSIONS</p>
+        <h2>Things the algorithm thinks you'll like <em>before</em> you do.</h2>
+      </div>
+      <div class="discovery-grid" id="discoveryGrid"></div>
+    </section>
+
+    <footer>
+      <span>INTERNET TASTE GRAPH — PROTOTYPE</span>
+      <span>SEMANTIC + CULTURAL + AUDIENCE SIGNALS</span>
+    </footer>
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+  <script src="app.js"></script>
+</body>
+</html>
