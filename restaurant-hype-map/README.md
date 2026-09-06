@@ -1,109 +1,110 @@
 # NYC Restaurant Hype Map
 
-A visual restaurant-intelligence map for NYC. The goal is not to reproduce Beli; it is to separate **quality** from **attention** and show where restaurants are genuinely good, overhyped, or still under-discovered.
+A free restaurant-intelligence map for NYC that separates **attention** from **quality**.
 
-## Core outputs
+The product is designed to answer three questions:
 
-Every restaurant can have four headline metrics:
+1. Which restaurants are getting attention right now?
+2. Is that attention accelerating?
+3. Is quality keeping up with the hype?
 
-- **Hype Score (0–100):** how much attention the restaurant is getting and how quickly that attention is growing.
-- **Quality Score (0–100):** aggregate rating quality across Beli + review platforms.
-- **Hype Gap:** Hype minus Quality. Positive = attention is running ahead of quality; negative = possible sleeper.
-- **Data Coverage (0–100):** how complete the underlying source set is.
+## Headline metrics
 
-Missing sources are **reweighted**, not treated as zeros.
+Every restaurant can have:
 
-## Hype Score methodology
+- **Hype Score (0–100):** current attention and momentum.
+- **Quality Score (0–100):** quality evidence from free/public sources.
+- **Hype Gap:** Hype minus Quality.
+- **Data Coverage (0–100):** how much of the free source stack contributed.
 
-Default source weights:
+Missing sources are reweighted instead of being treated as zero.
 
-| Source | Weight | What matters |
+## Strictly $0 source stack
+
+No Google Places, Yelp, Tripadvisor or paid Reddit API is required.
+
+### Hype Score
+
+| Source | Default weight | Signal |
 |---|---:|---|
-| TikTok | 35% | 7-day mention volume, mention growth, views, likes/comments/shares |
-| Reddit | 15% | 30-day mentions, engagement, mention growth |
-| Google reviews | 20% | review volume + review-count velocity across snapshots |
-| Review websites | 15% | Yelp / Tripadvisor / OpenTable review volume + velocity when available |
-| Reservation friction | 10% | reservation scarcity / access difficulty |
-| Web breadth | 5% | broader recent web mention signal when a reliable collector is available |
+| TikTok | 65% | 7-day mention growth, mention volume, views, engagement |
+| Public web/news | 25% | 30-day mentions, 7-day velocity, number of distinct publishing domains |
+| Reservation scarcity | 10% | optional free snapshot when a reliable public source is available |
 
-### TikTok component
+The public-web layer uses the no-key GDELT DOC 2.0 endpoint.
 
-Within TikTok, the default mix is:
+### Quality Score
 
-- 35% mention growth
-- 30% mention volume
-- 20% views
-- 15% engagements
+| Source | Default weight | Signal |
+|---|---:|---|
+| Beli | 85% | published Beli category rating |
+| Restaurant website | 15% | structured `aggregateRating` metadata when the restaurant's public site publishes it |
 
-### Reddit component
+Beli is a **quality input**, not the Hype Score.
 
-- 35% mention growth
-- 40% mention volume
-- 25% engagement
+## Restaurant universe
 
-### Review-platform hype
+OpenStreetMap supplies the broad NYC restaurant universe, coordinates, cuisine tags and website URLs without a paid mapping key. The refresh job currently requests up to roughly 1,600 named restaurant records per run.
 
-Static review counts matter, but **velocity matters more**. A restaurant adding 300 reviews this month should rank as hotter than one with 10,000 old reviews and little recent movement.
+## TikTok
 
-## Quality Score methodology
+The project reuses `riyagoelrs/tiktok-scraper` and automatically searches public TikTok for:
 
-Default weights:
+- `nyc restaurants`
+- `nyc food`
+- `new york restaurants`
 
-| Source | Weight |
-|---|---:|
-| Beli | 30% |
-| Google rating | 30% |
-| Yelp rating | 15% |
-| Tripadvisor rating | 15% |
-| OpenTable rating | 10% |
+The resulting JSON is matched against restaurant names and aggregated into:
 
-Google/Yelp/Tripadvisor/OpenTable ratings use a Bayesian adjustment so a brand-new restaurant with five 5-star reviews does not automatically outrank a restaurant with thousands of reviews.
+- mentions in the latest 7 days
+- mentions in the previous 7 days
+- views in the latest 7 days
+- likes + comments + shares
+- distinct creators
+
+TikTok collection is best-effort because the unofficial TikTokApi can be blocked or changed by TikTok. A free `TIKTOK_MS_TOKEN` GitHub secret can improve reliability, but no paid key is required. The rest of the data job still runs if TikTok fails.
+
+## Public web signal
+
+For restaurants surfaced by Beli or TikTok, GDELT provides a zero-cost cross-publication signal:
+
+- mentions in 30 days
+- mentions in 7 days
+- mentions in the previous 7 days
+- distinct publishing domains
+- example articles
+
+This creates a second independent momentum signal beyond TikTok.
 
 ## Signals
 
 - **Worth the hype:** Hype and Quality are both high and close together.
 - **Overhyped:** Hype is at least 15 points above Quality.
 - **Sleeper:** Quality is at least 15 points above Hype.
-- **Hot:** Hype is high but quality data is incomplete or not equally high.
+- **Hot:** Hype is high while quality is incomplete or not equally high.
 - **Balanced:** no major divergence.
-- **Insufficient data:** coverage is too low to make a responsible hype call.
+- **Low coverage / Not enough hype data:** insufficient source breadth for a confident call.
 
-## Data pipeline
+## Automation
 
-The scoring engine lives in:
+`.github/workflows/restaurant-hype-refresh.yml` runs daily on GitHub's public-repository runner and can also be triggered manually. It:
 
-- `pipeline/score_model.py`
-- `pipeline/refresh_scores.py`
+1. checks out the TikTok scraper,
+2. attempts free TikTok collection,
+3. refreshes OpenStreetMap,
+4. refreshes Beli public lists,
+5. queries GDELT public web coverage,
+6. inspects public restaurant-site structured metadata,
+7. calculates Hype / Quality / Gap / Coverage,
+8. writes `data/restaurant_scores.json`, and
+9. publishes the latest snapshot to the `gh-pages` branch.
 
-A scheduled GitHub Action refreshes data and writes:
+## Main files
 
-- `data/raw_snapshot.json`
-- `data/restaurant_scores.json`
-
-Historical snapshots are used to calculate **velocity**, which is critical to a real hype metric.
-
-## Source access
-
-The collector is designed to use the following credentials as GitHub Actions secrets when available:
-
-- `GOOGLE_PLACES_API_KEY`
-- `YELP_API_KEY`
-- `TRIPADVISOR_API_KEY`
-- `REDDIT_CLIENT_ID`
-- `REDDIT_CLIENT_SECRET`
-
-Those credentials are server-side only. They should never appear in the public map or browser JavaScript.
-
-TikTok data is ingested from JSON generated by the existing `riyagoelrs/tiktok-scraper` project. The hype-map collector aggregates restaurant mentions, views and engagements from those snapshots.
-
-## Current public Beli seed
-
-Beli public list pages currently seed two scored categories:
-
-- NYC burgers
-- NYC Italian sandwiches
-
-Beli is therefore one **quality input**, not the definition of Hype.
+- `pipeline/score_model.py` — scoring logic
+- `pipeline/refresh_scores.py` — zero-cost collectors and normalization
+- `data/restaurant_scores.json` — generated output
+- `index.html` — public map
 
 ## Public URL
 
