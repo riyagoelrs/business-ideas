@@ -62,11 +62,11 @@ jobs:
       - name: Install free data dependencies
         run: pip install -r restaurant-hype-map/requirements-data.txt
 
-      - name: Refresh restaurant universe and free source signals
+      - name: Refresh restaurant universe from true city boundaries
         working-directory: restaurant-hype-map/pipeline
         env:
           HYPE_CITIES: ${{ env.HYPE_CITIES }}
-        run: python refresh_scores.py
+        run: python refresh_city_boundaries.py
 
       - name: Commit data to main safely
         run: |
@@ -74,7 +74,7 @@ jobs:
           git config user.email "actions@users.noreply.github.com"
           if [ -n "$(git status --porcelain -- restaurant-hype-map/data)" ]; then
             git add restaurant-hype-map/data
-            git commit -m "Refresh free multi-city restaurant data"
+            git commit -m "Refresh boundary-filtered multi-city restaurant data"
             git pull --rebase origin main
             git push origin main
           else
@@ -91,7 +91,7 @@ jobs:
           cp -R /tmp/hype-data/. restaurant-hype-map/data/
           if [ -n "$(git status --porcelain -- restaurant-hype-map/data)" ]; then
             git add restaurant-hype-map/data
-            git commit -m "Publish refreshed restaurant data"
+            git commit -m "Publish boundary-filtered restaurant data"
             git pull --rebase origin gh-pages
             git push origin gh-pages
           else
