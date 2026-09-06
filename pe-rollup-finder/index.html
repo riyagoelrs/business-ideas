@@ -25,7 +25,7 @@
         <form id="search-form" class="search-grid">
           <label>
             <span>Market</span>
-            <input id="city" name="city" value="Charlotte, NC" autocomplete="off" />
+            <input id="city" name="city" value="" placeholder="Try: Phoenix, AZ" autocomplete="off" />
           </label>
           <label>
             <span>Industry</span>
@@ -43,15 +43,15 @@
           </label>
           <button id="run-search" class="primary" type="submit">Scan market</button>
         </form>
-        <div id="status" class="status" role="status" aria-live="polite">Showing an illustrative Charlotte HVAC screen. Run a scan for live OpenStreetMap data.</div>
+        <div id="status" class="status" role="status" aria-live="polite">Enter a city and the app will rebuild the opportunity set from that market’s live operator data.</div>
         <div id="thesis" class="thesis"></div>
       </section>
 
       <section class="kpi-grid" aria-label="Market scorecards">
-        <article class="kpi"><span>Roll-up score</span><strong id="kpi-score">82</strong><small>/ 100</small></article>
-        <article class="kpi"><span>Locations found</span><strong id="kpi-locations">24</strong><small>operators</small></article>
-        <article class="kpi"><span>Likely independent</span><strong id="kpi-independent">79%</strong><small id="kpi-independent-count">19 targets</small></article>
-        <article class="kpi"><span>A / A+ targets</span><strong id="kpi-top">11</strong><small>priority leads</small></article>
+        <article class="kpi"><span>Roll-up score</span><strong id="kpi-score">—</strong><small>/ 100</small></article>
+        <article class="kpi"><span>Locations found</span><strong id="kpi-locations">—</strong><small>operators</small></article>
+        <article class="kpi"><span>Likely independent</span><strong id="kpi-independent">—</strong><small id="kpi-independent-count">waiting for scan</small></article>
+        <article class="kpi"><span>A / A+ targets</span><strong id="kpi-top">—</strong><small>priority leads</small></article>
       </section>
 
       <section class="workspace">
@@ -59,7 +59,7 @@
           <div class="section-heading">
             <div>
               <span class="eyebrow">TARGET MAP</span>
-              <h2 id="map-title">Charlotte HVAC</h2>
+              <h2 id="map-title">Choose a market</h2>
             </div>
             <div class="legend"><span class="dot high"></span>A/A+ <span class="dot mid"></span>B <span class="dot low"></span>Watch</div>
           </div>
@@ -74,9 +74,9 @@
               <h2>Why this market?</h2>
             </div>
           </div>
-          <div class="score-row"><span>Fragmentation</span><b id="fragmentation-value">79</b><div class="bar"><i id="fragmentation-bar" style="width:79%"></i></div></div>
-          <div class="score-row"><span>Density</span><b id="density-value">88</b><div class="bar"><i id="density-bar" style="width:88%"></i></div></div>
-          <div class="score-row"><span>Target universe</span><b id="scale-value">60</b><div class="bar"><i id="scale-bar" style="width:60%"></i></div></div>
+          <div class="score-row"><span>Fragmentation</span><b id="fragmentation-value">—</b><div class="bar"><i id="fragmentation-bar" style="width:0%"></i></div></div>
+          <div class="score-row"><span>Density</span><b id="density-value">—</b><div class="bar"><i id="density-bar" style="width:0%"></i></div></div>
+          <div class="score-row"><span>Target universe</span><b id="scale-value">—</b><div class="bar"><i id="scale-bar" style="width:0%"></i></div></div>
           <div class="callout">
             <span>Screening logic</span>
             <p>50% fragmentation · 30% operator density · 20% target-universe size.</p>
@@ -144,6 +144,6 @@
   </div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
-  <script src="./app.js"></script>
+  <script src="./app-dynamic.js?v=20260906-2"></script>
 </body>
 </html>
