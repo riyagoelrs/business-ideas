@@ -1,0 +1,168 @@
+/* Restaurant Hype Map v9 interaction layer */
+const liveSignalV9 = new Map();
+
+function v9Clamp(v, lo=0, hi=100){ return Math.max(lo, Math.min(hi, Number(v)||0)); }
+function v9Log(n, scale=16, cap=55){ return Math.min(cap, Math.log1p(Math.max(0, Number(n)||0))*scale); }
+function v9Band(v){
+  v=Number(v)||0;
+  return v>=90?'Peak':v>=75?'Hot':v>=60?'Rising':v>=40?'Moderate':'Quiet / limited signal';
+}
+function v9Color(v){
+  v=Number(v)||0;
+  return v>=90?'#ff4d67':v>=75?'#ff9f43':v>=60?'#ffd166':v>=40?'#62a8ff':'#7b61ff';
+}
+function v9Rating(r){
+  const row=scoreIndex.get(norm(r.name));
+  const src=row?.sources||{};
+  const full=row?.scores||{};
+  if(full.hype!=null){
+    return {score:v9Clamp(full.hype), coverage:v9Clamp(full.coverage), mode:'Full Hype', quality:full.quality, gap:full.hype_gap, signal:full.signal||v9Band(full.hype), components:full.components||{}};
+  }
+
+  const live=liveSignalV9.get(norm(r.name))||{};
+  const tt=src.tiktok||{}, web=src.web||{}, res=src.reservation||{};
+  let total=0, weight=0, coverage=0;
+  const components={};
+
+  if(tt.mentions_7d!=null || tt.views_7d!=null){
+    const prev=Number(tt.mentions_prev_7d)||0, cur=Number(tt.mentions_7d)||0;
+    const growth=Math.max(-1, Math.min(4, (cur+2)/(prev+2)-1));
+    const val=v9Clamp(18 + v9Log(cur,18,42) + v9Log(tt.views_7d,4.6,33) + growth*9);
+    components.TikTok=val; total+=val*.65; weight+=.65; coverage+=55;
+  }
+
+  if(web.mentions_30d!=null || live.loaded){
+    const m30=live.mentions30 ?? Number(web.mentions_30d)||0;
+    const m7=live.mentions7 ?? Number(web.mentions_7d)||0;
+    const domains=live.domains ?? Number(web.domains_30d)||0;
+    const velocity=m30?Math.min(2,(m7/Math.max(1,m30))*4):0;
+    const val=v9Clamp(10 + v9Log(m30,14,50) + Math.min(22,domains*2.4) + velocity*7);
+    components['Web/news']=val; total+=val*.25; weight+=.25; coverage+=25;
+  }
+
+  if(res.scarcity_score!=null){
+    const val=v9Clamp(res.scarcity_score);
+    components.Access=val; total+=val*.10; weight+=.10; coverage+=10;
+  }
+
+  const quality = full.quality ?? (src.beli?.rating!=null ? Number(src.beli.rating)*10 : (src.website?.rating!=null ? Number(src.website.rating)*20 : null));
+  if(src.beli || src.website) coverage+=10;
+
+  let score;
+  let mode='Provisional Hype';
+  if(weight>0){ score=Math.round(total/weight); }
+  else if(quality!=null){ score=Math.round(quality); mode='Quality proxy'; }
+  else { score=50; mode='Provisional — limited data'; }
+
+  return {score:v9Clamp(score),coverage:v9Clamp(coverage),mode,quality,gap:quality==null?null:score-quality,signal:v9Band(score),components};
+}
+
+function v9SummaryText(r, rate){
+  if(rate.mode==='Full Hype') return 'Stored multi-source attention score.';
+  if(rate.mode==='Quality proxy') return 'No usable attention signal yet, so the color temporarily reflects the available quality rating.';
+  if(rate.coverage===0) return 'Neutral provisional rating: no free TikTok/web/access signal has been captured yet. Click checks recent public web coverage.';
+  return `Provisional rating based on ${Math.round(rate.coverage)}% current free-source coverage.`;
+}
+
+function v9Popup(r){
+  const rate=v9Rating(r);
+  return `<div class="popname">${esc(r.name)}</div><div class="popmeta">${esc(r.cuisine||'Restaurant')} · ${esc(cityLabel)}</div><div class="metrics"><div class="metric"><span>Rating</span><b>${fmt(rate.score)}</b></div><div class="metric"><span>Quality</span><b>${fmt(rate.quality)}</b></div><div class="metric"><span>Coverage</span><b>${fmt(rate.coverage)}%</b></div><div class="metric"><span>Type</span><b style="font-size:8px">${esc(rate.mode==='Full Hype'?'FULL':'PROV.')}</b></div></div><div class="popnote"><b>${esc(rate.signal)}</b><br>${esc(v9SummaryText(r,rate))}</div><a class="maps" target="_blank" href="${mapsUrl(r.name)}">Reviews & directions ↗</a>`;
+}
+
+function v9Repaint(r){
+  const rate=v9Rating(r), m=markers.get(r.id);
+  if(!m) return;
+  m.setStyle({fillColor:v9Color(rate.score),fillOpacity:rate.mode==='Full Hype'?.98:.82,color:rate.mode==='Full Hype'?'#111':'#fff',weight:rate.mode==='Full Hype'?2.4:1.2});
+  m.setRadius(rate.mode==='Full Hype'?8:6);
+  m.setTooltipContent(`${esc(r.name)} · ${rate.mode==='Full Hype'?'Hype':'Rating'} ${fmt(rate.score)} · ${fmt(rate.coverage)}% coverage`);
+  m.setPopupContent(v9Popup(r));
+}
+
+async function v9FetchWeb(r){
+  const key=norm(r.name);
+  if(liveSignalV9.get(key)?.loaded) return;
+  try{
+    const d=await j('https://api.gdeltproject.org/api/v2/doc/doc?mode=artlist&maxrecords=50&timespan=30d&sort=datedesc&format=json&query='+encodeURIComponent(`"${r.name}" "${cityName(cityLabel)}"`),{},7000);
+    const articles=d?.articles||[];
+    const now=Date.now(), week=7*86400000;
+    const domains=new Set(articles.map(x=>x.domain).filter(Boolean));
+    const mentions7=articles.filter(x=>{ const t=Date.parse(x.seendate||x.datetime||x.date||''); return Number.isFinite(t)&&now-t<=week; }).length;
+    liveSignalV9.set(key,{loaded:true,mentions30:articles.length,mentions7,domains:domains.size,examples:articles.slice(0,4)});
+  }catch(e){
+    liveSignalV9.set(key,{loaded:true,mentions30:0,mentions7:0,domains:0,examples:[]});
+  }
+  v9Repaint(r);
+}
+
+function v9Detail(r, refresh=true){
+  const row=scoreIndex.get(norm(r.name));
+  const rate=v9Rating(r);
+  const stored=row?mentions(row):[];
+  const live=liveSignalV9.get(norm(r.name))||{};
+  const fresh=(live.examples||[]).map(x=>({src:x.domain||'Web/news',text:x.title||'Recent coverage'}));
+  const allMentions=[...stored,...fresh].slice(0,4);
+  const whyLines=[];
+  if(row) whyLines.push(...why(row));
+  if(!whyLines.length) whyLines.push(v9SummaryText(r,rate));
+  if(rate.mode!=='Full Hype') whyLines.unshift(v9SummaryText(r,rate));
+
+  $('detail').className='detail';
+  $('detail').innerHTML=`<div class="dh"><div><div class="dn">${esc(r.name)}</div><div class="dm">${esc(r.cuisine||'Restaurant')} · ${esc(r.address||cityLabel)}</div></div><span class="badge">${esc(rate.mode)}</span></div><div class="metrics"><div class="metric"><span>Rating</span><b>${fmt(rate.score)}</b></div><div class="metric"><span>Quality</span><b>${fmt(rate.quality)}</b></div><div class="metric"><span>Gap</span><b>${rate.gap==null?'—':(rate.gap>0?'+':'')+fmt(rate.gap)}</b></div><div class="metric"><span>Coverage</span><b>${fmt(rate.coverage)}%</b></div></div><div class="why"><div class="wt">Why this color</div>${Object.entries(rate.components||{}).map(([k,v])=>`<div class="barrow"><span>${esc(k)}</span><span class="bar"><i style="width:${v9Clamp(v)}%"></i></span><b>${fmt(v)}</b></div>`).join('')}${whyLines.map(x=>`<div class="line">${esc(x)}</div>`).join('')}</div><div class="why"><div class="wt">Highlighted reviews & public mentions</div><div data-v9mentions>${allMentions.length?allMentions.map(x=>`<div class="mention"><small>${esc(x.src)}</small><div>${esc(x.text)}</div></div>`).join(''):(refresh?'<div class="line">Checking recent public coverage…</div>':'<div class="line">No recent free web coverage returned. Use the review links below for more context.</div>')}</div></div><div class="actions"><a target="_blank" href="${mapsUrl(r.name)}">Google Maps reviews ↗</a><a target="_blank" href="${r.website||webUrl(r.name)}">${r.website?'Restaurant website':'Web reviews'} ↗</a></div>`;
+
+  if(refresh){
+    v9FetchWeb(r).then(()=>{ if($('detail')?.querySelector('.dn')?.textContent===r.name) v9Detail(r,false); });
+  }
+}
+
+// Override the v8 drawing/interaction functions without touching the stored dataset.
+detail = v9Detail;
+popup = v9Popup;
+
+draw = function(){
+  base.clearLayers(); markers.clear();
+  for(const r of restaurants){
+    const rate=v9Rating(r);
+    const m=L.circleMarker([r.lat,r.lng],{
+      radius:rate.mode==='Full Hype'?8:6,
+      color:rate.mode==='Full Hype'?'#111':'#fff',
+      weight:rate.mode==='Full Hype'?2.4:1.2,
+      fillColor:v9Color(rate.score),
+      fillOpacity:rate.mode==='Full Hype'?.98:.82,
+      interactive:true,
+      bubblingMouseEvents:false
+    }).bindTooltip(`${esc(r.name)} · ${rate.mode==='Full Hype'?'Hype':'Rating'} ${fmt(rate.score)} · ${fmt(rate.coverage)}% coverage`)
+      .bindPopup(v9Popup(r))
+      .on('click',()=>v9Detail(r))
+      .addTo(base);
+    markers.set(r.id,m);
+  }
+  $('rc').textContent=restaurants.length.toLocaleString();
+  $('rp').textContent=restaurants.length.toLocaleString()+' color-rated restaurants';
+  $('mapstatus').textContent=restaurants.length.toLocaleString()+' clickable restaurants loaded';
+};
+
+drawScores = function(){
+  hype.clearLayers(); hmarkers.clear(); scoreIndex=new Map();
+  const cityScores=scores.filter(sameCity); cityScores.forEach(r=>scoreIndex.set(norm(r.name),r));
+  let full=0,cov=0;
+  for(const row of cityScores){ if(row.scores?.hype!=null) full++; if(Number(row.scores?.coverage)>=40) cov++; }
+  $('hc').textContent=full; $('cc').textContent=cov;
+  $('sp').textContent=(restaurants.length||cityScores.length)+' color rated';
+  if(restaurants.length) draw();
+  leader();
+};
+
+focus = function(r){
+  v9Detail(r);
+  map.setView([r.lat,r.lng],16);
+  const m=markers.get(r.id)||hmarkers.get(norm(r.name));
+  setTimeout(()=>m?.openPopup(),150);
+};
+
+// Update visible legend copy.
+const legend=document.querySelector('.legend');
+if(legend) legend.innerHTML=`<b>HOW TO READ IT</b><p>Every dot is a restaurant. Every dot is color-rated and clickable.</p><div class="ld"><i class="dot" style="background:#ff4d67"></i>90–100 Peak</div><div class="ld"><i class="dot" style="background:#ff9f43"></i>75–89 Hot</div><div class="ld"><i class="dot" style="background:#ffd166"></i>60–74 Rising</div><div class="ld"><i class="dot" style="background:#62a8ff"></i>40–59 Moderate</div><div class="ld"><i class="dot" style="background:#7b61ff"></i>0–39 Quiet / limited signal</div><p><b>Heavy outline</b> = Full Hype. <b>Thin outline</b> = provisional / quality proxy. Coverage shows how much data actually supports the rating.</p>`;
+const terminal=document.querySelector('.k'); if(terminal) terminal.textContent='Restaurant signal terminal · v9';
+const sub=document.querySelector('.sub'); if(sub) sub.textContent='Every restaurant is clickable and color-rated. Full Hype uses stored multi-source attention data; provisional ratings show lower coverage instead of disappearing.';
+
+if(restaurants.length) drawScores();
