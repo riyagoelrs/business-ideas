@@ -73,7 +73,9 @@ jobs:
 
       - name: Rebuild aggregate Beli Reddit web and review signals
         working-directory: restaurant-hype-map/pipeline
-        run: python enrich_v11.py
+        run: |
+          sed -i 's/web_batch(rows)/web_batch(rows,120)/' enrich_v11.py
+          python enrich_v11.py
 
       - name: Commit restaurant app and enriched data to main safely
         run: |
