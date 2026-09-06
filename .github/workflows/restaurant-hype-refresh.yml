@@ -62,38 +62,45 @@ jobs:
       - name: Install free data dependencies
         run: pip install -r restaurant-hype-map/requirements-data.txt
 
+      - name: Apply v9 clickable color-rated frontend
+        run: python restaurant-hype-map/pipeline/apply_v9_frontend.py
+
       - name: Refresh restaurant universe from true city boundaries
         working-directory: restaurant-hype-map/pipeline
         env:
           HYPE_CITIES: ${{ env.HYPE_CITIES }}
         run: python refresh_city_boundaries.py
 
-      - name: Commit data to main safely
+      - name: Commit restaurant app and data to main safely
         run: |
           git config user.name "restaurant-hype-bot"
           git config user.email "actions@users.noreply.github.com"
-          if [ -n "$(git status --porcelain -- restaurant-hype-map/data)" ]; then
-            git add restaurant-hype-map/data
-            git commit -m "Refresh boundary-filtered multi-city restaurant data"
+          if [ -n "$(git status --porcelain -- restaurant-hype-map/data restaurant-hype-map/index.html)" ]; then
+            git add restaurant-hype-map/data restaurant-hype-map/index.html
+            git commit -m "Refresh restaurant data and v9 interactions"
             git pull --rebase origin main
             git push origin main
           else
-            echo "No data changes"
+            echo "No restaurant app/data changes"
           fi
 
-      - name: Publish data to GitHub Pages
+      - name: Publish restaurant app and data to GitHub Pages
         run: |
-          mkdir -p /tmp/hype-data
-          cp -R restaurant-hype-map/data/. /tmp/hype-data/
+          mkdir -p /tmp/hype-publish/data
+          cp -R restaurant-hype-map/data/. /tmp/hype-publish/data/
+          cp restaurant-hype-map/index.html /tmp/hype-publish/index.html
+          cp restaurant-hype-map/v9-overlay.js /tmp/hype-publish/v9-overlay.js
           git fetch origin gh-pages
           git checkout -B gh-pages origin/gh-pages
           mkdir -p restaurant-hype-map/data
-          cp -R /tmp/hype-data/. restaurant-hype-map/data/
-          if [ -n "$(git status --porcelain -- restaurant-hype-map/data)" ]; then
-            git add restaurant-hype-map/data
-            git commit -m "Publish boundary-filtered restaurant data"
+          cp -R /tmp/hype-publish/data/. restaurant-hype-map/data/
+          cp /tmp/hype-publish/index.html restaurant-hype-map/index.html
+          cp /tmp/hype-publish/v9-overlay.js restaurant-hype-map/v9-overlay.js
+          if [ -n "$(git status --porcelain -- restaurant-hype-map/data restaurant-hype-map/index.html restaurant-hype-map/v9-overlay.js)" ]; then
+            git add restaurant-hype-map/data restaurant-hype-map/index.html restaurant-hype-map/v9-overlay.js
+            git commit -m "Publish color-rated clickable restaurant map"
             git pull --rebase origin gh-pages
             git push origin gh-pages
           else
-            echo "No Pages data changes"
+            echo "No Pages restaurant changes"
           fi
