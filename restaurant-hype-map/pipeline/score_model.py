@@ -24,7 +24,6 @@ def _pct_rank(value: Optional[float], universe: Iterable[Optional[float]], *, lo
         return 50.0
     less = sum(v < x for v in vals)
     equal = sum(v == x for v in vals)
-    # average rank for ties, scaled 0-100
     rank0 = less + (equal - 1) / 2.0
     return 100.0 * rank0 / (len(vals) - 1)
 
@@ -101,6 +100,9 @@ def score_restaurants(rows: List[dict]) -> List[dict]:
                 },
                 {"growth": 0.35, "mentions": 0.25, "fresh": 0.20, "breadth": 0.20},
             )
+            # A successful web lookup with zero activity is quiet, not "average".
+            if src(row, "web", "mentions_30d") == 0 and src(row, "web", "mentions_7d") == 0 and src(row, "web", "domains_30d") == 0:
+                web = 5.0
 
             reservation = src(row, "reservation", "scarcity_score")
             reservation = None if reservation is None else _clamp(reservation)
