@@ -6,6 +6,7 @@ on:
     branches: [main]
     paths:
       - ".github/workflows/restaurant-hype-v11-quick-seed.yml"
+      - "restaurant-hype-map/pipeline/beli_precise.py"
 
 permissions:
   contents: write
@@ -27,18 +28,19 @@ jobs:
       - name: Install dependencies
         run: pip install -r restaurant-hype-map/requirements-data.txt
 
-      - name: Build immediate Beli Reddit and review seed
+      - name: Build immediate verified Beli Reddit and review seed
         working-directory: restaurant-hype-map/pipeline
         run: |
           python - <<'PY'
           import json
           from datetime import datetime, timezone
           import enrich_v11 as e
+          import beli_precise
           rows=e.load_rows()
           if not rows:
               raise SystemExit('No restaurant snapshot')
           e.ensure_seed(rows)
-          e.fuzzy_beli(rows)
+          beli_precise.clean_and_apply(rows)
           e.add_reddit(rows,e.reddit_entries())
           stamp=datetime.now(timezone.utc).isoformat()
           for r in rows:
@@ -58,18 +60,18 @@ jobs:
           })
           PY
 
-      - name: Commit score seed to main
+      - name: Commit verified score seed to main
         run: |
           git config user.name "restaurant-hype-bot"
           git config user.email "actions@users.noreply.github.com"
           git add restaurant-hype-map/data
           if ! git diff --cached --quiet; then
-            git commit -m "Seed Manhattan aggregate restaurant scores"
+            git commit -m "Seed verified Manhattan aggregate restaurant scores"
             git pull --rebase origin main
             git push origin main
           fi
 
-      - name: Publish score seed to Pages
+      - name: Publish verified score seed to Pages
         run: |
           mkdir -p /tmp/quick-seed
           cp -R restaurant-hype-map/data/. /tmp/quick-seed/
@@ -79,7 +81,7 @@ jobs:
           cp -R /tmp/quick-seed/. restaurant-hype-map/data/
           git add restaurant-hype-map/data
           if ! git diff --cached --quiet; then
-            git commit -m "Publish Manhattan aggregate score seed"
+            git commit -m "Publish verified Manhattan aggregate score seed"
             git pull --rebase origin gh-pages
             git push origin gh-pages
           fi
