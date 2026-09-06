@@ -1,41 +1,62 @@
 # Internet Taste Graph
 
-A browser-based cultural discovery prototype that maps adjacent brands, creators, restaurants, products, places, media and aesthetics from a handful of taste signals.
+Internet Taste Graph is a browser-based prototype for turning a person's digital and physical behavior into a navigable taste profile.
 
-## What works in this MVP
+Live app: https://riyagoelrs.github.io/business-ideas/internet-taste-graph/
 
-- Enter 3–5 interests or a seed account/name.
-- Generates a taste profile and “Taste DNA.”
-- Interactive D3 force-directed graph.
-- Click any node to re-center the graph around it.
-- Taste-distance control: Safe → Adjacent → Weird.
-- Toggle categories on/off.
-- “Surprise Me” wildcard discovery.
-- Explainable recommendations in the side inspector.
-- Share-card text copied to clipboard.
-- Responsive, no-build static site.
+## V2: behavioral taste signals
 
-## Run
+The graph can now combine:
 
-Open `index.html`, or serve the folder:
+- typed accounts, interests and current obsessions
+- Google/Search or My Activity exports
+- YouTube search/watch-history exports
+- social account exports containing following, followers, likes or saves
+- Maps/Timeline/place-history exports
+- browser-history exports
 
-```bash
-python3 -m http.server 5173
-```
+The static prototype accepts ZIP, JSON, CSV, TXT and HTML files. Files are parsed in the browser. It stores derived keyword weights in `localStorage`; the raw imported history is not uploaded by this demo.
 
-Then visit `http://localhost:5173/internet-taste-graph/` if serving from the repository root.
+Each source is intentionally weighted differently. High-intent or repeated behavior (places, saves/likes, searches and watch history) should matter more than generic browsing. Following is a better self-taste signal than followers; followers are eventually most useful for a separate audience graph.
 
-## Current data model
+## Personalized discovery feed
 
-The MVP uses a curated local entity graph with category, tags and descriptions. Similarity is calculated from direct seed matches plus tag overlap, semantic-style adjacency and a novelty target controlled by the taste-distance slider.
+The behavioral layer generates a ranked discovery feed with:
 
-This intentionally avoids pretending the prototype has live Instagram/TikTok audience data. A production version should add embeddings, audience-overlap signals, co-mentions, geospatial data and account ingestion.
+- a taste-fit score
+- a novelty score
+- the signals that caused the recommendation
+- direct routes to YouTube, Google, Instagram and Maps searches for the recommendation
 
-## Next build
+The goal is not only to say “you may like X,” but to make the next rabbit hole one click away.
 
-1. Replace curated-only matching with embeddings.
-2. Add a real entity database and search/autocomplete.
-3. Add account ingestion where APIs permit it.
-4. Add location-aware discovery and map mode for restaurants/places.
-5. Generate shareable PNG graph cards.
-6. Persist user graphs and compare two taste profiles.
+## Current architecture
+
+`index.html` — product shell and graph UI  
+`styles.css` — original graph design  
+`app.js` — curated cross-category graph and interactive visualization  
+`signals.css` — behavioral-ingestion and discovery-feed UI  
+`signals.js` — local import parsing, signal weighting, evidence and recommendation ranking
+
+## What a production version needs
+
+The live GitHub Pages build is still a prototype. A production version should add a backend plus consented OAuth/data-portability integrations and a much larger entity/content index.
+
+Recommended ingestion order:
+
+1. Google Takeout / My Activity for Search + YouTube history
+2. TikTok Data Portability where eligible and approved
+3. Instagram account data export / approved Meta surfaces
+4. browser extension for ongoing browser-history signals
+5. Maps/Timeline or other user-provided place history
+6. optional manual interests and account handles
+
+The recommendation layer should then move from the small curated catalog to embeddings + entity resolution + co-occurrence + audience overlap + place affinity, with fresh content retrieval for each recommended node.
+
+## Privacy model
+
+This product handles unusually intimate behavioral data. The intended design is explicit consent, source-level controls, clear explanations of why every recommendation exists, user-visible deletion, and minimizing retention of raw history.
+
+## License
+
+MIT
