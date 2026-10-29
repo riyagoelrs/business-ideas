@@ -208259,16 +208259,16 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
-      "hype": 78.6,
+      "hype": 85.5,
       "quality": null,
       "hype_gap": null,
       "coverage": 20,
       "signal": "Hype only",
       "components": {
         "tiktok": null,
-        "reddit": 78.6,
+        "reddit": 85.5,
         "web": null,
         "access": null
       },
@@ -208293,7 +208293,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": 5.0,
       "quality": null,
@@ -208327,7 +208327,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": 76.0,
@@ -208380,16 +208380,16 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
-      "hype": 98.2,
+      "hype": 100.0,
       "quality": null,
       "hype_gap": null,
       "coverage": 20,
       "signal": "Hype only",
       "components": {
         "tiktok": null,
-        "reddit": 98.2,
+        "reddit": 100.0,
         "web": null,
         "access": null
       },
@@ -208434,7 +208434,7 @@
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
     "lat": 40.7353,
     "lng": -74.0008,
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": 36.7,
       "quality": 96.2,
@@ -208468,7 +208468,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": 5.0,
       "quality": null,
@@ -208493,7 +208493,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -208539,16 +208539,16 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
-      "hype": 21.1,
+      "hype": 22.8,
       "quality": null,
       "hype_gap": null,
       "coverage": 40,
       "signal": "Hype only",
       "components": {
         "tiktok": null,
-        "reddit": 33.9,
+        "reddit": 37.1,
         "web": 5.0,
         "access": null
       },
@@ -208581,7 +208581,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": 5.0,
       "quality": 99.0,
@@ -208615,7 +208615,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": 5.0,
       "quality": null,
@@ -208649,7 +208649,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": 98.0,
@@ -208683,7 +208683,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": 5.0,
       "quality": null,
@@ -208717,7 +208717,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": 5.0,
       "quality": null,
@@ -208751,7 +208751,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": 5.0,
       "quality": null,
@@ -208776,7 +208776,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -208810,7 +208810,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": 5.0,
       "quality": null,
@@ -208853,17 +208853,12 @@
         "captured_at": "2026-09-06"
       },
       "reddit": {
-        "mentions_30d": 2,
-        "mentions_7d": 2,
+        "mentions_30d": 1,
+        "mentions_7d": 1,
         "examples": [
           {
             "title": "Challenging Dinner Suggestion for Next Week ......",
             "url": "https://www.reddit.com/r/FoodNYC/comments/1xdudt6/challenging_dinner_suggestion_for_next_week/",
-            "source": "Reddit"
-          },
-          {
-            "title": "Nailing the NYC food scene in just 5 days (Shortlist help)",
-            "url": "https://www.reddit.com/r/FoodNYC/comments/1xbq6nn/nailing_the_nyc_food_scene_in_just_5_days/",
             "source": "Reddit"
           }
         ],
@@ -208881,16 +208876,16 @@
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
     "lat": 40.73,
     "lng": -74.0001,
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
-      "hype": 52.1,
+      "hype": 33.2,
       "quality": 90.5,
-      "hype_gap": -38.4,
+      "hype_gap": -57.2,
       "coverage": 70,
       "signal": "Sleeper",
       "components": {
         "tiktok": null,
-        "reddit": 78.6,
+        "reddit": 37.1,
         "web": 5.0,
         "access": 80.0
       },
@@ -208915,7 +208910,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": 5.0,
       "quality": null,
@@ -208938,18 +208933,31 @@
   {
     "name": "A top 3 burger for us in NYC, and I know we're not alone. A decadent mix of dry-aged beef, cooked a perfect medium are, and topped with a dollop of onion so caramelized it's practically the same color as the burger.",
     "city": "New York, NY",
-    "sources": {},
+    "sources": {
+      "reddit": {
+        "mentions_30d": 1,
+        "mentions_7d": 1,
+        "examples": [
+          {
+            "title": "Halal Restaurant List compiled over the past few years",
+            "url": "https://www.reddit.com/r/FoodNYC/comments/1xi45vg/halal_restaurant_list_compiled_over_the_past_few/",
+            "source": "Reddit"
+          }
+        ],
+        "provider": "public Reddit RSS feeds"
+      }
+    },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
-      "hype": null,
+      "hype": 37.1,
       "quality": null,
       "hype_gap": null,
-      "coverage": 0,
-      "signal": "Not enough data",
+      "coverage": 20,
+      "signal": "Hype only",
       "components": {
         "tiktok": null,
-        "reddit": null,
+        "reddit": 37.1,
         "web": null,
         "access": null
       },
@@ -208974,7 +208982,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": 5.0,
       "quality": null,
@@ -209028,7 +209036,7 @@
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
     "lat": 40.718,
     "lng": -74.0025,
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": 28.3,
       "quality": 91.8,
@@ -209062,7 +209070,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": 5.0,
       "quality": null,
@@ -209087,7 +209095,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -209121,7 +209129,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": 5.0,
       "quality": null,
@@ -209163,14 +209171,6 @@
         "provider": "public restaurant metadata seed",
         "captured_at": "2026-09-06"
       },
-      "beli": {
-        "rating": 9.5,
-        "category": "Burger",
-        "rank": 6,
-        "total": 56,
-        "source_url": "https://beliapp.com/nyc-burger-search",
-        "provider": "Beli public ranked list"
-      },
       "reddit": {
         "mentions_30d": 1,
         "mentions_7d": 1,
@@ -209182,21 +209182,29 @@
           }
         ],
         "provider": "public Reddit RSS feeds"
+      },
+      "beli": {
+        "rating": 9.5,
+        "category": "Burger",
+        "rank": 6,
+        "total": 56,
+        "source_url": "https://beliapp.com/nyc-burger-search",
+        "provider": "Beli public ranked list"
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
     "lat": 40.7267,
     "lng": -73.9854,
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
-      "hype": 27.2,
+      "hype": 28.7,
       "quality": 91.7,
-      "hype_gap": -64.5,
+      "hype_gap": -63.0,
       "coverage": 70,
       "signal": "Sleeper",
       "components": {
         "tiktok": null,
-        "reddit": 33.9,
+        "reddit": 37.1,
         "web": 5.0,
         "access": 55.0
       },
@@ -209221,7 +209229,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": 5.0,
       "quality": null,
@@ -209246,7 +209254,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -209280,7 +209288,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": 5.0,
       "quality": null,
@@ -209334,16 +209342,16 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
-      "hype": 21.1,
+      "hype": 22.8,
       "quality": 84.0,
-      "hype_gap": -62.9,
+      "hype_gap": -61.2,
       "coverage": 55,
       "signal": "Sleeper",
       "components": {
         "tiktok": null,
-        "reddit": 33.9,
+        "reddit": 37.1,
         "web": 5.0,
         "access": null
       },
@@ -209368,7 +209376,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": 5.0,
       "quality": null,
@@ -209402,7 +209410,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": 75.0,
@@ -209436,7 +209444,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": 5.0,
       "quality": null,
@@ -209470,7 +209478,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": 95.0,
@@ -209493,18 +209501,31 @@
   {
     "name": "This Korean restaurant in the East Village serves one of the best burgers we’ve tried so far. Their “Legendary Cheeseburger” takes an excellent smash patty burger and brings it to another level with an addictive kimchi mayo.",
     "city": "New York, NY",
-    "sources": {},
+    "sources": {
+      "reddit": {
+        "mentions_30d": 1,
+        "mentions_7d": 1,
+        "examples": [
+          {
+            "title": "Halal Restaurant List compiled over the past few years",
+            "url": "https://www.reddit.com/r/FoodNYC/comments/1xi45vg/halal_restaurant_list_compiled_over_the_past_few/",
+            "source": "Reddit"
+          }
+        ],
+        "provider": "public Reddit RSS feeds"
+      }
+    },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
-      "hype": null,
+      "hype": 37.1,
       "quality": null,
       "hype_gap": null,
-      "coverage": 0,
-      "signal": "Not enough data",
+      "coverage": 20,
+      "signal": "Hype only",
       "components": {
         "tiktok": null,
-        "reddit": null,
+        "reddit": 37.1,
         "web": null,
         "access": null
       },
@@ -209520,7 +209541,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -209574,7 +209595,7 @@
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
     "lat": 40.7617,
     "lng": -73.9747,
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": 35.0,
       "quality": 91.2,
@@ -209599,7 +209620,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -209624,7 +209645,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -209662,16 +209683,16 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
-      "hype": 33.9,
+      "hype": 37.1,
       "quality": null,
       "hype_gap": null,
       "coverage": 20,
       "signal": "Hype only",
       "components": {
         "tiktok": null,
-        "reddit": 33.9,
+        "reddit": 37.1,
         "web": null,
         "access": null
       },
@@ -209716,7 +209737,7 @@
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
     "lat": 40.7068,
     "lng": -74.0029,
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": 18.3,
       "quality": 83.6,
@@ -209741,7 +209762,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -209766,7 +209787,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -209791,7 +209812,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -209825,7 +209846,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": 94.0,
@@ -209850,7 +209871,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -209875,7 +209896,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -209900,7 +209921,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -209934,7 +209955,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": 94.0,
@@ -209959,7 +209980,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -209984,7 +210005,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -210022,16 +210043,16 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
-      "hype": 33.9,
+      "hype": 37.1,
       "quality": null,
       "hype_gap": null,
       "coverage": 20,
       "signal": "Hype only",
       "components": {
         "tiktok": null,
-        "reddit": 33.9,
+        "reddit": 37.1,
         "web": null,
         "access": null
       },
@@ -210056,7 +210077,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": 94.0,
@@ -210081,7 +210102,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -210106,7 +210127,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -210144,16 +210165,16 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
-      "hype": 33.9,
+      "hype": 37.1,
       "quality": null,
       "hype_gap": null,
       "coverage": 20,
       "signal": "Hype only",
       "components": {
         "tiktok": null,
-        "reddit": 33.9,
+        "reddit": 37.1,
         "web": null,
         "access": null
       },
@@ -210178,7 +210199,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": 93.0,
@@ -210203,7 +210224,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -210228,7 +210249,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -210266,16 +210287,16 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
-      "hype": 33.9,
+      "hype": 37.1,
       "quality": null,
       "hype_gap": null,
       "coverage": 20,
       "signal": "Hype only",
       "components": {
         "tiktok": null,
-        "reddit": 33.9,
+        "reddit": 37.1,
         "web": null,
         "access": null
       },
@@ -210300,7 +210321,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": 93.0,
@@ -210325,7 +210346,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -210350,7 +210371,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -210375,7 +210396,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -210409,7 +210430,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": 93.0,
@@ -210434,7 +210455,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -210459,7 +210480,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -210484,7 +210505,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -210518,7 +210539,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": 93.0,
@@ -210543,7 +210564,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -210568,7 +210589,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -210593,7 +210614,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -210624,19 +210645,31 @@
         "total": 56,
         "source_url": "https://beliapp.com/nyc-burger-search",
         "provider": "Beli public ranked list"
+      },
+      "reddit": {
+        "mentions_30d": 1,
+        "mentions_7d": 1,
+        "examples": [
+          {
+            "title": "Halal Restaurant List compiled over the past few years",
+            "url": "https://www.reddit.com/r/FoodNYC/comments/1xi45vg/halal_restaurant_list_compiled_over_the_past_few/",
+            "source": "Reddit"
+          }
+        ],
+        "provider": "public Reddit RSS feeds"
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
-      "hype": null,
+      "hype": 37.1,
       "quality": 92.0,
-      "hype_gap": null,
-      "coverage": 15,
-      "signal": "Quality only",
+      "hype_gap": -54.9,
+      "coverage": 35,
+      "signal": "Sleeper",
       "components": {
         "tiktok": null,
-        "reddit": null,
+        "reddit": 37.1,
         "web": null,
         "access": null
       },
@@ -210652,7 +210685,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -210677,7 +210710,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -210702,7 +210735,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -210736,7 +210769,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": 91.0,
@@ -210761,7 +210794,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -210786,7 +210819,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -210820,7 +210853,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": 5.0,
       "quality": null,
@@ -210854,7 +210887,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": 91.0,
@@ -210879,7 +210912,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -210904,7 +210937,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -210938,7 +210971,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": 5.0,
       "quality": null,
@@ -210972,7 +211005,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": 90.0,
@@ -210997,7 +211030,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -211022,7 +211055,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -211047,7 +211080,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -211081,7 +211114,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": 89.0,
@@ -211106,7 +211139,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -211131,7 +211164,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -211156,7 +211189,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -211190,7 +211223,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": 88.0,
@@ -211215,7 +211248,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -211240,8 +211273,8 @@
     "city": "New York, NY",
     "sources": {
       "reddit": {
-        "mentions_30d": 8,
-        "mentions_7d": 8,
+        "mentions_30d": 7,
+        "mentions_7d": 7,
         "examples": [
           {
             "title": "Is 1 hour for dinner enough for the Monkey Bar if reservation is at 5 pm?",
@@ -211268,16 +211301,16 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
-      "hype": 98.2,
+      "hype": 96.8,
       "quality": null,
       "hype_gap": null,
       "coverage": 20,
       "signal": "Hype only",
       "components": {
         "tiktok": null,
-        "reddit": 98.2,
+        "reddit": 96.8,
         "web": null,
         "access": null
       },
@@ -211293,7 +211326,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -211327,7 +211360,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": 88.0,
@@ -211352,7 +211385,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -211377,7 +211410,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -211415,16 +211448,16 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
-      "hype": 33.9,
+      "hype": 37.1,
       "quality": null,
       "hype_gap": null,
       "coverage": 20,
       "signal": "Hype only",
       "components": {
         "tiktok": null,
-        "reddit": 33.9,
+        "reddit": 37.1,
         "web": null,
         "access": null
       },
@@ -211449,7 +211482,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": 88.0,
@@ -211474,7 +211507,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -211499,7 +211532,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -211524,7 +211557,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -211558,7 +211591,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": 87.0,
@@ -211583,7 +211616,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -211608,7 +211641,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -211633,7 +211666,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -211667,7 +211700,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": 87.0,
@@ -211692,7 +211725,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -211717,7 +211750,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -211742,7 +211775,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -211776,7 +211809,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": 87.0,
@@ -211801,7 +211834,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -211826,7 +211859,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -211851,7 +211884,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -211885,7 +211918,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": 87.0,
@@ -211910,7 +211943,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -211953,16 +211986,16 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
-      "hype": 78.6,
+      "hype": 85.5,
       "quality": null,
       "hype_gap": null,
       "coverage": 20,
       "signal": "Hype only",
       "components": {
         "tiktok": null,
-        "reddit": 78.6,
+        "reddit": 85.5,
         "web": null,
         "access": null
       },
@@ -211987,7 +212020,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": 85.0,
@@ -212012,7 +212045,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -212037,7 +212070,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -212062,7 +212095,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -212087,7 +212120,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -212112,7 +212145,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -212137,7 +212170,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -212162,7 +212195,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -212196,7 +212229,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": 83.0,
@@ -212221,7 +212254,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -212255,7 +212288,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": 83.0,
@@ -212293,16 +212326,16 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
-      "hype": 33.9,
+      "hype": 37.1,
       "quality": null,
       "hype_gap": null,
       "coverage": 20,
       "signal": "Hype only",
       "components": {
         "tiktok": null,
-        "reddit": 33.9,
+        "reddit": 37.1,
         "web": null,
         "access": null
       },
@@ -212318,7 +212351,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -212343,7 +212376,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -212368,7 +212401,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -212406,16 +212439,16 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
-      "hype": 33.9,
+      "hype": 37.1,
       "quality": null,
       "hype_gap": null,
       "coverage": 20,
       "signal": "Hype only",
       "components": {
         "tiktok": null,
-        "reddit": 33.9,
+        "reddit": 37.1,
         "web": null,
         "access": null
       },
@@ -212452,16 +212485,16 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
-      "hype": 33.9,
+      "hype": 37.1,
       "quality": 82.0,
-      "hype_gap": -48.1,
+      "hype_gap": -44.9,
       "coverage": 35,
       "signal": "Sleeper",
       "components": {
         "tiktok": null,
-        "reddit": 33.9,
+        "reddit": 37.1,
         "web": null,
         "access": null
       },
@@ -212477,7 +212510,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -212502,7 +212535,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -212527,7 +212560,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -212561,7 +212594,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": 81.0,
@@ -212586,7 +212619,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -212611,7 +212644,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -212636,7 +212669,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -212670,7 +212703,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": 81.0,
@@ -212695,7 +212728,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -212733,16 +212766,16 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
-      "hype": 33.9,
+      "hype": 37.1,
       "quality": null,
       "hype_gap": null,
       "coverage": 20,
       "signal": "Hype only",
       "components": {
         "tiktok": null,
-        "reddit": 33.9,
+        "reddit": 37.1,
         "web": null,
         "access": null
       },
@@ -212758,7 +212791,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -212792,7 +212825,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": 80.0,
@@ -212817,7 +212850,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -212842,7 +212875,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -212876,7 +212909,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": 80.0,
@@ -212901,7 +212934,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -212944,16 +212977,16 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
-      "hype": 78.6,
+      "hype": 85.5,
       "quality": null,
       "hype_gap": null,
       "coverage": 20,
       "signal": "Hype only",
       "components": {
         "tiktok": null,
-        "reddit": 78.6,
+        "reddit": 85.5,
         "web": null,
         "access": null
       },
@@ -212969,7 +213002,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -213003,7 +213036,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": 79.0,
@@ -213028,7 +213061,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -213053,7 +213086,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -213087,7 +213120,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": 5.0,
       "quality": null,
@@ -213121,7 +213154,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": 79.0,
@@ -213146,7 +213179,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -213171,7 +213204,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -213196,7 +213229,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -213230,7 +213263,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": 78.0,
@@ -213255,7 +213288,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -213293,16 +213326,16 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
-      "hype": 33.9,
+      "hype": 37.1,
       "quality": null,
       "hype_gap": null,
       "coverage": 20,
       "signal": "Hype only",
       "components": {
         "tiktok": null,
-        "reddit": 33.9,
+        "reddit": 37.1,
         "web": null,
         "access": null
       },
@@ -213331,16 +213364,16 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
-      "hype": 33.9,
+      "hype": 37.1,
       "quality": null,
       "hype_gap": null,
       "coverage": 20,
       "signal": "Hype only",
       "components": {
         "tiktok": null,
-        "reddit": 33.9,
+        "reddit": 37.1,
         "web": null,
         "access": null
       },
@@ -213356,7 +213389,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -213381,7 +213414,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -213406,8 +213439,8 @@
     "city": "New York, NY",
     "sources": {
       "reddit": {
-        "mentions_30d": 3,
-        "mentions_7d": 3,
+        "mentions_30d": 2,
+        "mentions_7d": 2,
         "examples": [
           {
             "title": "Indonesian Food Bazaar today at Masjid Al-Hikmah (Astoria)",
@@ -213418,27 +213451,22 @@
             "title": "Where can I get store vanilla milk? Not plain milk!!!",
             "url": "https://www.reddit.com/r/FoodNYC/comments/1xcw9ei/where_can_i_get_store_vanilla_milk_not_plain_milk/",
             "source": "Reddit"
-          },
-          {
-            "title": "Are there any Restaurants like Les Sans Culottes still in NYC?",
-            "url": "https://www.reddit.com/r/FoodNYC/comments/1xbxnha/are_there_any_restaurants_like_les_sans_culottes/",
-            "source": "Reddit"
           }
         ],
         "provider": "public Reddit RSS feeds"
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
-      "hype": 91.1,
+      "hype": 85.5,
       "quality": null,
       "hype_gap": null,
       "coverage": 20,
       "signal": "Hype only",
       "components": {
         "tiktok": null,
-        "reddit": 91.1,
+        "reddit": 85.5,
         "web": null,
         "access": null
       },
@@ -213463,7 +213491,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": 76.0,
@@ -213488,7 +213516,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -213513,7 +213541,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -213547,7 +213575,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": 75.0,
@@ -213572,7 +213600,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -213610,16 +213638,16 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
-      "hype": 33.9,
+      "hype": 37.1,
       "quality": null,
       "hype_gap": null,
       "coverage": 20,
       "signal": "Hype only",
       "components": {
         "tiktok": null,
-        "reddit": 33.9,
+        "reddit": 37.1,
         "web": null,
         "access": null
       },
@@ -213635,7 +213663,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -213669,7 +213697,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": 75.0,
@@ -213694,7 +213722,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -213719,7 +213747,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -213744,7 +213772,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -213769,7 +213797,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -213794,7 +213822,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -213819,7 +213847,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -213865,16 +213893,16 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
-      "hype": 21.1,
+      "hype": 22.8,
       "quality": null,
       "hype_gap": null,
       "coverage": 40,
       "signal": "Hype only",
       "components": {
         "tiktok": null,
-        "reddit": 33.9,
+        "reddit": 37.1,
         "web": 5.0,
         "access": null
       },
@@ -213899,7 +213927,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": 74.0,
@@ -213924,7 +213952,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -213949,7 +213977,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -213974,7 +214002,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -214008,7 +214036,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": 72.0,
@@ -214033,7 +214061,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -214058,7 +214086,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -214104,16 +214132,16 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
-      "hype": 21.1,
+      "hype": 22.8,
       "quality": null,
       "hype_gap": null,
       "coverage": 40,
       "signal": "Hype only",
       "components": {
         "tiktok": null,
-        "reddit": 33.9,
+        "reddit": 37.1,
         "web": 5.0,
         "access": null
       },
@@ -214138,7 +214166,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": 72.0,
@@ -214163,7 +214191,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -214188,7 +214216,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -214226,16 +214254,16 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
-      "hype": 33.9,
+      "hype": 37.1,
       "quality": null,
       "hype_gap": null,
       "coverage": 20,
       "signal": "Hype only",
       "components": {
         "tiktok": null,
-        "reddit": 33.9,
+        "reddit": 37.1,
         "web": null,
         "access": null
       },
@@ -214260,7 +214288,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": 71.0,
@@ -214285,7 +214313,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -214310,7 +214338,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -214344,7 +214372,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": 71.0,
@@ -214369,7 +214397,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -214394,7 +214422,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -214419,7 +214447,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -214453,7 +214481,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": 71.0,
@@ -214478,7 +214506,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -214503,7 +214531,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -214528,7 +214556,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -214562,7 +214590,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": 70.0,
@@ -214587,7 +214615,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -214612,7 +214640,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -214637,7 +214665,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -214671,7 +214699,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": 70.0,
@@ -214696,7 +214724,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -214721,7 +214749,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -214746,7 +214774,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -214780,7 +214808,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": 70.0,
@@ -214805,7 +214833,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -214830,7 +214858,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -214855,7 +214883,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -214889,7 +214917,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": 52.0,
@@ -214914,7 +214942,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -214957,16 +214985,16 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
-      "hype": 78.6,
+      "hype": 85.5,
       "quality": null,
       "hype_gap": null,
       "coverage": 20,
       "signal": "Hype only",
       "components": {
         "tiktok": null,
-        "reddit": 78.6,
+        "reddit": 85.5,
         "web": null,
         "access": null
       },
@@ -214982,7 +215010,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -215016,7 +215044,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": 77.0,
@@ -215050,7 +215078,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": 90.0,
@@ -215075,7 +215103,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -215109,7 +215137,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": 5.0,
       "quality": null,
@@ -215143,7 +215171,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": 88.0,
@@ -215168,7 +215196,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -215193,7 +215221,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -215227,7 +215255,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": 88.0,
@@ -215252,7 +215280,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -215277,7 +215305,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -215311,7 +215339,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": 88.0,
@@ -215336,7 +215364,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -215361,7 +215389,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -215395,7 +215423,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": 87.0,
@@ -215420,7 +215448,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -215454,7 +215482,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": 5.0,
       "quality": null,
@@ -215488,7 +215516,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": 86.0,
@@ -215513,7 +215541,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -215538,7 +215566,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -215572,7 +215600,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": 86.0,
@@ -215606,7 +215634,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": 86.0,
@@ -215631,7 +215659,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -215656,14 +215684,9 @@
     "city": "New York, NY",
     "sources": {
       "reddit": {
-        "mentions_30d": 3,
-        "mentions_7d": 3,
+        "mentions_30d": 2,
+        "mentions_7d": 2,
         "examples": [
-          {
-            "title": "What are your actual hidden gems on Uber Eats in NYC?",
-            "url": "https://www.reddit.com/r/FoodNYC/comments/1xhxcup/what_are_your_actual_hidden_gems_on_uber_eats_in/",
-            "source": "Reddit"
-          },
           {
             "title": "Eyval… really?? Genuinely baffled after a super mediocre experience",
             "url": "https://www.reddit.com/r/FoodNYC/comments/1xdcx1l/eyval_really_genuinely_baffled_after_a_super/",
@@ -215679,16 +215702,16 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
-      "hype": 91.1,
+      "hype": 85.5,
       "quality": null,
       "hype_gap": null,
       "coverage": 20,
       "signal": "Hype only",
       "components": {
         "tiktok": null,
-        "reddit": 91.1,
+        "reddit": 85.5,
         "web": null,
         "access": null
       },
@@ -215713,7 +215736,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": 86.0,
@@ -215738,7 +215761,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -215776,16 +215799,16 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
-      "hype": 33.9,
+      "hype": 37.1,
       "quality": null,
       "hype_gap": null,
       "coverage": 20,
       "signal": "Hype only",
       "components": {
         "tiktok": null,
-        "reddit": 33.9,
+        "reddit": 37.1,
         "web": null,
         "access": null
       },
@@ -215810,7 +215833,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": 86.0,
@@ -215835,7 +215858,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -215860,7 +215883,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -215894,7 +215917,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": 85.0,
@@ -215919,7 +215942,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -215944,7 +215967,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -215978,7 +216001,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": 85.0,
@@ -216003,7 +216026,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -216028,7 +216051,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -216062,7 +216085,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": 80.0,
@@ -216087,7 +216110,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -216112,7 +216135,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -216146,7 +216169,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": 83.0,
@@ -216171,7 +216194,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -216196,7 +216219,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -216242,16 +216265,16 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
-      "hype": 33.9,
+      "hype": 37.1,
       "quality": 82.0,
-      "hype_gap": -48.1,
+      "hype_gap": -44.9,
       "coverage": 35,
       "signal": "Sleeper",
       "components": {
         "tiktok": null,
-        "reddit": 33.9,
+        "reddit": 37.1,
         "web": null,
         "access": null
       },
@@ -216267,7 +216290,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -216292,7 +216315,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -216326,7 +216349,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": 82.0,
@@ -216351,7 +216374,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -216376,7 +216399,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -216401,7 +216424,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -216426,7 +216449,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -216451,7 +216474,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -216485,7 +216508,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": 82.0,
@@ -216510,7 +216533,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -216535,7 +216558,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -216569,7 +216592,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": 80.0,
@@ -216594,7 +216617,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -216619,7 +216642,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -216653,7 +216676,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": 80.0,
@@ -216678,7 +216701,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -216712,7 +216735,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": 80.0,
@@ -216737,7 +216760,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -216762,7 +216785,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -216787,7 +216810,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -216812,7 +216835,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -216837,7 +216860,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -216871,7 +216894,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": 80.0,
@@ -216896,7 +216919,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -216921,7 +216944,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -216955,7 +216978,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": 80.0,
@@ -216989,7 +217012,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": 80.0,
@@ -217014,7 +217037,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -217039,7 +217062,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -217064,7 +217087,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -217089,7 +217112,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -217123,7 +217146,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": 75.0,
@@ -217148,7 +217171,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -217173,7 +217196,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -217207,7 +217230,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": 74.0,
@@ -217232,7 +217255,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -217257,7 +217280,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -217291,7 +217314,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": 73.0,
@@ -217316,7 +217339,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -217341,7 +217364,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -217375,7 +217398,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": 70.0,
@@ -217400,7 +217423,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -217425,7 +217448,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -217459,7 +217482,7 @@
       }
     },
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": 70.0,
@@ -217484,7 +217507,7 @@
     "city": "New York, NY",
     "sources": {},
     "snapshot_at": "2026-10-28T17:11:15.753783+00:00",
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": null,
       "quality": null,
@@ -217523,19 +217546,27 @@
       "reservation": {
         "scarcity_score": 70,
         "provider": "prototype access signal"
+      },
+      "web": {
+        "mentions_30d": 0,
+        "mentions_7d": 0,
+        "mentions_prev_7d": 0,
+        "domains_30d": 0,
+        "examples": [],
+        "provider": "GDELT DOC 2.0"
       }
     },
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
-      "hype": 70.0,
+      "hype": 26.7,
       "quality": 82.0,
-      "hype_gap": -12.0,
-      "coverage": 15,
-      "signal": "Balanced",
+      "hype_gap": -55.3,
+      "coverage": 35,
+      "signal": "Sleeper",
       "components": {
         "tiktok": null,
         "reddit": null,
-        "web": null,
+        "web": 5.0,
         "access": 70.0
       },
       "quality_components": {
@@ -217566,7 +217597,7 @@
         "provider": "prototype access signal"
       }
     },
-    "v11_enriched_at": "2026-10-28T22:47:28.381155+00:00",
+    "v11_enriched_at": "2026-10-29T06:21:33.681250+00:00",
     "scores": {
       "hype": 70.0,
       "quality": 88.0,
